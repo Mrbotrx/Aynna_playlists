@@ -1,96 +1,52 @@
-# ==============================
 # Python Cache
-# ==============================
-
 __pycache__/
 *.py[cod]
 *$py.class
 
 
-# ==============================
 # Virtual Environment
-# ==============================
-
 .venv/
 venv/
 env/
 ENV/
+
+
+# Environment Secret
 .env
 .env.*
 
 
-# ==============================
-# Python Tools
-# ==============================
-
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.coverage
-htmlcov/
-
-
-# ==============================
 # IDE
-# ==============================
-
 .vscode/
 .idea/
 
 
-# ==============================
-# OS Files
-# ==============================
-
+# OS
 .DS_Store
 Thumbs.db
 
 
-# ==============================
-# Logs / Temp
-# ==============================
-
+# Logs
 *.log
-*.tmp
+
+
+# Temporary
 tempCodeRunnerFile.py
+*.tmp
 
 
-# ==============================
 # Secrets
-# ==============================
-
 *.key
 *.pem
 secrets.json
 credentials.json
 
 
-# ==============================
-# Build Files
-# ==============================
-
-build/
-dist/
-*.egg-info/
+# Ignore API JSON
+output/aynaott_api.json
 
 
-# ==============================
-# Keep AynaOTT Playlist Output
-# ==============================
-
-# NOTE:
-# Do NOT add:
-# output/
-# *.m3u8
-# *.m3u
-#
-# because GitHub Actions must push:
+# Keep playlist
+# DO NOT ignore:
 # output/aynnaott.m3u8
-
-
-# ==============================
-# Ignore only temporary API files (optional)
-# ==============================
-
-# If you want API JSON private, enable this:
-# output/aynaott_api.json
+# *.m3u8
