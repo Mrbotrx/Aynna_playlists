@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AYNNA OTT - Advanced Live TV</title>
+  <title>AYNNA OTT - Live TV Station</title>
   
   <!-- FontAwesome & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -112,7 +112,7 @@
 </head>
 <body class="bg-[var(--bg-main)] text-[var(--text-main)] min-h-screen font-sans flex flex-col md:flex-row overflow-hidden transition-all duration-300">
 
-  <!-- Mobile Top Bar View (Visible only on mobile devices) -->
+  <!-- Mobile Top Bar View -->
   <header class="md:hidden flex items-center justify-between p-4 bg-[var(--bg-panel)] border-b border-[var(--border-color)] z-30 shrink-0">
     <div class="flex items-center gap-2">
       <div class="h-8 w-8 rounded bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] flex items-center justify-center shadow-md">
@@ -188,7 +188,7 @@
   <!-- Mobile Sidebar Overlay Backdrop -->
   <div id="sidebar-overlay" onclick="toggleSidebarMobile()" class="hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden"></div>
 
-  <!-- Primary Desktop Workspace (Responsive Layout Split) -->
+  <!-- Primary Desktop Workspace -->
   <main class="flex-1 flex flex-col md:flex-row min-w-0 min-h-0 overflow-y-auto md:overflow-hidden">
     
     <!-- Left Panel Area: Media Player Center -->
@@ -206,6 +206,12 @@
 
       <!-- Player Screen Deck -->
       <div class="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-[var(--border-color)] shadow-2xl flex flex-col justify-center items-center group">
+        <!-- Live TV Style Notification Alert Overlay -->
+        <div id="channel-toast" class="absolute top-4 left-4 z-20 bg-black/85 backdrop-blur-md px-4 py-2.5 rounded-xl border border-[var(--border-color)] shadow-xl flex items-center gap-2.5 transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none">
+          <span class="h-2.5 w-2.5 rounded-full bg-[var(--brand-color)] animate-pulse"></span>
+          <span class="text-xs font-bold uppercase tracking-widest text-white" id="toast-text">Loading...</span>
+        </div>
+
         <!-- Error & Setup Overlay Tray -->
         <div id="player-overlay" class="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-950/80 to-black">
           <div id="player-indicator-icon" class="h-16 w-16 rounded-full bg-[var(--bg-panel)] border border-[var(--border-color)] flex items-center justify-center text-[var(--brand-color)] text-2xl mb-4">
@@ -222,9 +228,9 @@
         <video id="video-element" class="w-full h-full object-contain hidden" controls autoplay playsinline></video>
       </div>
 
-      <!-- Station Info Deck -->
-      <div class="p-4 bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-xl flex items-center justify-between">
-        <div class="flex items-center gap-3.5 min-w-0">
+      <!-- Station Info Deck & Channel Change Controls -->
+      <div class="p-4 bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-xl flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div class="flex items-center gap-3.5 min-w-0 w-full sm:w-auto">
           <div id="player-logo-deck" class="h-12 w-12 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0">
             <i class="fa-solid fa-circle-play text-xl text-[var(--text-muted)]"></i>
           </div>
@@ -233,11 +239,28 @@
             <h2 id="player-channel-title" class="font-extrabold text-sm md:text-base text-[var(--text-main)] truncate mt-0.5">No Stream Loaded</h2>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <!-- Picture in Picture Access -->
+
+        <!-- Advanced Channel Navigation + Tools -->
+        <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 border-[var(--border-color)]">
+          <!-- Prev Channel Button -->
+          <button onclick="playPrevChannel()" title="Previous Channel" class="h-10 px-3 flex items-center justify-center gap-1.5 rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] transition-all">
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+            <span class="text-xs font-semibold hidden md:inline">Prev</span>
+          </button>
+
+          <!-- Next Channel Button -->
+          <button onclick="playNextChannel()" title="Next Channel" class="h-10 px-3 flex items-center justify-center gap-1.5 rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] transition-all">
+            <span class="text-xs font-semibold hidden md:inline">Next</span>
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+          </button>
+
+          <div class="h-6 w-[1px] bg-[var(--border-color)] mx-1 hidden sm:block"></div>
+
+          <!-- Picture in Picture -->
           <button onclick="togglePiP()" title="Picture in Picture Mode" class="h-10 w-10 flex items-center justify-center rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] transition-all">
             <i class="fa-solid fa-window-restore text-sm"></i>
           </button>
+          
           <!-- Stream Favorite Toggle -->
           <button id="player-fav-toggle" onclick="toggleActiveFavorite()" class="h-10 w-10 flex items-center justify-center rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/10 transition-all">
             <i class="fa-regular fa-heart text-sm"></i>
@@ -288,19 +311,67 @@
     const m3uUrl = "https://raw.githubusercontent.com/Mrbotrx/Aynna_playlists/main/output/aynnaott.m3u8";
 
     let globalChannels = [];
+    let filteredChannels = []; // Holds current category + searched stations
     let favoriteList = JSON.parse(localStorage.getItem('aynna_fav_list')) || [];
     let currentActiveCategory = 'all';
     let currentSearchTerm = '';
     let playingStream = null;
     let hlsInstance = null;
+    let toastTimeout = null;
 
     window.addEventListener('DOMContentLoaded', () => {
-      // Load user theme preference
+      // Load theme
       const savedTheme = localStorage.getItem('aynna_theme_mode') || 'slate-dark';
       switchTheme(savedTheme);
 
       fetchPlaylist();
+      setupKeyboardShortcuts();
     });
+
+    // Setup arrow keys for keyboard navigation support
+    function setupKeyboardShortcuts() {
+      window.addEventListener('keydown', (e) => {
+        // Prevent key events while typing inside search bar
+        if (document.activeElement === document.getElementById('station-search')) {
+          return;
+        }
+
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          playNextChannel();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          playPrevChannel();
+        } else if (e.key === ' ' || e.key === 'k') {
+          e.preventDefault();
+          const video = document.getElementById('video-element');
+          if (video.paused) {
+            video.play();
+            showChannelToast("Play Broadcast");
+          } else {
+            video.pause();
+            showChannelToast("Pause Broadcast");
+          }
+        }
+      });
+    }
+
+    // Dynamic Flash Toast System (TV Notification)
+    function showChannelToast(text) {
+      const toast = document.getElementById('channel-toast');
+      const toastText = document.getElementById('toast-text');
+      
+      toastText.textContent = text;
+      
+      clearTimeout(toastTimeout);
+      toast.classList.remove('opacity-0', '-translate-y-12');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-12');
+      }, 2500);
+    }
 
     // M3U Dynamic Parser Engine
     async function fetchPlaylist() {
@@ -333,13 +404,11 @@
             url: ''
           };
 
-          // Capture station target name
           const finalComma = row.lastIndexOf(',');
           if (finalComma !== -1) {
             currentItem.name = row.substring(finalComma + 1).trim();
           }
 
-          // Regex matching for tvg properties (safely handling quoted strings)
           const logoMatch = row.match(/tvg-logo="([^"]*)"/i);
           if (logoMatch) currentItem.logo = logoMatch[1];
 
@@ -386,13 +455,14 @@
       updateBadgeCounts();
     }
 
-    // Directory renderer matching active viewport filter
+    // Directory renderer
     function renderDirectory() {
       const container = document.getElementById('channels-list-element');
       const fallback = document.getElementById('cards-fallback');
       container.innerHTML = '';
 
-      const filteredList = globalChannels.filter(item => {
+      // Update filtered collection
+      filteredChannels = globalChannels.filter(item => {
         const inSearch = item.name.toLowerCase().includes(currentSearchTerm.toLowerCase());
         
         if (currentActiveCategory === 'all') return inSearch;
@@ -402,19 +472,20 @@
         return inSearch && item.category === currentActiveCategory;
       });
 
-      document.getElementById('viewport-counter').textContent = `${filteredList.length} stations`;
+      document.getElementById('viewport-counter').textContent = `${filteredChannels.length} stations`;
 
-      if (filteredList.length === 0) {
+      if (filteredChannels.length === 0) {
         fallback.classList.remove('hidden');
         return;
       }
       fallback.classList.add('hidden');
 
-      filteredList.forEach(item => {
+      filteredChannels.forEach(item => {
         const isFavorite = favoriteList.some(fav => fav.name === item.name);
         const isActive = playingStream && playingStream.url === item.url;
         
         const card = document.createElement('div');
+        card.id = `card-el-${item.id}`;
         card.className = `group flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer transition-all ${
           isActive ? 'channel-card-active' : 'border-[var(--border-color)] bg-[var(--bg-panel)]/30 hover:bg-[var(--bg-card)]/50'
         }`;
@@ -440,6 +511,39 @@
         `;
         container.appendChild(card);
       });
+    }
+
+    // Dynamic Channel Changing functions
+    function playNextChannel() {
+      if (filteredChannels.length === 0) return;
+      let currentIndex = -1;
+      
+      if (playingStream) {
+        currentIndex = filteredChannels.findIndex(c => c.url === playingStream.url);
+      }
+      
+      let nextIndex = currentIndex + 1;
+      if (nextIndex >= filteredChannels.length) {
+        nextIndex = 0; // wrap around back to the beginning of the list
+      }
+      
+      executeStationLoad(filteredChannels[nextIndex].id, true);
+    }
+
+    function playPrevChannel() {
+      if (filteredChannels.length === 0) return;
+      let currentIndex = -1;
+      
+      if (playingStream) {
+        currentIndex = filteredChannels.findIndex(c => c.url === playingStream.url);
+      }
+      
+      let prevIndex = currentIndex - 1;
+      if (prevIndex < 0) {
+        prevIndex = filteredChannels.length - 1; // wrap around back to the end of the list
+      }
+      
+      executeStationLoad(filteredChannels[prevIndex].id, true);
     }
 
     function handleLogoFallback(image, fallbackString) {
@@ -477,7 +581,7 @@
     }
 
     // Media stream loader
-    function executeStationLoad(id) {
+    function executeStationLoad(id, triggerToast = false) {
       const item = globalChannels.find(c => c.id === id);
       if (!item) return;
 
@@ -499,6 +603,16 @@
 
       loadHlsStream(item.url);
       renderDirectory();
+
+      // Autoscroll to active playing station card in side panel
+      const activeCard = document.getElementById(`card-el-${item.id}`);
+      if (activeCard) {
+        activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      if (triggerToast) {
+        showChannelToast(item.name);
+      }
     }
 
     function loadHlsStream(url) {
@@ -541,7 +655,6 @@
           }
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        // Fallback for native Safari browser execution
         video.src = url;
         video.addEventListener('loadedmetadata', () => {
           hidePlayerStateOverlay();
