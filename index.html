@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AYNNA OTT - Advanced Universal Live TV</title>
+  <title>AYNNA OTT - Ultra-Modern Live TV</title>
   
   <!-- FontAwesome & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,55 +32,59 @@
   <style>
     /* Theme Engine Variables Configuration */
     :root, [data-theme="slate-dark"] {
-      --bg-main: #090d16;
-      --bg-panel: #0f172a;
-      --bg-card: #1e293b;
-      --border-color: #334155;
+      --bg-main: #05070f;
+      --bg-panel: rgba(15, 23, 42, 0.45);
+      --bg-card: rgba(30, 41, 59, 0.4);
+      --border-color: rgba(255, 255, 255, 0.06);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --brand-color: #6366f1;
       --brand-gradient-start: #6366f1;
       --brand-gradient-end: #ec4899;
-      --accent-glow: rgba(99, 102, 241, 0.15);
+      --accent-glow: rgba(99, 102, 241, 0.25);
     }
 
     [data-theme="cyberpunk"] {
-      --bg-main: #05010d;
-      --bg-panel: #0d041a;
-      --bg-card: #1c0c30;
-      --border-color: #4c1d95;
+      --bg-main: #04010a;
+      --bg-panel: rgba(13, 4, 26, 0.5);
+      --bg-card: rgba(28, 12, 48, 0.4);
+      --border-color: rgba(255, 0, 127, 0.15);
       --text-main: #00f0ff;
       --text-muted: #ff007f;
       --brand-color: #ff007f;
       --brand-gradient-start: #ff007f;
       --brand-gradient-end: #00f0ff;
-      --accent-glow: rgba(255, 0, 127, 0.2);
+      --accent-glow: rgba(255, 0, 127, 0.3);
     }
 
     [data-theme="gold-dark"] {
-      --bg-main: #0a0a0a;
-      --bg-panel: #141414;
-      --bg-card: #1f1f1f;
-      --border-color: #302d25;
+      --bg-main: #050505;
+      --bg-panel: rgba(20, 20, 20, 0.55);
+      --bg-card: rgba(31, 31, 31, 0.45);
+      --border-color: rgba(217, 119, 6, 0.12);
       --text-main: #f5f5f5;
       --text-muted: #a3a3a3;
       --brand-color: #d97706;
       --brand-gradient-start: #f59e0b;
       --brand-gradient-end: #ca8a04;
-      --accent-glow: rgba(217, 119, 6, 0.15);
+      --accent-glow: rgba(217, 119, 6, 0.2);
     }
 
     [data-theme="nordic-light"] {
-      --bg-main: #f1f5f9;
-      --bg-panel: #ffffff;
-      --bg-card: #f8fafc;
-      --border-color: #cbd5e1;
+      --bg-main: #f8fafc;
+      --bg-panel: rgba(255, 255, 255, 0.7);
+      --bg-card: rgba(241, 245, 249, 0.8);
+      --border-color: rgba(15, 23, 42, 0.08);
       --text-main: #0f172a;
       --text-muted: #64748b;
       --brand-color: #2563eb;
       --brand-gradient-start: #2563eb;
       --brand-gradient-end: #0ea5e9;
-      --accent-glow: rgba(37, 99, 235, 0.1);
+      --accent-glow: rgba(37, 99, 235, 0.15);
+    }
+
+    body {
+      background: var(--bg-main);
     }
 
     /* Standard Scrollbars */
@@ -89,7 +93,7 @@
       height: 5px;
     }
     ::-webkit-scrollbar-track {
-      background: var(--bg-main);
+      background: transparent;
     }
     ::-webkit-scrollbar-thumb {
       background: var(--border-color);
@@ -102,11 +106,11 @@
     /* Card active focus styles */
     .channel-card-active {
       border-color: var(--brand-color) !important;
-      box-shadow: 0 0 12px var(--accent-glow);
-      background: var(--bg-card);
+      box-shadow: 0 8px 24px -6px var(--accent-glow);
+      background: rgba(255, 255, 255, 0.03);
     }
     .text-glow {
-      text-shadow: 0 0 8px var(--accent-glow);
+      text-shadow: 0 0 10px var(--accent-glow);
     }
     
     /* Animation helper classes */
@@ -115,14 +119,33 @@
       opacity: 1;
       pointer-events: auto;
     }
+
+    /* Ambient Pulsing Backgound Nodes */
+    @keyframes slowPulse {
+      0%, 100% { transform: scale(1) translate(0px, 0px); }
+      33% { transform: scale(1.15) translate(30px, -50px); }
+      66% { transform: scale(0.9) translate(-40px, 40px); }
+    }
+    .bg-node-1 {
+      animation: slowPulse 20s infinite ease-in-out;
+    }
+    .bg-node-2 {
+      animation: slowPulse 25s infinite ease-in-out reverse;
+    }
   </style>
 </head>
-<body class="bg-[var(--bg-main)] text-[var(--text-main)] min-h-screen font-sans flex flex-col md:flex-row overflow-hidden transition-all duration-300">
+<body class="text-[var(--text-main)] min-h-screen font-sans flex flex-col md:flex-row overflow-hidden transition-all duration-300 relative">
+
+  <!-- Ambient Light Blobs -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="bg-node-1 absolute top-12 left-1/4 w-[500px] h-[500px] rounded-full bg-[var(--brand-color)] opacity-[0.04] blur-[120px]"></div>
+    <div class="bg-node-2 absolute bottom-20 right-1/4 w-[450px] h-[450px] rounded-full bg-pink-500 opacity-[0.03] blur-[140px]"></div>
+  </div>
 
   <!-- Mobile Top Bar View -->
-  <header class="md:hidden flex items-center justify-between p-4 bg-[var(--bg-panel)] border-b border-[var(--border-color)] z-30 shrink-0">
+  <header class="md:hidden flex items-center justify-between p-4 bg-[var(--bg-panel)] backdrop-blur-2xl border-b border-[var(--border-color)] z-30 shrink-0">
     <div class="flex items-center gap-2">
-      <div class="h-8 w-8 rounded bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] flex items-center justify-center shadow-md">
+      <div class="h-8 w-8 rounded-lg bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] flex items-center justify-center shadow-lg">
         <i class="fa-solid fa-play text-white text-xs"></i>
       </div>
       <h1 class="font-extrabold text-sm tracking-wide">AYNNA OTT</h1>
@@ -138,7 +161,7 @@
   </header>
 
   <!-- Left Sidebar Panel: Brand & Category Tree -->
-  <aside id="sidebar-panel" class="fixed inset-y-0 left-0 z-40 w-64 transform -translate-x-full md:relative md:translate-x-0 bg-[var(--bg-panel)] border-r border-[var(--border-color)] flex flex-col transition-transform duration-300">
+  <aside id="sidebar-panel" class="fixed inset-y-0 left-0 z-45 w-64 transform -translate-x-full md:relative md:translate-x-0 bg-[var(--bg-panel)] backdrop-blur-2xl border-r border-[var(--border-color)] flex flex-col transition-transform duration-300">
     <!-- Brand Banner Header -->
     <div class="p-5 border-b border-[var(--border-color)] flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -159,7 +182,7 @@
     <div class="flex-1 overflow-y-auto p-4 space-y-2">
       <div class="text-[10px] font-bold text-[var(--text-muted)] px-3 uppercase tracking-wider mb-2">Navigation</div>
       
-      <button onclick="selectCategory('all')" id="nav-all" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold bg-[var(--brand-color)] text-white shadow-md">
+      <button onclick="selectCategory('all')" id="nav-all" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold bg-[var(--brand-color)] text-white shadow-md transition-all">
         <span class="flex items-center gap-2.5"><i class="fa-solid fa-layer-group text-sm"></i> All Channels</span>
         <span id="badge-all" class="bg-black/20 text-[10px] px-2 py-0.5 rounded-full">0</span>
       </button>
@@ -203,11 +226,11 @@
   <!-- Mobile Sidebar Overlay Backdrop -->
   <div id="sidebar-overlay" onclick="toggleSidebarMobile()" class="hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden"></div>
 
-  <!-- Primary Desktop Workspace -->
-  <main class="flex-1 flex flex-col md:flex-row min-w-0 min-h-0 overflow-y-auto md:overflow-hidden">
+  <!-- Primary Desktop Workspace (Floating Bento UI Layout) -->
+  <main class="flex-1 flex flex-col md:flex-row min-w-0 min-h-0 overflow-y-auto md:overflow-hidden p-4 lg:p-6 gap-6 z-10">
     
     <!-- Left Panel Area: Media Player Center -->
-    <section class="flex-1 p-4 lg:p-6 flex flex-col gap-4 min-h-0">
+    <section class="flex-1 flex flex-col gap-4 min-h-0">
       <!-- Media Player Header -->
       <div class="flex items-center justify-between">
         <div class="hidden md:flex items-center gap-2">
@@ -215,45 +238,49 @@
           <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Live Broadcast Studio</span>
         </div>
         <div class="flex items-center gap-2">
-          <!-- Refresh button -->
-          <button onclick="fetchPlaylist()" title="Reload Feed" class="text-xs font-semibold h-9 px-3 rounded-lg border border-[var(--border-color)] hover:bg-[var(--bg-card)] transition-all flex items-center gap-1.5">
+          <button onclick="fetchPlaylist()" title="Reload Feed" class="text-xs font-semibold h-9 px-3 rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)] backdrop-blur-md hover:bg-[var(--bg-card)] transition-all flex items-center gap-1.5 shadow-md">
             <i class="fa-solid fa-rotate"></i> <span class="hidden lg:inline">Reload Database</span>
           </button>
-          <!-- Advanced Settings Button -->
-          <button onclick="openSettingsModal()" title="Platform Settings" class="h-9 w-9 rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] flex items-center justify-center transition-all">
-            <i class="fa-solid fa-gear text-sm animate-spin-hover"></i>
+          <button onclick="openSettingsModal()" title="Platform Settings" class="h-9 w-9 rounded-lg border border-[var(--border-color)] bg-[var(--bg-panel)] backdrop-blur-md text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] flex items-center justify-center transition-all shadow-md">
+            <i class="fa-solid fa-gear text-sm transition-transform duration-300 hover:rotate-45"></i>
           </button>
         </div>
       </div>
 
-      <!-- Player Screen Deck -->
-      <div id="player-column-wrapper" class="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-[var(--border-color)] shadow-2xl flex flex-col justify-center items-center group">
-        <!-- Live TV Style Notification Alert Overlay -->
-        <div id="channel-toast" class="absolute top-4 left-4 z-20 bg-black/85 backdrop-blur-md px-4 py-2.5 rounded-xl border border-[var(--border-color)] shadow-xl flex items-center gap-2.5 transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none">
-          <span class="h-2.5 w-2.5 rounded-full bg-[var(--brand-color)] animate-pulse"></span>
-          <span class="text-xs font-bold uppercase tracking-widest text-white" id="toast-text">Loading...</span>
-        </div>
-
-        <!-- Error & Setup Overlay Tray -->
-        <div id="player-overlay" class="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-950/80 to-black">
-          <div id="player-indicator-icon" class="h-16 w-16 rounded-full bg-[var(--bg-panel)] border border-[var(--border-color)] flex items-center justify-center text-[var(--brand-color)] text-2xl mb-4">
-            <i class="fa-solid fa-tv"></i>
+      <!-- Player Screen Deck with Ambient Halo Glow -->
+      <div class="relative w-full aspect-video rounded-2xl border border-[var(--border-color)] bg-black shadow-2xl flex flex-col justify-center items-center group transition-all duration-500 overflow-visible">
+        <!-- Ambient Blur Halo (Ambilight) -->
+        <div id="ambilight-glow" class="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] opacity-15 blur-[40px] pointer-events-none transition-all duration-500"></div>
+        
+        <!-- Interactive Player Container -->
+        <div class="absolute inset-0 rounded-2xl overflow-hidden z-10 flex items-center justify-center bg-black">
+          <!-- Live TV Style Notification Alert Overlay -->
+          <div id="channel-toast" class="absolute top-4 left-4 z-20 bg-black/85 backdrop-blur-md px-4 py-2.5 rounded-xl border border-[var(--border-color)] shadow-xl flex items-center gap-2.5 transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none">
+            <span class="h-2.5 w-2.5 rounded-full bg-[var(--brand-color)] animate-pulse"></span>
+            <span class="text-xs font-bold uppercase tracking-widest text-white" id="toast-text">Loading...</span>
           </div>
-          <h3 id="player-overlay-title" class="text-base font-bold text-slate-100">Ready for Playback</h3>
-          <p id="player-overlay-desc" class="text-xs text-slate-400 max-w-sm mt-2">Pick a station from the list directory to start streaming live video.</p>
-          <button id="player-retry-btn" onclick="retryActiveStream()" class="hidden mt-4 px-4 py-2 rounded-lg bg-[var(--brand-color)] text-white font-bold text-xs hover:opacity-90 transition-all">
-            <i class="fa-solid fa-arrows-rotate mr-1"></i> Try Reconnecting
-          </button>
-        </div>
 
-        <!-- HTML5 Video Component -->
-        <video id="video-element" class="w-full h-full object-contain hidden" autoplay playsinline></video>
+          <!-- Error & Setup Overlay Tray -->
+          <div id="player-overlay" class="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-950/80 to-black">
+            <div id="player-indicator-icon" class="h-16 w-16 rounded-full bg-[var(--bg-panel)] border border-[var(--border-color)] flex items-center justify-center text-[var(--brand-color)] text-2xl mb-4">
+              <i class="fa-solid fa-tv"></i>
+            </div>
+            <h3 id="player-overlay-title" class="text-base font-bold text-slate-100">Ready for Playback</h3>
+            <p id="player-overlay-desc" class="text-xs text-slate-400 max-w-sm mt-2">Pick a station from the list directory to start streaming live video.</p>
+            <button id="player-retry-btn" onclick="retryActiveStream()" class="hidden mt-4 px-4 py-2 rounded-lg bg-[var(--brand-color)] text-white font-bold text-xs hover:opacity-90 transition-all">
+              <i class="fa-solid fa-arrows-rotate mr-1"></i> Try Reconnecting
+            </button>
+          </div>
+
+          <!-- HTML5 Video Component -->
+          <video id="video-element" class="w-full h-full object-contain hidden" autoplay playsinline></video>
+        </div>
       </div>
 
       <!-- Station Info Deck & Channel Change Controls -->
-      <div class="p-4 bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-xl flex flex-col xl:flex-row gap-4 items-center justify-between">
+      <div class="p-4 bg-[var(--bg-panel)] backdrop-blur-2xl border border-[var(--border-color)] rounded-2xl flex flex-col xl:flex-row gap-4 items-center justify-between shadow-lg">
         <div class="flex items-center gap-3.5 min-w-0 w-full xl:w-auto">
-          <div id="player-logo-deck" class="h-12 w-12 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0">
+          <div id="player-logo-deck" class="h-12 w-12 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0">
             <i class="fa-solid fa-circle-play text-xl text-[var(--text-muted)]"></i>
           </div>
           <div class="min-w-0 flex-1">
@@ -262,15 +289,15 @@
           </div>
         </div>
 
-        <!-- Custom Player Internal Controls Overlay (Volume, Prev/Next, Fullscreen) -->
+        <!-- Custom Player Internal Controls Overlay -->
         <div class="flex flex-wrap items-center justify-between xl:justify-end gap-3 w-full xl:w-auto border-t xl:border-t-0 pt-3 xl:pt-0 border-[var(--border-color)]">
           
           <!-- Volume Group Controller -->
-          <div class="flex items-center gap-2 bg-[var(--bg-card)] border border-[var(--border-color)] px-2.5 py-1.5 rounded-lg">
+          <div class="flex items-center gap-2 bg-[var(--bg-card)] border border-[var(--border-color)] px-2.5 py-1.5 rounded-xl">
             <button onclick="toggleVolumeMute()" id="player-volume-btn" class="text-[var(--text-muted)] hover:text-[var(--text-main)]">
               <i class="fa-solid fa-volume-high text-xs"></i>
             </button>
-            <input type="range" id="player-volume-slider" min="0" max="1" step="0.1" value="1" oninput="changeVideoVolume(this.value)" class="w-16 accent-[var(--brand-color)] cursor-pointer h-1.5 rounded-lg bg-slate-700" />
+            <input type="range" id="player-volume-slider" min="0" max="1" step="0.1" value="1" oninput="changeVideoVolume(this.value)" class="w-16 accent-[var(--brand-color)] cursor-pointer h-1 rounded-lg bg-slate-700/60" />
           </div>
 
           <div class="h-6 w-[1px] bg-[var(--border-color)] hidden xl:block"></div>
@@ -306,8 +333,8 @@
       </div>
     </section>
 
-    <!-- Right Panel Area: Directory Channel List -->
-    <section class="w-full md:w-80 lg:w-[360px] p-4 lg:p-6 border-t md:border-t-0 md:border-l border-[var(--border-color)] flex flex-col min-h-0 bg-[var(--bg-panel)]/40 backdrop-blur-sm shrink-0">
+    <!-- Right Panel Area: Directory Channel List (Bento Box Column) -->
+    <section class="w-full md:w-80 lg:w-[360px] bg-[var(--bg-panel)] backdrop-blur-2xl border border-[var(--border-color)] rounded-2xl p-4 lg:p-6 flex flex-col min-h-0 shrink-0 shadow-xl">
       <div class="mb-4">
         <div class="relative">
           <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-xs"></i>
@@ -316,7 +343,7 @@
             id="station-search" 
             oninput="triggerSearch(this.value)" 
             placeholder="Search channels..." 
-            class="w-full bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-xl py-2.5 pl-10 pr-4 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-color)] transition-all"
+            class="w-full bg-black/20 border border-[var(--border-color)] rounded-xl py-2.5 pl-10 pr-4 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-color)] transition-all"
           />
         </div>
       </div>
@@ -346,7 +373,7 @@
 
   <!-- ADVANCED UNIVERSAL SETTINGS MODAL DIALOG -->
   <div id="settings-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center transition-all duration-300 opacity-0 pointer-events-none">
-    <div class="w-full max-w-lg bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-2xl transform scale-90 transition-transform duration-300 m-4 flex flex-col max-h-[85vh]">
+    <div class="w-full max-w-lg bg-[var(--bg-panel)] backdrop-blur-3xl border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-2xl transform scale-90 transition-transform duration-300 m-4 flex flex-col max-h-[85vh]">
       <!-- Header Area -->
       <div class="p-5 border-b border-[var(--border-color)] flex justify-between items-center bg-black/20">
         <div class="flex items-center gap-2">
@@ -484,7 +511,6 @@
     // Arrow keys controls switcher
     function setupKeyboardShortcuts() {
       window.addEventListener('keydown', (e) => {
-        // Safe lock key events if focusing text inputs
         if (
           document.activeElement === document.getElementById('station-search') ||
           document.activeElement === document.getElementById('m3u-input-field')
@@ -509,7 +535,7 @@
     }
 
     function setupPlayerDoubleClicks() {
-      const videoBox = document.getElementById('player-column-wrapper');
+      const videoBox = document.getElementById('video-element');
       videoBox.addEventListener('dblclick', toggleFullScreen);
     }
 
@@ -539,6 +565,14 @@
       dialog.classList.add('scale-100');
     }
 
+    // Dynamic Ambilight Background Glow Update (matches custom gradient of current channel)
+    function updateAmbilightGlow(gradientClass) {
+      const glow = document.getElementById('ambilight-glow');
+      if (glow) {
+        glow.className = `absolute -inset-1 rounded-2xl bg-gradient-to-tr ${gradientClass} opacity-20 blur-[40px] pointer-events-none transition-all duration-500`;
+      }
+    }
+
     function closeSettingsModal() {
       const modal = document.getElementById('settings-modal');
       const dialog = modal.querySelector('div');
@@ -552,7 +586,7 @@
     function loadCustomPlaylist() {
       const inputVal = document.getElementById('m3u-input-field').value.trim();
       if (!inputVal) {
-        alert("Please enter a valid M3U or M3U8 URL string.");
+        alert("Please enter a valid M3U or M3U8 URL.");
         return;
       }
       
@@ -697,7 +731,7 @@
             <i class="fa-solid fa-hashtag text-[var(--brand-color)]/60 text-xs"></i>
             <span class="truncate">${cat}</span>
           </span>
-          <span class="bg-[var(--bg-main)] text-[10px] px-2 py-0.5 rounded-full border border-[var(--border-color)]">${count}</span>
+          <span class="bg-black/20 text-[10px] px-2 py-0.5 rounded-full border border-[var(--border-color)]">${count}</span>
         `;
         element.appendChild(button);
       });
@@ -749,7 +783,7 @@
         const card = document.createElement('div');
         card.id = `card-el-${item.id}`;
         card.className = `group flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer transition-all ${
-          isActive ? 'channel-card-active' : 'border-[var(--border-color)] bg-[var(--bg-panel)]/30 hover:bg-[var(--bg-card)]/50'
+          isActive ? 'channel-card-active bg-white/[0.03]' : 'border-[var(--border-color)] bg-[var(--bg-panel)]/30 hover:bg-[var(--bg-card)]/50 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[var(--brand-color)]/5'
         }`;
         
         card.setAttribute('onclick', `executeStationLoad('${item.id}')`);
@@ -759,7 +793,7 @@
         const qualityTag = getQualityBadgeMarkup(item.name);
 
         card.innerHTML = `
-          <div class="h-10 w-10 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0 relative">
+          <div class="h-10 w-10 rounded-xl bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0 relative shadow-sm">
             ${item.logo 
               ? `<img src="${item.logo}" alt="logo" class="h-full w-full object-contain opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" onerror="handleLogoFallback(this, '${initials}', '${fallbackGradient}')" />`
               : `<div class="h-full w-full bg-gradient-to-tr ${fallbackGradient} text-white text-xs font-extrabold flex items-center justify-center">${initials}</div>`
@@ -773,7 +807,7 @@
             <span class="text-[9px] text-[var(--text-muted)] font-medium block truncate mt-0.5">${item.category}</span>
           </div>
           <button onclick="handleHeartAction(event, '${item.id}')" class="h-8 w-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/10 transition-all shrink-0">
-            <i class="${isFavorite ? 'fa-solid text-rose-500' : 'fa-regular'} fa-heart text-xs"></i>
+            <i class="${isFavorite ? 'fa-solid text-rose-500 animate-pulse' : 'fa-regular'} fa-heart text-xs"></i>
           </button>
         `;
         container.appendChild(card);
@@ -843,7 +877,6 @@
       }
     }
 
-    // Live filtering matching input changes
     function triggerSearch(term) {
       currentSearchTerm = term;
       renderDirectory();
@@ -861,6 +894,9 @@
       const containerLogo = document.getElementById('player-logo-deck');
       const initials = item.name.substring(0, 2).toUpperCase();
       const fallbackGradient = getChannelUniqueColors(item.name);
+
+      // Trigger ambient ambilight backlight update
+      updateAmbilightGlow(fallbackGradient);
 
       if (item.logo) {
         containerLogo.innerHTML = `<img src="${item.logo}" alt="playing-station" class="h-full w-full object-contain opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" onerror="handleLogoFallback(this, '${initials}', '${fallbackGradient}')" />`;
@@ -912,7 +948,7 @@
 
         hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
           hidePlayerStateOverlay();
-          // Retain current volume slider state
+          // Retain volume slider setting configurations
           const slider = document.getElementById('player-volume-slider');
           video.volume = slider.value;
           video.play().catch(() => {
@@ -952,6 +988,7 @@
       }
     }
 
+    // Handles display changes within the video container overlay state
     function showPlayerStateOverlay(mode, title, desc, showRetry = false) {
       const overlay = document.getElementById('player-overlay');
       const iconBox = document.getElementById('player-indicator-icon');
@@ -1058,8 +1095,9 @@
 
     // Fullscreen Toggle controller API
     function toggleFullScreen() {
-      const wrapper = document.getElementById('player-column-wrapper');
-      
+      const wrapper = document.getElementById('video-element');
+      if (wrapper.src === "" && !hlsInstance) return;
+
       if (!document.fullscreenElement) {
         if (wrapper.requestFullscreen) {
           wrapper.requestFullscreen();
