@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="slate-dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AYNNA OTT - Advanced Live TV</title>
+  
+  <!-- FontAwesome & Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- HLS streaming library -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* Theme Engine Variables Configuration */
+    :root, [data-theme="slate-dark"] {
+      --bg-main: #090d16;
+      --bg-panel: #0f172a;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --brand-color: #6366f1;
+      --brand-gradient-start: #6366f1;
+      --brand-gradient-end: #ec4899;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+    }
+
+    [data-theme="cyberpunk"] {
+      --bg-main: #05010d;
+      --bg-panel: #0d041a;
+      --bg-card: #1c0c30;
+      --border-color: #4c1d95;
+      --text-main: #00f0ff;
+      --text-muted: #ff007f;
+      --brand-color: #ff007f;
+      --brand-gradient-start: #ff007f;
+      --brand-gradient-end: #00f0ff;
+      --accent-glow: rgba(255, 0, 127, 0.2);
+    }
+
+    [data-theme="gold-dark"] {
+      --bg-main: #0a0a0a;
+      --bg-panel: #141414;
+      --bg-card: #1f1f1f;
+      --border-color: #302d25;
+      --text-main: #f5f5f5;
+      --text-muted: #a3a3a3;
+      --brand-color: #d97706;
+      --brand-gradient-start: #f59e0b;
+      --brand-gradient-end: #ca8a04;
+      --accent-glow: rgba(217, 119, 6, 0.15);
+    }
+
+    [data-theme="nordic-light"] {
+      --bg-main: #f1f5f9;
+      --bg-panel: #ffffff;
+      --bg-card: #f8fafc;
+      --border-color: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --brand-color: #2563eb;
+      --brand-gradient-start: #2563eb;
+      --brand-gradient-end: #0ea5e9;
+      --accent-glow: rgba(37, 99, 235, 0.1);
+    }
+
+    /* Standard Scrollbars */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-main);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--brand-color);
+    }
+
+    /* Card active focus styles */
+    .channel-card-active {
+      border-color: var(--brand-color) !important;
+      box-shadow: 0 0 12px var(--accent-glow);
+      background: var(--bg-card);
+    }
+    .text-glow {
+      text-shadow: 0 0 8px var(--accent-glow);
+    }
+  </style>
+</head>
+<body class="bg-[var(--bg-main)] text-[var(--text-main)] min-h-screen font-sans flex flex-col md:flex-row overflow-hidden transition-all duration-300">
+
+  <!-- Mobile Top Bar View (Visible only on mobile devices) -->
+  <header class="md:hidden flex items-center justify-between p-4 bg-[var(--bg-panel)] border-b border-[var(--border-color)] z-30 shrink-0">
+    <div class="flex items-center gap-2">
+      <div class="h-8 w-8 rounded bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] flex items-center justify-center shadow-md">
+        <i class="fa-solid fa-play text-white text-xs"></i>
+      </div>
+      <h1 class="font-extrabold text-sm tracking-wide">AYNNA OTT</h1>
+    </div>
+    <div class="flex items-center gap-3">
+      <button onclick="toggleSidebarMobile()" class="p-2 text-[var(--text-main)] hover:text-[var(--brand-color)]">
+        <i class="fa-solid fa-bars text-lg"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Left Sidebar Panel: Brand & Category Tree -->
+  <aside id="sidebar-panel" class="fixed inset-y-0 left-0 z-40 w-64 transform -translate-x-full md:relative md:translate-x-0 bg-[var(--bg-panel)] border-r border-[var(--border-color)] flex flex-col transition-transform duration-300">
+    <!-- Brand / Banner Header -->
+    <div class="p-5 border-b border-[var(--border-color)] flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] flex items-center justify-center shadow-lg">
+          <i class="fa-solid fa-satellite text-white text-base"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-base tracking-wide bg-gradient-to-r from-[var(--text-main)] to-[var(--text-muted)] bg-clip-text text-transparent">AYNNA OTT</h1>
+          <span class="text-[9px] uppercase tracking-wider text-[var(--brand-color)] font-bold text-glow">Platform Live TV</span>
+        </div>
+      </div>
+      <button onclick="toggleSidebarMobile()" class="md:hidden text-[var(--text-muted)] hover:text-[var(--text-main)]">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Live Category List Navigator -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-2">
+      <div class="text-[10px] font-bold text-[var(--text-muted)] px-3 uppercase tracking-wider mb-2">Navigation</div>
+      
+      <button onclick="selectCategory('all')" id="nav-all" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold bg-[var(--brand-color)] text-white shadow-md">
+        <span class="flex items-center gap-2.5"><i class="fa-solid fa-layer-group text-sm"></i> All Channels</span>
+        <span id="badge-all" class="bg-black/20 text-[10px] px-2 py-0.5 rounded-full">0</span>
+      </button>
+
+      <button onclick="selectCategory('favorites')" id="nav-favs" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-[var(--text-muted)] hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] transition-all">
+        <span class="flex items-center gap-2.5"><i class="fa-solid fa-heart text-rose-500 text-sm"></i> Favorites</span>
+        <span id="badge-favs" class="bg-rose-500/10 text-rose-400 text-[10px] px-2 py-0.5 rounded-full">0</span>
+      </button>
+
+      <div class="text-[10px] font-bold text-[var(--text-muted)] px-3 uppercase tracking-wider pt-6 mb-2">Category Tree</div>
+      <div id="dynamic-category-tree" class="space-y-1">
+        <!-- Injected programmatically -->
+      </div>
+    </div>
+
+    <!-- Theme Controller Panel -->
+    <div class="p-4 border-t border-[var(--border-color)] bg-black/10">
+      <div class="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-2">UI Interface Mode</div>
+      <div class="grid grid-cols-4 gap-1">
+        <button onclick="switchTheme('slate-dark')" title="Carbon Space" class="h-7 rounded border border-slate-700 bg-[#0f172a] flex items-center justify-center hover:scale-105 transition-all">
+          <span class="w-3 h-3 rounded-full bg-[#6366f1]"></span>
+        </button>
+        <button onclick="switchTheme('cyberpunk')" title="Neon Cyberpunk" class="h-7 rounded border border-purple-900 bg-[#0d041a] flex items-center justify-center hover:scale-105 transition-all">
+          <span class="w-3 h-3 rounded-full bg-[#ff007f]"></span>
+        </button>
+        <button onclick="switchTheme('gold-dark')" title="Gold Premium" class="h-7 rounded border border-amber-900 bg-[#141414] flex items-center justify-center hover:scale-105 transition-all">
+          <span class="w-3 h-3 rounded-full bg-[#d97706]"></span>
+        </button>
+        <button onclick="switchTheme('nordic-light')" title="Nordic Light" class="h-7 rounded border border-slate-300 bg-white flex items-center justify-center hover:scale-105 transition-all">
+          <span class="w-3 h-3 rounded-full bg-[#2563eb]"></span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Sidebar Overlay Backdrop -->
+  <div id="sidebar-overlay" onclick="toggleSidebarMobile()" class="hidden fixed inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden"></div>
+
+  <!-- Primary Desktop Workspace (Responsive Layout Split) -->
+  <main class="flex-1 flex flex-col md:flex-row min-w-0 min-h-0 overflow-y-auto md:overflow-hidden">
+    
+    <!-- Left Panel Area: Media Player Center -->
+    <section class="flex-1 p-4 lg:p-6 flex flex-col gap-4 min-h-0">
+      <!-- Media Player Header -->
+      <div class="flex items-center justify-between">
+        <div class="hidden md:flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-[var(--brand-color)] animate-pulse"></span>
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Live Broadcast Studio</span>
+        </div>
+        <button onclick="fetchPlaylist()" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[var(--border-color)] hover:bg-[var(--bg-card)] transition-all flex items-center gap-1.5">
+          <i class="fa-solid fa-rotate"></i> Reload Database
+        </button>
+      </div>
+
+      <!-- Player Screen Deck -->
+      <div class="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-[var(--border-color)] shadow-2xl flex flex-col justify-center items-center group">
+        <!-- Error & Setup Overlay Tray -->
+        <div id="player-overlay" class="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 text-center bg-gradient-to-b from-slate-950/80 to-black">
+          <div id="player-indicator-icon" class="h-16 w-16 rounded-full bg-[var(--bg-panel)] border border-[var(--border-color)] flex items-center justify-center text-[var(--brand-color)] text-2xl mb-4">
+            <i class="fa-solid fa-tv"></i>
+          </div>
+          <h3 id="player-overlay-title" class="text-base font-bold text-slate-100">Ready for Playback</h3>
+          <p id="player-overlay-desc" class="text-xs text-slate-400 max-w-sm mt-2">Pick a station from the list directory to start streaming live video.</p>
+          <button id="player-retry-btn" onclick="retryActiveStream()" class="hidden mt-4 px-4 py-2 rounded-lg bg-[var(--brand-color)] text-white font-bold text-xs hover:opacity-90 transition-all">
+            <i class="fa-solid fa-arrows-rotate mr-1"></i> Try Reconnecting
+          </button>
+        </div>
+
+        <!-- HTML5 Video Component -->
+        <video id="video-element" class="w-full h-full object-contain hidden" controls autoplay playsinline></video>
+      </div>
+
+      <!-- Station Info Deck -->
+      <div class="p-4 bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-xl flex items-center justify-between">
+        <div class="flex items-center gap-3.5 min-w-0">
+          <div id="player-logo-deck" class="h-12 w-12 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0">
+            <i class="fa-solid fa-circle-play text-xl text-[var(--text-muted)]"></i>
+          </div>
+          <div class="min-w-0">
+            <span class="text-[10px] font-bold text-[var(--brand-color)] uppercase tracking-wider block">Currently playing</span>
+            <h2 id="player-channel-title" class="font-extrabold text-sm md:text-base text-[var(--text-main)] truncate mt-0.5">No Stream Loaded</h2>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Picture in Picture Access -->
+          <button onclick="togglePiP()" title="Picture in Picture Mode" class="h-10 w-10 flex items-center justify-center rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] transition-all">
+            <i class="fa-solid fa-window-restore text-sm"></i>
+          </button>
+          <!-- Stream Favorite Toggle -->
+          <button id="player-fav-toggle" onclick="toggleActiveFavorite()" class="h-10 w-10 flex items-center justify-center rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/10 transition-all">
+            <i class="fa-regular fa-heart text-sm"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Panel Area: Directory Channel List -->
+    <section class="w-full md:w-80 lg:w-[360px] p-4 lg:p-6 border-t md:border-t-0 md:border-l border-[var(--border-color)] flex flex-col min-h-0 bg-[var(--bg-panel)]/40 backdrop-blur-sm shrink-0">
+      <div class="mb-4">
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-muted)] text-xs"></i>
+          <input 
+            type="text" 
+            id="station-search" 
+            oninput="triggerSearch(this.value)" 
+            placeholder="Search channels..." 
+            class="w-full bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-xl py-2.5 pl-10 pr-4 text-xs text-[var(--text-main)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--brand-color)] transition-all"
+          />
+        </div>
+      </div>
+
+      <!-- Playlist Selection Viewport Header -->
+      <div class="flex items-center justify-between mb-3 px-1">
+        <h3 id="viewport-title" class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Station Roster</h3>
+        <span id="viewport-counter" class="text-[10px] font-bold text-[var(--text-muted)] bg-[var(--bg-card)] px-2 py-0.5 rounded-full border border-[var(--border-color)]">0 stations</span>
+      </div>
+
+      <!-- Virtualized Scroll List -->
+      <div class="flex-1 overflow-y-auto pr-1" id="cards-scroll-frame">
+        <div id="channels-list-element" class="space-y-2">
+          <!-- Populated programmatically -->
+        </div>
+
+        <!-- Search Fallback UI -->
+        <div id="cards-fallback" class="hidden text-center py-12">
+          <i class="fa-solid fa-ban text-2xl text-[var(--text-muted)] opacity-55 mb-2"></i>
+          <h4 class="text-xs font-bold text-[var(--text-main)]">No stations matches found</h4>
+          <p class="text-[10px] text-[var(--text-muted)] mt-1">Refine your keywords or select another group</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const m3uUrl = "https://raw.githubusercontent.com/Mrbotrx/Aynna_playlists/main/output/aynnaott.m3u8";
+
+    let globalChannels = [];
+    let favoriteList = JSON.parse(localStorage.getItem('aynna_fav_list')) || [];
+    let currentActiveCategory = 'all';
+    let currentSearchTerm = '';
+    let playingStream = null;
+    let hlsInstance = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Load user theme preference
+      const savedTheme = localStorage.getItem('aynna_theme_mode') || 'slate-dark';
+      switchTheme(savedTheme);
+
+      fetchPlaylist();
+    });
+
+    // M3U Dynamic Parser Engine
+    async function fetchPlaylist() {
+      applySkeletonStates();
+      try {
+        const cacheBuster = `?t=${new Date().getTime()}`;
+        const response = await fetch(m3uUrl + cacheBuster);
+        if (!response.ok) throw new Error("HTTP failure while retrieving remote playlist structure.");
+        const fileContent = await response.text();
+        parseM3UContent(fileContent);
+      } catch (err) {
+        console.error(err);
+        showPlayerStateOverlay('error', 'Database Connection Error', 'Failed to retrieve the station playlist. Check connection health and retry.');
+      }
+    }
+
+    function parseM3UContent(raw) {
+      const lineArray = raw.split('\n');
+      globalChannels = [];
+      let currentItem = null;
+
+      for (let i = 0; i < lineArray.length; i++) {
+        const row = lineArray[i].trim();
+        if (row.startsWith('#EXTINF:')) {
+          currentItem = {
+            id: 'ch-' + i + '-' + Math.floor(Math.random() * 10000),
+            name: 'Station Stream',
+            logo: '',
+            category: 'General Broadcast',
+            url: ''
+          };
+
+          // Capture station target name
+          const finalComma = row.lastIndexOf(',');
+          if (finalComma !== -1) {
+            currentItem.name = row.substring(finalComma + 1).trim();
+          }
+
+          // Regex matching for tvg properties (safely handling quoted strings)
+          const logoMatch = row.match(/tvg-logo="([^"]*)"/i);
+          if (logoMatch) currentItem.logo = logoMatch[1];
+
+          const groupMatch = row.match(/group-title="([^"]*)"/i);
+          if (groupMatch && groupMatch[1].trim() !== '') {
+            currentItem.category = groupMatch[1].trim();
+          }
+        } else if (row && !row.startsWith('#')) {
+          if (currentItem) {
+            currentItem.url = row;
+            globalChannels.push(currentItem);
+            currentItem = null;
+          }
+        }
+      }
+
+      setupCategoryNavigation();
+      renderDirectory();
+    }
+
+    // Category tree building and sidebar render
+    function setupCategoryNavigation() {
+      const categories = [...new Set(globalChannels.map(item => item.category))].sort();
+      const element = document.getElementById('dynamic-category-tree');
+      element.innerHTML = '';
+
+      categories.forEach(cat => {
+        const count = globalChannels.filter(c => c.category === cat).length;
+        const button = document.createElement('button');
+        button.id = `nav-${cat.replace(/\s+/g, '-').toLowerCase()}`;
+        button.className = "category-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[var(--text-muted)] hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] transition-all";
+        button.setAttribute('onclick', `selectCategory('${cat}')`);
+
+        button.innerHTML = `
+          <span class="flex items-center gap-2.5 max-w-[80%] truncate">
+            <i class="fa-solid fa-hashtag text-[var(--brand-color)]/60 text-xs"></i>
+            <span class="truncate">${cat}</span>
+          </span>
+          <span class="bg-[var(--bg-main)] text-[10px] px-2 py-0.5 rounded-full border border-[var(--border-color)]">${count}</span>
+        `;
+        element.appendChild(button);
+      });
+
+      updateBadgeCounts();
+    }
+
+    // Directory renderer matching active viewport filter
+    function renderDirectory() {
+      const container = document.getElementById('channels-list-element');
+      const fallback = document.getElementById('cards-fallback');
+      container.innerHTML = '';
+
+      const filteredList = globalChannels.filter(item => {
+        const inSearch = item.name.toLowerCase().includes(currentSearchTerm.toLowerCase());
+        
+        if (currentActiveCategory === 'all') return inSearch;
+        if (currentActiveCategory === 'favorites') {
+          return inSearch && favoriteList.some(fav => fav.name === item.name);
+        }
+        return inSearch && item.category === currentActiveCategory;
+      });
+
+      document.getElementById('viewport-counter').textContent = `${filteredList.length} stations`;
+
+      if (filteredList.length === 0) {
+        fallback.classList.remove('hidden');
+        return;
+      }
+      fallback.classList.add('hidden');
+
+      filteredList.forEach(item => {
+        const isFavorite = favoriteList.some(fav => fav.name === item.name);
+        const isActive = playingStream && playingStream.url === item.url;
+        
+        const card = document.createElement('div');
+        card.className = `group flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer transition-all ${
+          isActive ? 'channel-card-active' : 'border-[var(--border-color)] bg-[var(--bg-panel)]/30 hover:bg-[var(--bg-card)]/50'
+        }`;
+        
+        card.setAttribute('onclick', `executeStationLoad('${item.id}')`);
+        
+        const initials = item.name.substring(0, 2).toUpperCase();
+
+        card.innerHTML = `
+          <div class="h-10 w-10 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0">
+            ${item.logo 
+              ? `<img src="${item.logo}" alt="station-logo" class="h-full w-full object-contain" onerror="handleLogoFallback(this, '${initials}')" />`
+              : `<div class="h-full w-full bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] text-white text-xs font-extrabold flex items-center justify-center">${initials}</div>`
+            }
+          </div>
+          <div class="min-w-0 flex-1">
+            <h4 class="font-bold text-xs text-[var(--text-main)] truncate transition-colors group-hover:text-[var(--brand-color)]">${item.name}</h4>
+            <span class="text-[9px] text-[var(--text-muted)] font-medium block truncate mt-0.5">${item.category}</span>
+          </div>
+          <button onclick="handleHeartAction(event, '${item.id}')" class="h-8 w-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/10 transition-all shrink-0">
+            <i class="${isFavorite ? 'fa-solid text-rose-500' : 'fa-regular'} fa-heart text-xs"></i>
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function handleLogoFallback(image, fallbackString) {
+      const cell = image.parentElement;
+      if (cell) {
+        cell.innerHTML = `<div class="h-full w-full bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] text-white text-xs font-extrabold flex items-center justify-center">${fallbackString}</div>`;
+      }
+    }
+
+    // Filtering logic and view switching
+    function selectCategory(category) {
+      currentActiveCategory = category;
+
+      document.querySelectorAll('.category-btn').forEach(btn => {
+        btn.className = "category-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[var(--text-muted)] hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] transition-all mt-1";
+      });
+
+      const elementId = category === 'all' ? 'nav-all' : category === 'favorites' ? 'nav-favs' : `nav-${category.replace(/\s+/g, '-').toLowerCase()}`;
+      const activeElement = document.getElementById(elementId);
+      if (activeElement) {
+        activeElement.className = "category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold bg-[var(--brand-color)] text-white shadow-md";
+      }
+
+      document.getElementById('viewport-title').textContent = category === 'all' ? 'Station Roster' : category;
+      renderDirectory();
+
+      if (window.innerWidth < 768) {
+        toggleSidebarMobile();
+      }
+    }
+
+    function triggerSearch(term) {
+      currentSearchTerm = term;
+      renderDirectory();
+    }
+
+    // Media stream loader
+    function executeStationLoad(id) {
+      const item = globalChannels.find(c => c.id === id);
+      if (!item) return;
+
+      playingStream = item;
+      
+      // Update UI displays
+      document.getElementById('player-channel-title').textContent = item.name;
+      const containerLogo = document.getElementById('player-logo-deck');
+      const initials = item.name.substring(0, 2).toUpperCase();
+
+      if (item.logo) {
+        containerLogo.innerHTML = `<img src="${item.logo}" alt="playing-station" class="h-full w-full object-contain" onerror="handleLogoFallback(this, '${initials}')" />`;
+      } else {
+        containerLogo.innerHTML = `<div class="h-full w-full bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] text-white text-xs font-extrabold flex items-center justify-center">${initials}</div>`;
+      }
+
+      const isFav = favoriteList.some(fav => fav.name === item.name);
+      syncFavoriteButtonState(isFav);
+
+      loadHlsStream(item.url);
+      renderDirectory();
+    }
+
+    function loadHlsStream(url) {
+      const video = document.getElementById('video-element');
+      showPlayerStateOverlay('loading', 'Establishing Secure Channel', 'Fetching manifest resources and buffering packets...');
+
+      if (hlsInstance) {
+        hlsInstance.destroy();
+      }
+
+      if (Hls.isSupported()) {
+        hlsInstance = new Hls({
+          maxMaxBufferLength: 8,
+          liveDurationInfinity: true,
+          enableWorker: true
+        });
+        hlsInstance.loadSource(url);
+        hlsInstance.attachMedia(video);
+
+        hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+          hidePlayerStateOverlay();
+          video.play().catch(() => {
+            showPlayerStateOverlay('ready', 'Click to Play', 'Automatic media policy blocks live playback. Interactivity required.');
+          });
+        });
+
+        hlsInstance.on(Hls.Events.ERROR, (event, data) => {
+          if (data.fatal) {
+            switch(data.type) {
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                hlsInstance.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                hlsInstance.recoverMediaError();
+                break;
+              default:
+                showPlayerStateOverlay('error', 'Feed Playback Offline', 'The streaming provider failed to handshake. This link is currently offline.', true);
+                break;
+            }
+          }
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // Fallback for native Safari browser execution
+        video.src = url;
+        video.addEventListener('loadedmetadata', () => {
+          hidePlayerStateOverlay();
+          video.play();
+        });
+      } else {
+        showPlayerStateOverlay('error', 'Device Support Conflict', 'Your browsing framework is missing direct HLS decoding capabilities.');
+      }
+    }
+
+    function retryActiveStream() {
+      if (playingStream) {
+        loadHlsStream(playingStream.url);
+      }
+    }
+
+    function showPlayerStateOverlay(mode, title, desc, showRetry = false) {
+      const overlay = document.getElementById('player-overlay');
+      const iconBox = document.getElementById('player-indicator-icon');
+      const titleElem = document.getElementById('player-overlay-title');
+      const descElem = document.getElementById('player-overlay-desc');
+      const video = document.getElementById('video-element');
+      const retryBtn = document.getElementById('player-retry-btn');
+
+      video.classList.add('hidden');
+      overlay.classList.remove('hidden');
+
+      titleElem.textContent = title;
+      descElem.textContent = desc;
+
+      if (showRetry) {
+        retryBtn.classList.remove('hidden');
+      } else {
+        retryBtn.classList.add('hidden');
+      }
+
+      if (mode === 'loading') {
+        iconBox.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-[var(--brand-color)]"></i>`;
+      } else if (mode === 'error') {
+        iconBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-500"></i>`;
+      } else {
+        iconBox.innerHTML = `<i class="fa-solid fa-tv text-[var(--brand-color)]"></i>`;
+      }
+    }
+
+    function hidePlayerStateOverlay() {
+      document.getElementById('player-overlay').classList.add('hidden');
+      document.getElementById('video-element').classList.remove('hidden');
+    }
+
+    // Heart Action and Storage Synced functions
+    function handleHeartAction(e, id) {
+      e.stopPropagation();
+      const channel = globalChannels.find(c => c.id === id);
+      if (!channel) return;
+
+      const position = favoriteList.findIndex(fav => fav.name === channel.name);
+      if (position === -1) {
+        favoriteList.push({ name: channel.name, url: channel.url, category: channel.category, logo: channel.logo });
+      } else {
+        favoriteList.splice(position, 1);
+      }
+
+      saveFavoritesToDisk();
+      if (playingStream && playingStream.name === channel.name) {
+        syncFavoriteButtonState(position === -1);
+      }
+    }
+
+    function toggleActiveFavorite() {
+      if (!playingStream) return;
+      
+      const position = favoriteList.findIndex(fav => fav.name === playingStream.name);
+      if (position === -1) {
+        favoriteList.push({ name: playingStream.name, url: playingStream.url, category: playingStream.category, logo: playingStream.logo });
+      } else {
+        favoriteList.splice(position, 1);
+      }
+
+      saveFavoritesToDisk();
+      syncFavoriteButtonState(position === -1);
+    }
+
+    function syncFavoriteButtonState(isFavorite) {
+      const button = document.getElementById('player-fav-toggle');
+      if (isFavorite) {
+        button.innerHTML = `<i class="fa-solid fa-heart text-rose-500 text-sm"></i>`;
+        button.className = "h-10 w-10 flex items-center justify-center rounded-lg border border-rose-500/20 bg-rose-500/10 text-rose-500 transition-all";
+      } else {
+        button.innerHTML = `<i class="fa-regular fa-heart text-sm"></i>`;
+        button.className = "h-10 w-10 flex items-center justify-center rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/10 transition-all";
+      }
+    }
+
+    function saveFavoritesToDisk() {
+      localStorage.setItem('aynna_fav_list', JSON.stringify(favoriteList));
+      updateBadgeCounts();
+      renderDirectory();
+    }
+
+    function updateBadgeCounts() {
+      document.getElementById('badge-all').textContent = globalChannels.length;
+      document.getElementById('badge-favs').textContent = favoriteList.length;
+    }
+
+    // Picture-in-Picture Engine
+    async function togglePiP() {
+      const video = document.getElementById('video-element');
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else if (document.pictureInPictureEnabled && video.src !== '') {
+        try {
+          await video.requestPictureInPicture();
+        } catch (e) {
+          console.error("Picture-in-picture session initiation failed:", e);
+        }
+      }
+    }
+
+    // Theme Switch Engine Interface
+    function switchTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('aynna_theme_mode', theme);
+    }
+
+    // Sidebar Mobile Layout Controls
+    function toggleSidebarMobile() {
+      const panel = document.getElementById('sidebar-panel');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (panel.classList.contains('-translate-x-full')) {
+        panel.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      } else {
+        panel.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      }
+    }
+
+    function applySkeletonStates() {
+      const container = document.getElementById('channels-list-element');
+      container.innerHTML = '';
+      for (let i = 0; i < 5; i++) {
+        const skeleton = document.createElement('div');
+        skeleton.className = "animate-pulse flex items-center gap-3 p-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-panel)]/20";
+        skeleton.innerHTML = `
+          <div class="h-10 w-10 rounded-lg bg-[var(--border-color)] shrink-0"></div>
+          <div class="flex-1 space-y-2">
+            <div class="h-3 w-2/3 bg-[var(--border-color)] rounded"></div>
+            <div class="h-2 w-1/3 bg-[var(--border-color)] rounded"></div>
+          </div>
+        `;
+        container.appendChild(skeleton);
+      }
+    }
+  </script>
+</body>
+</html>
