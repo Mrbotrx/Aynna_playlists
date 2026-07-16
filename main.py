@@ -1,50 +1,57 @@
 import os
 import json
-import re
 import requests
+import re
 
 
 API_URL = os.environ.get("AYNAOTT_API_URL")
 
-OUTPUT_DIR = "output"
 
 os.makedirs(
-    OUTPUT_DIR,
+    "output",
     exist_ok=True
 )
 
+
 API_FILE = "output/aynaott_api.json"
-M3U8_FILE = "output/aynnaott.m3u8"
+
+PLAYLIST_FILE = "output/aynnaott.m3u8"
 
 
 
 def fetch_api():
 
     if not API_URL:
-        raise Exception("Missing AYNAOTT_API_URL")
+        raise Exception(
+            "API URL missing"
+        )
 
 
-    response = requests.get(
+    r = requests.get(
         API_URL,
         headers={
-            "User-Agent": "Mozilla/5.0"
+            "User-Agent":"Mozilla/5.0"
         },
         timeout=30
     )
 
-    response.raise_for_status()
+    r.raise_for_status()
 
-    return response.json()
+    return r.json()
 
 
 
-def find_m3u8(data, result=None, name="Unknown"):
+def find_m3u8(
+    data,
+    result=None,
+    name="Unknown"
+):
 
     if result is None:
-        result = []
+        result=[]
 
 
-    if isinstance(data, dict):
+    if isinstance(data,dict):
 
         channel = (
             data.get("name")
@@ -54,19 +61,21 @@ def find_m3u8(data, result=None, name="Unknown"):
         )
 
 
-        for key, value in data.items():
+        for value in data.values():
 
-            if isinstance(value, str):
+            if isinstance(value,str):
 
                 if ".m3u8" in value:
 
-                    result.append({
-                        "name": channel,
-                        "url": value
-                    })
+                    result.append(
+                        {
+                            "name":channel,
+                            "url":value
+                        }
+                    )
 
 
-            elif isinstance(value, (dict, list)):
+            elif isinstance(value,(dict,list)):
 
                 find_m3u8(
                     value,
@@ -75,7 +84,7 @@ def find_m3u8(data, result=None, name="Unknown"):
                 )
 
 
-    elif isinstance(data, list):
+    elif isinstance(data,list):
 
         for item in data:
 
@@ -90,15 +99,18 @@ def find_m3u8(data, result=None, name="Unknown"):
 
 
 
-def create_m3u8(channels):
+def create_playlist(channels):
 
     with open(
-        M3U8_FILE,
+        PLAYLIST_FILE,
         "w",
         encoding="utf-8"
     ) as f:
 
-        f.write("#EXTM3U\n")
+
+        f.write(
+            "#EXTM3U\n"
+        )
 
 
         for ch in channels:
@@ -108,13 +120,20 @@ def create_m3u8(channels):
             )
 
             f.write(
-                ch["url"] + "\n"
+                ch["url"]+"\n"
+            )
+
+
+        if not channels:
+
+            f.write(
+                "# No stream found\n"
             )
 
 
     print(
         "Created:",
-        M3U8_FILE
+        PLAYLIST_FILE
     )
 
 
@@ -125,12 +144,11 @@ def main():
 
         data = fetch_api()
 
-
     except Exception as e:
 
         print(e)
 
-        data = {}
+        data={}
 
 
     with open(
@@ -147,7 +165,7 @@ def main():
         )
 
 
-    channels = find_m3u8(
+    channels=find_m3u8(
         data
     )
 
@@ -158,12 +176,11 @@ def main():
     )
 
 
-    # সবসময় m3u8 তৈরি হবে
-    create_m3u8(
+    create_playlist(
         channels
     )
 
 
 
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
