@@ -31,18 +31,10 @@ def fetch_api():
     r = requests.get(
         API_URL,
         headers={
-            "User-Agent": "Mozilla/5.0",
-            "Accept": "application/json"
+            "User-Agent": "Mozilla/5.0"
         },
-        timeout=30
+        timeout=15
     )
-
-
-    print(
-        "API Status:",
-        r.status_code
-    )
-
 
     r.raise_for_status()
 
@@ -64,12 +56,10 @@ def find_channels(
 
     if isinstance(data, dict):
 
-
         channel_name = (
             data.get("name")
             or data.get("title")
             or data.get("channelName")
-            or data.get("channel_name")
             or name
         )
 
@@ -77,39 +67,34 @@ def find_channels(
         channel_logo = (
             data.get("logo")
             or data.get("logoUrl")
-            or data.get("logo_url")
             or data.get("image")
             or data.get("imageUrl")
             or data.get("thumbnail")
             or data.get("icon")
-            or data.get("poster")
             or logo
         )
 
 
         channel_group = (
             data.get("group")
-            or data.get("groupName")
             or data.get("category")
             or data.get("genre")
             or data.get("type")
-            or data.get("section")
             or group
         )
 
 
-        for key, value in data.items():
+        for value in data.values():
 
 
             if isinstance(value, str):
 
 
                 if re.search(
-                    r"https?://.*?\.m3u8",
+                    r"https?://.*\.m3u8",
                     value,
-                    re.IGNORECASE
+                    re.I
                 ):
-
 
                     channels.append(
                         {
@@ -123,9 +108,8 @@ def find_channels(
 
             elif isinstance(
                 value,
-                (dict, list)
+                (dict,list)
             ):
-
 
                 find_channels(
                     value,
@@ -137,11 +121,9 @@ def find_channels(
 
 
 
-    elif isinstance(data, list):
-
+    elif isinstance(data,list):
 
         for item in data:
-
 
             find_channels(
                 item,
@@ -165,19 +147,76 @@ def remove_duplicate(channels):
 
     for ch in channels:
 
+        if ch["url"] not in seen:
 
-        url = ch["url"]
+            seen.add(
+                ch["url"]
+            )
 
-
-        if url not in seen:
-
-
-            seen.add(url)
-
-            result.append(ch)
+            result.append(
+                ch
+            )
 
 
     return result
+
+
+
+def check_working_channels(channels):
+
+    working = []
+
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+
+    for ch in channels:
+
+
+        try:
+
+
+            r = requests.get(
+                ch["url"],
+                headers=headers,
+                timeout=5,
+                stream=True
+            )
+
+
+            if r.status_code == 200:
+
+
+                print(
+                    "OK:",
+                    ch["name"]
+                )
+
+
+                working.append(
+                    ch
+                )
+
+
+            else:
+
+                print(
+                    "BAD:",
+                    ch["name"]
+                )
+
+
+        except Exception:
+
+
+            print(
+                "TIMEOUT:",
+                ch["name"]
+            )
+
+
+    return working
 
 
 
@@ -205,12 +244,6 @@ def create_playlist(channels):
             )
 
 
-            url = ch.get(
-                "url",
-                ""
-            )
-
-
             logo = ch.get(
                 "logo",
                 ""
@@ -221,6 +254,9 @@ def create_playlist(channels):
                 "group",
                 "Live TV"
             )
+
+
+            url = ch["url"]
 
 
             f.write(
@@ -235,9 +271,8 @@ def create_playlist(channels):
 
         if not channels:
 
-
             f.write(
-                "# No m3u8 stream found\n"
+                "# No working channel found\n"
             )
 
 
@@ -262,13 +297,29 @@ def main():
         )
 
 
+        print(
+            "Total:",
+            len(channels)
+        )
+
+
         channels = remove_duplicate(
             channels
         )
 
 
         print(
-            "Found channels:",
+            "Checking working streams..."
+        )
+
+
+        channels = check_working_channels(
+            channels
+        )
+
+
+        print(
+            "Working:",
             len(channels)
         )
 
@@ -277,7 +328,7 @@ def main():
 
 
         print(
-            "Error:",
+            "ERROR:",
             e
         )
 
@@ -285,8 +336,6 @@ def main():
         channels = []
 
 
-
-    # Always create playlist
 
     create_playlist(
         channels
