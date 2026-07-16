@@ -24,7 +24,7 @@ def fetch_api():
 
     if not API_URL:
         raise Exception(
-            "AYNAOTT_API_URL secret missing"
+            "AYNAOTT_API_URL missing"
         )
 
 
@@ -37,54 +37,61 @@ def fetch_api():
         timeout=30
     )
 
-
-    print(
-        "API Status:",
-        response.status_code
-    )
-
-
     response.raise_for_status()
 
     return response.json()
 
 
 
-def find_m3u8(
-    data,
-    result=None,
-    channel_name="Unknown"
+def find_channels(
+        data,
+        channels=None,
+        name="Unknown",
+        logo=""
 ):
 
-    if result is None:
-        result = []
+    if channels is None:
+        channels = []
 
 
     if isinstance(data, dict):
 
-        name = (
+        channel_name = (
             data.get("name")
             or data.get("title")
             or data.get("channelName")
             or data.get("channel")
-            or channel_name
+            or name
         )
 
 
-        for value in data.values():
+        channel_logo = (
+            data.get("logo")
+            or data.get("image")
+            or data.get("icon")
+            or data.get("thumbnail")
+            or logo
+        )
+
+
+        for key, value in data.items():
+
 
             if isinstance(value, str):
 
+
+                # Find m3u8
                 if re.search(
                     r"https?://.*?\.m3u8",
                     value,
                     re.IGNORECASE
                 ):
 
-                    result.append(
+                    channels.append(
                         {
-                            "name": name,
-                            "url": value
+                            "name": channel_name,
+                            "url": value,
+                            "logo": channel_logo
                         }
                     )
 
@@ -94,10 +101,11 @@ def find_m3u8(
                 (dict, list)
             ):
 
-                find_m3u8(
+                find_channels(
                     value,
-                    result,
-                    name
+                    channels,
+                    channel_name,
+                    channel_logo
                 )
 
 
@@ -105,10 +113,35 @@ def find_m3u8(
 
         for item in data:
 
-            find_m3u8(
+            find_channels(
                 item,
-                result,
-                channel_name
+                channels,
+                name,
+                logo
+            )
+
+
+    return channels
+
+
+
+def remove_duplicate(channels):
+
+    result = []
+
+    seen = set()
+
+
+    for ch in channels:
+
+        if ch["url"] not in seen:
+
+            seen.add(
+                ch["url"]
+            )
+
+            result.append(
+                ch
             )
 
 
@@ -116,28 +149,8 @@ def find_m3u8(
 
 
 
-def remove_duplicate(channels):
-
-    unique = []
-    seen = set()
-
-
-    for item in channels:
-
-        url = item["url"]
-
-        if url not in seen:
-
-            seen.add(url)
-
-            unique.append(item)
-
-
-    return unique
-
-
-
 def create_playlist(channels):
+
 
     with open(
         PLAYLIST_FILE,
@@ -147,19 +160,32 @@ def create_playlist(channels):
 
 
         file.write(
-            "#EXTM3U\n"
+            "#EXTM3U\n\n"
         )
 
 
-        for channel in channels:
+        for ch in channels:
 
-            file.write(
-                f'#EXTINF:-1,{channel["name"]}\n'
+
+            name = ch["name"]
+
+            url = ch["url"]
+
+            logo = ch.get(
+                "logo",
+                ""
             )
 
+
             file.write(
-                f'{channel["url"]}\n'
+                f'#EXTINF:-1 tvg-name="{name}" tvg-logo="{logo}" group-title="Live TV",{name}\n'
             )
+
+
+            file.write(
+                url + "\n\n"
+            )
+
 
 
         if not channels:
@@ -183,7 +209,7 @@ def main():
         data = fetch_api()
 
 
-        channels = find_m3u8(
+        channels = find_channels(
             data
         )
 
@@ -194,22 +220,22 @@ def main():
 
 
         print(
-            "m3u8 Found:",
+            "Channels:",
             len(channels)
         )
 
 
-    except Exception as error:
+    except Exception as e:
 
         print(
             "Error:",
-            error
+            e
         )
 
         channels = []
 
 
-    # সবসময় playlist তৈরি হবে
+    # Always create playlist
     create_playlist(
         channels
     )
@@ -217,4 +243,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
