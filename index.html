@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AYNNA OTT - Live TV Station</title>
+  <title>AYNNA OTT - Advanced Universal Live TV</title>
   
   <!-- FontAwesome & Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -108,6 +108,13 @@
     .text-glow {
       text-shadow: 0 0 8px var(--accent-glow);
     }
+    
+    /* Animation helper classes */
+    .modal-active {
+      transform: scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
   </style>
 </head>
 <body class="bg-[var(--bg-main)] text-[var(--text-main)] min-h-screen font-sans flex flex-col md:flex-row overflow-hidden transition-all duration-300">
@@ -120,7 +127,10 @@
       </div>
       <h1 class="font-extrabold text-sm tracking-wide">AYNNA OTT</h1>
     </div>
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2">
+      <button onclick="openSettingsModal()" class="p-2 text-[var(--text-muted)] hover:text-[var(--text-main)]">
+        <i class="fa-solid fa-gear text-base"></i>
+      </button>
       <button onclick="toggleSidebarMobile()" class="p-2 text-[var(--text-main)] hover:text-[var(--brand-color)]">
         <i class="fa-solid fa-bars text-lg"></i>
       </button>
@@ -129,7 +139,7 @@
 
   <!-- Left Sidebar Panel: Brand & Category Tree -->
   <aside id="sidebar-panel" class="fixed inset-y-0 left-0 z-40 w-64 transform -translate-x-full md:relative md:translate-x-0 bg-[var(--bg-panel)] border-r border-[var(--border-color)] flex flex-col transition-transform duration-300">
-    <!-- Brand / Banner Header -->
+    <!-- Brand Banner Header -->
     <div class="p-5 border-b border-[var(--border-color)] flex items-center justify-between">
       <div class="flex items-center gap-3">
         <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] flex items-center justify-center shadow-lg">
@@ -204,13 +214,20 @@
           <span class="h-2 w-2 rounded-full bg-[var(--brand-color)] animate-pulse"></span>
           <span class="text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Live Broadcast Studio</span>
         </div>
-        <button onclick="fetchPlaylist()" class="text-xs font-semibold px-3 py-1.5 rounded-lg border border-[var(--border-color)] hover:bg-[var(--bg-card)] transition-all flex items-center gap-1.5">
-          <i class="fa-solid fa-rotate"></i> Reload Database
-        </button>
+        <div class="flex items-center gap-2">
+          <!-- Refresh button -->
+          <button onclick="fetchPlaylist()" title="Reload Feed" class="text-xs font-semibold h-9 px-3 rounded-lg border border-[var(--border-color)] hover:bg-[var(--bg-card)] transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate"></i> <span class="hidden lg:inline">Reload Database</span>
+          </button>
+          <!-- Advanced Settings Button -->
+          <button onclick="openSettingsModal()" title="Platform Settings" class="h-9 w-9 rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] flex items-center justify-center transition-all">
+            <i class="fa-solid fa-gear text-sm animate-spin-hover"></i>
+          </button>
+        </div>
       </div>
 
       <!-- Player Screen Deck -->
-      <div class="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-[var(--border-color)] shadow-2xl flex flex-col justify-center items-center group">
+      <div id="player-column-wrapper" class="relative aspect-video w-full rounded-2xl overflow-hidden bg-black border border-[var(--border-color)] shadow-2xl flex flex-col justify-center items-center group">
         <!-- Live TV Style Notification Alert Overlay -->
         <div id="channel-toast" class="absolute top-4 left-4 z-20 bg-black/85 backdrop-blur-md px-4 py-2.5 rounded-xl border border-[var(--border-color)] shadow-xl flex items-center gap-2.5 transform -translate-y-12 opacity-0 transition-all duration-300 pointer-events-none">
           <span class="h-2.5 w-2.5 rounded-full bg-[var(--brand-color)] animate-pulse"></span>
@@ -230,23 +247,34 @@
         </div>
 
         <!-- HTML5 Video Component -->
-        <video id="video-element" class="w-full h-full object-contain hidden" controls autoplay playsinline></video>
+        <video id="video-element" class="w-full h-full object-contain hidden" autoplay playsinline></video>
       </div>
 
       <!-- Station Info Deck & Channel Change Controls -->
-      <div class="p-4 bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-xl flex flex-col sm:flex-row gap-4 items-center justify-between">
-        <div class="flex items-center gap-3.5 min-w-0 w-full sm:w-auto">
+      <div class="p-4 bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-xl flex flex-col xl:flex-row gap-4 items-center justify-between">
+        <div class="flex items-center gap-3.5 min-w-0 w-full xl:w-auto">
           <div id="player-logo-deck" class="h-12 w-12 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0">
             <i class="fa-solid fa-circle-play text-xl text-[var(--text-muted)]"></i>
           </div>
-          <div class="min-w-0">
+          <div class="min-w-0 flex-1">
             <span class="text-[10px] font-bold text-[var(--brand-color)] uppercase tracking-wider block">Currently playing</span>
             <h2 id="player-channel-title" class="font-extrabold text-sm md:text-base text-[var(--text-main)] truncate mt-0.5">No Stream Loaded</h2>
           </div>
         </div>
 
-        <!-- Advanced Channel Navigation + Tools -->
-        <div class="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto border-t sm:border-t-0 pt-3 sm:pt-0 border-[var(--border-color)]">
+        <!-- Custom Player Internal Controls Overlay (Volume, Prev/Next, Fullscreen) -->
+        <div class="flex flex-wrap items-center justify-between xl:justify-end gap-3 w-full xl:w-auto border-t xl:border-t-0 pt-3 xl:pt-0 border-[var(--border-color)]">
+          
+          <!-- Volume Group Controller -->
+          <div class="flex items-center gap-2 bg-[var(--bg-card)] border border-[var(--border-color)] px-2.5 py-1.5 rounded-lg">
+            <button onclick="toggleVolumeMute()" id="player-volume-btn" class="text-[var(--text-muted)] hover:text-[var(--text-main)]">
+              <i class="fa-solid fa-volume-high text-xs"></i>
+            </button>
+            <input type="range" id="player-volume-slider" min="0" max="1" step="0.1" value="1" oninput="changeVideoVolume(this.value)" class="w-16 accent-[var(--brand-color)] cursor-pointer h-1.5 rounded-lg bg-slate-700" />
+          </div>
+
+          <div class="h-6 w-[1px] bg-[var(--border-color)] hidden xl:block"></div>
+
           <!-- Prev Channel Button -->
           <button onclick="playPrevChannel()" title="Previous Channel" class="h-10 px-3 flex items-center justify-center gap-1.5 rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] transition-all">
             <i class="fa-solid fa-chevron-left text-xs"></i>
@@ -259,11 +287,15 @@
             <i class="fa-solid fa-chevron-right text-xs"></i>
           </button>
 
-          <div class="h-6 w-[1px] bg-[var(--border-color)] mx-1 hidden sm:block"></div>
+          <div class="h-6 w-[1px] bg-[var(--border-color)] hidden sm:block"></div>
 
-          <!-- Picture in Picture -->
-          <button onclick="togglePiP()" title="Picture in Picture Mode" class="h-10 w-10 flex items-center justify-center rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] transition-all">
+          <!-- Theater / Fullscreen System Controls -->
+          <button onclick="togglePiP()" title="Picture in Picture" class="h-10 w-10 flex items-center justify-center rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] transition-all">
             <i class="fa-solid fa-window-restore text-sm"></i>
+          </button>
+          
+          <button onclick="toggleFullScreen()" title="Fullscreen Mode" class="h-10 w-10 flex items-center justify-center rounded-lg border border-[var(--border-color)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-[var(--bg-card)] transition-all">
+            <i class="fa-solid fa-expand text-sm"></i>
           </button>
           
           <!-- Stream Favorite Toggle -->
@@ -312,8 +344,89 @@
 
   </main>
 
+  <!-- ADVANCED UNIVERSAL SETTINGS MODAL DIALOG -->
+  <div id="settings-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center transition-all duration-300 opacity-0 pointer-events-none">
+    <div class="w-full max-w-lg bg-[var(--bg-panel)] border border-[var(--border-color)] rounded-2xl overflow-hidden shadow-2xl transform scale-90 transition-transform duration-300 m-4 flex flex-col max-h-[85vh]">
+      <!-- Header Area -->
+      <div class="p-5 border-b border-[var(--border-color)] flex justify-between items-center bg-black/20">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-sliders text-[var(--brand-color)] text-lg"></i>
+          <h3 class="font-extrabold text-base text-[var(--text-main)]">OTT Settings Console</h3>
+        </div>
+        <button onclick="closeSettingsModal()" class="h-8 w-8 text-[var(--text-muted)] hover:text-white rounded-full bg-[var(--bg-card)] flex items-center justify-center transition-all">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Content Area -->
+      <div class="p-6 overflow-y-auto space-y-6">
+        
+        <!-- M3U Playlist Manager Section -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider block">Custom Playlist Manager</label>
+          <p class="text-[10px] text-[var(--text-muted)] leading-relaxed">Paste your `.m3u` or `.m3u8` playlist link here to load external IPTV streams directly.</p>
+          <div class="flex flex-col gap-2 mt-2">
+            <input 
+              type="url" 
+              id="m3u-input-field" 
+              placeholder="https://example.com/playlist.m3u8"
+              class="w-full bg-black/30 border border-[var(--border-color)] rounded-lg px-3.5 py-2.5 text-xs text-[var(--text-main)] placeholder-slate-600 focus:outline-none focus:border-[var(--brand-color)]"
+            />
+            <div class="grid grid-cols-2 gap-2">
+              <button onclick="loadCustomPlaylist()" class="bg-[var(--brand-color)] hover:opacity-90 text-white font-bold text-xs py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5 shadow-md shadow-[var(--brand-color)]/25">
+                <i class="fa-solid fa-cloud-arrow-down"></i> Load Custom List
+              </button>
+              <button onclick="revertToDefaultPlaylist()" class="bg-[var(--bg-card)] hover:text-white text-[var(--text-muted)] border border-[var(--border-color)] font-bold text-xs py-2 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-arrow-rotate-left"></i> Revert Default
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-[var(--border-color)]" />
+
+        <!-- Keyboard Shortcut Guide Section -->
+        <div class="space-y-3">
+          <label class="text-xs font-bold text-[var(--text-muted)] uppercase tracking-wider block">Keboard Control Guide</label>
+          <div class="bg-black/20 rounded-xl p-3 border border-[var(--border-color)] text-[11px] text-[var(--text-muted)] space-y-2 font-mono">
+            <div class="flex justify-between border-b border-slate-800/40 pb-1.5">
+              <span>Next Channel</span>
+              <span class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded border border-[var(--border-color)] text-[var(--text-main)]">Arrow Right / Down</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-800/40 pb-1.5">
+              <span>Prev Channel</span>
+              <span class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded border border-[var(--border-color)] text-[var(--text-main)]">Arrow Left / Up</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-800/40 pb-1.5">
+              <span>Play / Pause</span>
+              <span class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded border border-[var(--border-color)] text-[var(--text-main)]">Spacebar / K Key</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Fullscreen</span>
+              <span class="bg-[var(--bg-card)] px-1.5 py-0.5 rounded border border-[var(--border-color)] text-[var(--text-main)]">F Key / Video DblClick</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="border-[var(--border-color)]" />
+
+        <!-- Reset Site Data Section -->
+        <div class="space-y-2">
+          <label class="text-xs font-bold text-rose-500 uppercase tracking-wider block">Maintenance Zone</label>
+          <p class="text-[10px] text-[var(--text-muted)] leading-relaxed">Remove stored app data, clean recent watching list history, and reset default state configs.</p>
+          <button onclick="resetConsoleStorage()" class="mt-2 w-full bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white border border-rose-500/25 font-bold text-xs py-2.5 px-4 rounded-lg transition-all flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-trash-can"></i> Reset Storage & Clean Cached Lists
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <script>
-    const m3uUrl = "https://raw.githubusercontent.com/Mrbotrx/Aynna_playlists/main/output/aynnaott.m3u8";
+    // System Configurations Defaults
+    const defaultM3uUrl = "https://raw.githubusercontent.com/Mrbotrx/Aynna_playlists/main/output/aynnaott.m3u8";
+    let activePlaylistUrl = localStorage.getItem('aynna_m3u_url') || defaultM3uUrl;
 
     let globalChannels = [];
     let filteredChannels = []; 
@@ -365,12 +478,17 @@
 
       fetchPlaylist();
       setupKeyboardShortcuts();
+      setupPlayerDoubleClicks();
     });
 
     // Arrow keys controls switcher
     function setupKeyboardShortcuts() {
       window.addEventListener('keydown', (e) => {
-        if (document.activeElement === document.getElementById('station-search')) {
+        // Safe lock key events if focusing text inputs
+        if (
+          document.activeElement === document.getElementById('station-search') ||
+          document.activeElement === document.getElementById('m3u-input-field')
+        ) {
           return;
         }
 
@@ -382,16 +500,110 @@
           playPrevChannel();
         } else if (e.key === ' ' || e.key === 'k') {
           e.preventDefault();
-          const video = document.getElementById('video-element');
-          if (video.paused) {
-            video.play();
-            showChannelToast("Play Broadcast");
-          } else {
-            video.pause();
-            showChannelToast("Pause Broadcast");
-          }
+          toggleVideoPlayState();
+        } else if (e.key === 'f' || e.key === 'F') {
+          e.preventDefault();
+          toggleFullScreen();
         }
       });
+    }
+
+    function setupPlayerDoubleClicks() {
+      const videoBox = document.getElementById('player-column-wrapper');
+      videoBox.addEventListener('dblclick', toggleFullScreen);
+    }
+
+    // Toggle Play/Pause Native Logic
+    function toggleVideoPlayState() {
+      const video = document.getElementById('video-element');
+      if (video.src === "" && !hlsInstance) return;
+      
+      if (video.paused) {
+        video.play();
+        showChannelToast("Play Stream");
+      } else {
+        video.pause();
+        showChannelToast("Pause Stream");
+      }
+    }
+
+    // Advanced Settings Modal Dialog Handlers
+    function openSettingsModal() {
+      const modal = document.getElementById('settings-modal');
+      const dialog = modal.querySelector('div');
+      
+      document.getElementById('m3u-input-field').value = activePlaylistUrl === defaultM3uUrl ? "" : activePlaylistUrl;
+
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      dialog.classList.remove('scale-90');
+      dialog.classList.add('scale-100');
+    }
+
+    function closeSettingsModal() {
+      const modal = document.getElementById('settings-modal');
+      const dialog = modal.querySelector('div');
+
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      dialog.classList.remove('scale-100');
+      dialog.classList.add('scale-90');
+    }
+
+    // Load External M3U Link
+    function loadCustomPlaylist() {
+      const inputVal = document.getElementById('m3u-input-field').value.trim();
+      if (!inputVal) {
+        alert("Please enter a valid M3U or M3U8 URL string.");
+        return;
+      }
+      
+      localStorage.setItem('aynna_m3u_url', inputVal);
+      activePlaylistUrl = inputVal;
+      closeSettingsModal();
+      fetchPlaylist();
+    }
+
+    function revertToDefaultPlaylist() {
+      localStorage.removeItem('aynna_m3u_url');
+      activePlaylistUrl = defaultM3uUrl;
+      closeSettingsModal();
+      fetchPlaylist();
+    }
+
+    function resetConsoleStorage() {
+      if (confirm("Reset local caching configs, history logs, and playlist variables back to default?")) {
+        localStorage.clear();
+        window.location.reload();
+      }
+    }
+
+    // Direct Video Volume Management
+    function changeVideoVolume(volume) {
+      const video = document.getElementById('video-element');
+      const icon = document.querySelector('#player-volume-btn i');
+      video.volume = volume;
+
+      if (parseFloat(volume) === 0) {
+        icon.className = "fa-solid fa-volume-xmark text-rose-500";
+      } else if (parseFloat(volume) < 0.5) {
+        icon.className = "fa-solid fa-volume-low text-xs text-[var(--text-muted)]";
+      } else {
+        icon.className = "fa-solid fa-volume-high text-xs text-[var(--text-muted)]";
+      }
+    }
+
+    function toggleVolumeMute() {
+      const video = document.getElementById('video-element');
+      const slider = document.getElementById('player-volume-slider');
+      
+      if (video.volume > 0) {
+        video.dataset.preMuteVol = video.volume;
+        slider.value = 0;
+        changeVideoVolume(0);
+      } else {
+        const lastVol = video.dataset.preMuteVol || 1;
+        slider.value = lastVol;
+        changeVideoVolume(lastVol);
+      }
     }
 
     // Flash Toast System (TV Notification overlay)
@@ -416,7 +628,7 @@
       applySkeletonStates();
       try {
         const cacheBuster = `?t=${new Date().getTime()}`;
-        const response = await fetch(m3uUrl + cacheBuster);
+        const response = await fetch(activePlaylistUrl + cacheBuster);
         if (!response.ok) throw new Error("HTTP failure while retrieving remote playlist structure.");
         const fileContent = await response.text();
         parseM3UContent(fileContent);
@@ -518,7 +730,7 @@
         filteredChannels.sort((a, b) => {
           const indexA = recentList.findIndex(r => r.name === a.name);
           const indexB = recentList.findIndex(r => r.name === b.name);
-          return indexA - indexB; // Keep local storage alignment order
+          return indexA - indexB; 
         });
       }
 
@@ -631,6 +843,7 @@
       }
     }
 
+    // Live filtering matching input changes
     function triggerSearch(term) {
       currentSearchTerm = term;
       renderDirectory();
@@ -688,15 +901,20 @@
 
       if (Hls.isSupported()) {
         hlsInstance = new Hls({
-          maxMaxBufferLength: 8,
-          liveDurationInfinity: true,
-          enableWorker: true
+          maxMaxBufferLength: 10,
+          liveSyncDurationCount: 3,
+          liveMaxLatencyDurationCount: 5,
+          enableWorker: true,
+          lowLatencyMode: true
         });
         hlsInstance.loadSource(url);
         hlsInstance.attachMedia(video);
 
         hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
           hidePlayerStateOverlay();
+          // Retain current volume slider state
+          const slider = document.getElementById('player-volume-slider');
+          video.volume = slider.value;
           video.play().catch(() => {
             showPlayerStateOverlay('ready', 'Click to Play', 'Automatic media policy blocks live playback. Interactivity required.');
           });
@@ -834,6 +1052,25 @@
           await video.requestPictureInPicture();
         } catch (e) {
           console.error("Picture-in-picture session initiation failed:", e);
+        }
+      }
+    }
+
+    // Fullscreen Toggle controller API
+    function toggleFullScreen() {
+      const wrapper = document.getElementById('player-column-wrapper');
+      
+      if (!document.fullscreenElement) {
+        if (wrapper.requestFullscreen) {
+          wrapper.requestFullscreen();
+        } else if (wrapper.webkitRequestFullscreen) { // Safari Fallback
+          wrapper.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { // Safari Fallback
+          document.webkitExitFullscreen();
         }
       }
     }
