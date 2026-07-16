@@ -1,5 +1,6 @@
 import os
 import json
+import re
 import requests
 
 
@@ -7,31 +8,39 @@ API_URL = os.environ.get("AYNAOTT_API_URL")
 
 OUTPUT_DIR = "output"
 
-API_JSON_FILE = os.path.join(
+API_FILE = os.path.join(
     OUTPUT_DIR,
     "aynaott_api.json"
 )
 
-M3U_FILE = os.path.join(
+M3U8_FILE = os.path.join(
     OUTPUT_DIR,
-    "aynaott_channels.m3u"
+    "aynnaott.m3u8"
 )
 
 
-def fetch_api():
-    print("[+] Fetching API...")
+os.makedirs(
+    OUTPUT_DIR,
+    exist_ok=True
+)
+
+
+def get_api_data():
 
     if not API_URL:
         raise Exception(
             "AYNAOTT_API_URL secret missing"
         )
 
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+        "Accept": "application/json"
+    }
+
     response = requests.get(
         API_URL,
-        timeout=30,
-        headers={
-            "User-Agent": "Mozilla/5.0"
-        }
+        headers=headers,
+        timeout=30
     )
 
     response.raise_for_status()
@@ -40,14 +49,31 @@ def fetch_api():
 
 
 
+def save_api_json(data):
+
+    with open(
+        API_FILE,
+        "w",
+        encoding="utf-8"
+    ) as f:
+
+        json.dump(
+            data,
+            f,
+            indent=4,
+            ensure_ascii=False
+        )
+
+
+
 def find_m3u8(
     data,
-    results=None,
-    channel_name="Unknown"
+    result=None,
+    channel="Unknown"
 ):
 
-    if results is None:
-        results = []
+    if result is None:
+        result = []
 
 
     if isinstance(data, dict):
@@ -57,7 +83,7 @@ def find_m3u8(
             or data.get("title")
             or data.get("channelName")
             or data.get("channel")
-            or channel_name
+            or channel
         )
 
 
@@ -65,11 +91,14 @@ def find_m3u8(
 
             if isinstance(value, str):
 
-                if ".m3u8" in value:
+                if re.search(
+                    r"https?://.*?\.m3u8",
+                    value
+                ):
 
-                    results.append(
+                    result.append(
                         {
-                            "channel": name,
+                            "name": name,
                             "url": value
                         }
                     )
@@ -82,7 +111,7 @@ def find_m3u8(
 
                 find_m3u8(
                     value,
-                    results,
+                    result,
                     name
                 )
 
@@ -93,108 +122,83 @@ def find_m3u8(
 
             find_m3u8(
                 item,
-                results,
-                channel_name
+                result,
+                channel
             )
 
 
-    return results
+    return result
 
 
 
-def save_json(data):
+def remove_duplicate(items):
 
-    with open(
-        API_JSON_FILE,
-        "w",
-        encoding="utf-8"
-    ) as file:
+    seen = set()
+    output = []
 
-        json.dump(
-            data,
-            file,
-            indent=4,
-            ensure_ascii=False
-        )
+    for item in items:
 
+        if item["url"] not in seen:
 
-    print(
-        "[+] Saved:",
-        API_JSON_FILE
-    )
-
-
-
-def remove_duplicate(channels):
-
-    unique = []
-    urls = set()
-
-    for item in channels:
-
-        if item["url"] not in urls:
-
-            urls.add(
+            seen.add(
                 item["url"]
             )
 
-            unique.append(
+            output.append(
                 item
             )
 
-    return unique
+    return output
 
 
 
-def create_m3u(channels):
+def create_m3u8(channels):
 
     with open(
-        M3U_FILE,
+        M3U8_FILE,
         "w",
         encoding="utf-8"
-    ) as file:
+    ) as f:
 
-        file.write(
+        f.write(
             "#EXTM3U\n"
         )
 
 
         for ch in channels:
 
-            file.write(
-                f'#EXTINF:-1,{ch["channel"]}\n'
+            f.write(
+                f'#EXTINF:-1,{ch["name"]}\n'
             )
 
-            file.write(
+            f.write(
                 f'{ch["url"]}\n'
             )
 
 
     print(
-        "[+] Created:",
-        M3U_FILE
+        "Created:",
+        M3U8_FILE
     )
 
 
 
 def main():
 
-    os.makedirs(
-        OUTPUT_DIR,
-        exist_ok=True
+    print(
+        "Downloading API..."
     )
 
+    data = get_api_data()
 
-    api_data = fetch_api()
 
-
-    save_json(
-        api_data
+    save_api_json(
+        data
     )
 
 
     channels = find_m3u8(
-        api_data
+        data
     )
 
 
@@ -204,22 +208,21 @@ def main():
 
 
     print(
-        "[+] m3u8 Found:",
+        "Found m3u8:",
         len(channels)
     )
 
 
-    create_m3u(
-        channels
-    )
+    if channels:
 
+        create_m3u8(
+            channels
+        )
 
-    for ch in channels[:10]:
+    else:
 
         print(
-            ch["channel"],
-            "=>",
-            ch["url"]
+            "No m3u8 URL found. Check aynaott_api.json"
         )
 
 
