@@ -154,6 +154,11 @@
         <span id="badge-all" class="bg-black/20 text-[10px] px-2 py-0.5 rounded-full">0</span>
       </button>
 
+      <button onclick="selectCategory('recent')" id="nav-recent" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-[var(--text-muted)] hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] transition-all">
+        <span class="flex items-center gap-2.5"><i class="fa-solid fa-clock-rotate-left text-brand-500 text-sm"></i> Recently Played</span>
+        <span id="badge-recent" class="bg-brand-500/10 text-brand-400 text-[10px] px-2 py-0.5 rounded-full">0</span>
+      </button>
+
       <button onclick="selectCategory('favorites')" id="nav-favs" class="category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold text-[var(--text-muted)] hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] transition-all">
         <span class="flex items-center gap-2.5"><i class="fa-solid fa-heart text-rose-500 text-sm"></i> Favorites</span>
         <span id="badge-favs" class="bg-rose-500/10 text-rose-400 text-[10px] px-2 py-0.5 rounded-full">0</span>
@@ -311,16 +316,50 @@
     const m3uUrl = "https://raw.githubusercontent.com/Mrbotrx/Aynna_playlists/main/output/aynnaott.m3u8";
 
     let globalChannels = [];
-    let filteredChannels = []; // Holds current category + searched stations
+    let filteredChannels = []; 
     let favoriteList = JSON.parse(localStorage.getItem('aynna_fav_list')) || [];
+    let recentList = JSON.parse(localStorage.getItem('aynna_recent_list')) || [];
     let currentActiveCategory = 'all';
     let currentSearchTerm = '';
     let playingStream = null;
     let hlsInstance = null;
     let toastTimeout = null;
 
+    // Palette generator helper for custom dynamic logo background gradients
+    function getChannelUniqueColors(name) {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const palette = [
+        'from-pink-500 to-rose-600',
+        'from-purple-600 to-indigo-700',
+        'from-blue-500 to-cyan-600',
+        'from-emerald-500 to-teal-600',
+        'from-amber-500 to-orange-600',
+        'from-violet-500 to-fuchsia-600',
+        'from-sky-500 to-blue-600',
+        'from-red-500 to-pink-600'
+      ];
+      return palette[Math.abs(hash) % palette.length];
+    }
+
+    // Dynamic resolution tag identification from station text
+    function getQualityBadgeMarkup(name) {
+      const upper = name.toUpperCase();
+      if (upper.includes('4K') || upper.includes('UHD')) {
+        return '<span class="text-[8px] tracking-wider leading-none font-extrabold bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1 py-0.5 rounded">4K</span>';
+      }
+      if (upper.includes('FHD') || upper.includes('1080')) {
+        return '<span class="text-[8px] tracking-wider leading-none font-extrabold bg-rose-500/10 text-rose-500 border border-rose-500/20 px-1 py-0.5 rounded">FHD</span>';
+      }
+      if (upper.includes('HD') || upper.includes('720')) {
+        return '<span class="text-[8px] tracking-wider leading-none font-extrabold bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 px-1 py-0.5 rounded">HD</span>';
+      }
+      return '';
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
-      // Load theme
       const savedTheme = localStorage.getItem('aynna_theme_mode') || 'slate-dark';
       switchTheme(savedTheme);
 
@@ -328,10 +367,9 @@
       setupKeyboardShortcuts();
     });
 
-    // Setup arrow keys for keyboard navigation support
+    // Arrow keys controls switcher
     function setupKeyboardShortcuts() {
       window.addEventListener('keydown', (e) => {
-        // Prevent key events while typing inside search bar
         if (document.activeElement === document.getElementById('station-search')) {
           return;
         }
@@ -356,7 +394,7 @@
       });
     }
 
-    // Dynamic Flash Toast System (TV Notification)
+    // Flash Toast System (TV Notification overlay)
     function showChannelToast(text) {
       const toast = document.getElementById('channel-toast');
       const toastText = document.getElementById('toast-text');
@@ -373,7 +411,7 @@
       }, 2500);
     }
 
-    // M3U Dynamic Parser Engine
+    // M3U Playlist Downloader
     async function fetchPlaylist() {
       applySkeletonStates();
       try {
@@ -410,7 +448,7 @@
           }
 
           const logoMatch = row.match(/tvg-logo="([^"]*)"/i);
-          if (logoMatch) currentItem.logo = logoMatch[1];
+          if (logoMatch) currentItem.logo = logoMatch[1].trim();
 
           const groupMatch = row.match(/group-title="([^"]*)"/i);
           if (groupMatch && groupMatch[1].trim() !== '') {
@@ -455,13 +493,13 @@
       updateBadgeCounts();
     }
 
-    // Directory renderer
+    // Directory renderer matching active viewport filter
     function renderDirectory() {
       const container = document.getElementById('channels-list-element');
       const fallback = document.getElementById('cards-fallback');
       container.innerHTML = '';
 
-      // Update filtered collection
+      // Update filtered list
       filteredChannels = globalChannels.filter(item => {
         const inSearch = item.name.toLowerCase().includes(currentSearchTerm.toLowerCase());
         
@@ -469,8 +507,20 @@
         if (currentActiveCategory === 'favorites') {
           return inSearch && favoriteList.some(fav => fav.name === item.name);
         }
+        if (currentActiveCategory === 'recent') {
+          return inSearch && recentList.some(rec => rec.name === item.name);
+        }
         return inSearch && item.category === currentActiveCategory;
       });
+
+      // Special sorting for Recent Tab to keep last played at top
+      if (currentActiveCategory === 'recent') {
+        filteredChannels.sort((a, b) => {
+          const indexA = recentList.findIndex(r => r.name === a.name);
+          const indexB = recentList.findIndex(r => r.name === b.name);
+          return indexA - indexB; // Keep local storage alignment order
+        });
+      }
 
       document.getElementById('viewport-counter').textContent = `${filteredChannels.length} stations`;
 
@@ -493,16 +543,21 @@
         card.setAttribute('onclick', `executeStationLoad('${item.id}')`);
         
         const initials = item.name.substring(0, 2).toUpperCase();
+        const fallbackGradient = getChannelUniqueColors(item.name);
+        const qualityTag = getQualityBadgeMarkup(item.name);
 
         card.innerHTML = `
-          <div class="h-10 w-10 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0">
+          <div class="h-10 w-10 rounded-lg bg-[var(--bg-card)] border border-[var(--border-color)] flex items-center justify-center overflow-hidden shrink-0 relative">
             ${item.logo 
-              ? `<img src="${item.logo}" alt="station-logo" class="h-full w-full object-contain" onerror="handleLogoFallback(this, '${initials}')" />`
-              : `<div class="h-full w-full bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] text-white text-xs font-extrabold flex items-center justify-center">${initials}</div>`
+              ? `<img src="${item.logo}" alt="logo" class="h-full w-full object-contain opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" onerror="handleLogoFallback(this, '${initials}', '${fallbackGradient}')" />`
+              : `<div class="h-full w-full bg-gradient-to-tr ${fallbackGradient} text-white text-xs font-extrabold flex items-center justify-center">${initials}</div>`
             }
           </div>
           <div class="min-w-0 flex-1">
-            <h4 class="font-bold text-xs text-[var(--text-main)] truncate transition-colors group-hover:text-[var(--brand-color)]">${item.name}</h4>
+            <div class="flex items-center gap-1.5 min-w-0">
+              <h4 class="font-bold text-xs text-[var(--text-main)] truncate transition-colors group-hover:text-[var(--brand-color)] flex-1" title="${item.name}">${item.name}</h4>
+              ${qualityTag}
+            </div>
             <span class="text-[9px] text-[var(--text-muted)] font-medium block truncate mt-0.5">${item.category}</span>
           </div>
           <button onclick="handleHeartAction(event, '${item.id}')" class="h-8 w-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:text-rose-500 hover:bg-rose-500/10 transition-all shrink-0">
@@ -513,7 +568,15 @@
       });
     }
 
-    // Dynamic Channel Changing functions
+    // Dynamic Failover logic when logo fails to load (converts to dynamic gradient letter avatar)
+    function handleLogoFallback(image, initials, fallbackGradient) {
+      const parent = image.parentElement;
+      if (parent) {
+        parent.innerHTML = `<div class="h-full w-full bg-gradient-to-tr ${fallbackGradient} text-white text-xs font-extrabold flex items-center justify-center">${initials}</div>`;
+      }
+    }
+
+    // Dynamic Channel Changing functionality
     function playNextChannel() {
       if (filteredChannels.length === 0) return;
       let currentIndex = -1;
@@ -524,7 +587,7 @@
       
       let nextIndex = currentIndex + 1;
       if (nextIndex >= filteredChannels.length) {
-        nextIndex = 0; // wrap around back to the beginning of the list
+        nextIndex = 0; 
       }
       
       executeStationLoad(filteredChannels[nextIndex].id, true);
@@ -540,17 +603,10 @@
       
       let prevIndex = currentIndex - 1;
       if (prevIndex < 0) {
-        prevIndex = filteredChannels.length - 1; // wrap around back to the end of the list
+        prevIndex = filteredChannels.length - 1; 
       }
       
       executeStationLoad(filteredChannels[prevIndex].id, true);
-    }
-
-    function handleLogoFallback(image, fallbackString) {
-      const cell = image.parentElement;
-      if (cell) {
-        cell.innerHTML = `<div class="h-full w-full bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] text-white text-xs font-extrabold flex items-center justify-center">${fallbackString}</div>`;
-      }
     }
 
     // Filtering logic and view switching
@@ -561,13 +617,13 @@
         btn.className = "category-btn w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-[var(--text-muted)] hover:bg-[var(--bg-card)] hover:text-[var(--text-main)] transition-all mt-1";
       });
 
-      const elementId = category === 'all' ? 'nav-all' : category === 'favorites' ? 'nav-favs' : `nav-${category.replace(/\s+/g, '-').toLowerCase()}`;
+      const elementId = category === 'all' ? 'nav-all' : category === 'favorites' ? 'nav-favs' : category === 'recent' ? 'nav-recent' : `nav-${category.replace(/\s+/g, '-').toLowerCase()}`;
       const activeElement = document.getElementById(elementId);
       if (activeElement) {
         activeElement.className = "category-btn w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold bg-[var(--brand-color)] text-white shadow-md";
       }
 
-      document.getElementById('viewport-title').textContent = category === 'all' ? 'Station Roster' : category;
+      document.getElementById('viewport-title').textContent = category === 'all' ? 'Station Roster' : category === 'favorites' ? 'Favorite Channels' : category === 'recent' ? 'Recently Watched' : category;
       renderDirectory();
 
       if (window.innerWidth < 768) {
@@ -591,20 +647,27 @@
       document.getElementById('player-channel-title').textContent = item.name;
       const containerLogo = document.getElementById('player-logo-deck');
       const initials = item.name.substring(0, 2).toUpperCase();
+      const fallbackGradient = getChannelUniqueColors(item.name);
 
       if (item.logo) {
-        containerLogo.innerHTML = `<img src="${item.logo}" alt="playing-station" class="h-full w-full object-contain" onerror="handleLogoFallback(this, '${initials}')" />`;
+        containerLogo.innerHTML = `<img src="${item.logo}" alt="playing-station" class="h-full w-full object-contain opacity-0 transition-opacity duration-300" onload="this.classList.remove('opacity-0')" onerror="handleLogoFallback(this, '${initials}', '${fallbackGradient}')" />`;
       } else {
-        containerLogo.innerHTML = `<div class="h-full w-full bg-gradient-to-tr from-[var(--brand-gradient-start)] to-[var(--brand-gradient-end)] text-white text-xs font-extrabold flex items-center justify-center">${initials}</div>`;
+        containerLogo.innerHTML = `<div class="h-full w-full bg-gradient-to-tr ${fallbackGradient} text-white text-xs font-extrabold flex items-center justify-center">${initials}</div>`;
       }
 
       const isFav = favoriteList.some(fav => fav.name === item.name);
       syncFavoriteButtonState(isFav);
 
+      // Add to Recently Played stack (max 15 channels, duplicates filtered to top)
+      recentList = recentList.filter(rec => rec.name !== item.name);
+      recentList.unshift({ name: item.name, url: item.url, category: item.category, logo: item.logo });
+      if (recentList.length > 15) recentList.pop();
+      localStorage.setItem('aynna_recent_list', JSON.stringify(recentList));
+      updateBadgeCounts();
+
       loadHlsStream(item.url);
       renderDirectory();
 
-      // Autoscroll to active playing station card in side panel
       const activeCard = document.getElementById(`card-el-${item.id}`);
       if (activeCard) {
         activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -757,6 +820,7 @@
 
     function updateBadgeCounts() {
       document.getElementById('badge-all').textContent = globalChannels.length;
+      document.getElementById('badge-recent').textContent = recentList.length;
       document.getElementById('badge-favs').textContent = favoriteList.length;
     }
 
