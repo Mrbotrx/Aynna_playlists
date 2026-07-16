@@ -1,32 +1,37 @@
 name: Update Aynnaott Playlist
 
+
 on:
+
   workflow_dispatch:
 
   schedule:
-    - cron: "0 */2 * * *"
+
+    - cron: "0 */6 * * *"
+
 
 
 permissions:
+
   contents: write
+
 
 
 jobs:
 
+
   update:
+
 
     runs-on: ubuntu-latest
 
 
     steps:
 
-    - name: Checkout Repository
+
+    - name: Checkout
 
       uses: actions/checkout@v4
-
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        persist-credentials: true
 
 
 
@@ -35,11 +40,12 @@ jobs:
       uses: actions/setup-python@v5
 
       with:
+
         python-version: "3.x"
 
 
 
-    - name: Install Requirements
+    - name: Install
 
       run: |
 
@@ -47,7 +53,7 @@ jobs:
 
 
 
-    - name: Run Aynaott Generator
+    - name: Generate Playlist
 
       env:
 
@@ -59,17 +65,17 @@ jobs:
 
 
 
-    - name: Check Output
+    - name: Check Files
 
       run: |
 
         ls -la
 
-        ls -la output || true
+        ls -la output
 
 
 
-    - name: Commit Updated Playlist
+    - name: Commit Files
 
       run: |
 
@@ -77,8 +83,10 @@ jobs:
 
         git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-        git add output/aynnaott.m3u8 output/aynaott_api.json
+        git add -f output/aynnaott.m3u8
 
-        git commit -m "Update aynnaott playlist" || echo "No changes"
+        git add -f output/aynaott_api.json
+
+        git commit -m "Auto update playlist" || echo "No changes"
 
         git push
