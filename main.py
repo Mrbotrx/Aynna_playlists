@@ -28,7 +28,7 @@ def fetch_api():
         )
 
 
-    response = requests.get(
+    r = requests.get(
         API_URL,
         headers={
             "User-Agent": "Mozilla/5.0",
@@ -37,9 +37,16 @@ def fetch_api():
         timeout=30
     )
 
-    response.raise_for_status()
 
-    return response.json()
+    print(
+        "API Status:",
+        r.status_code
+    )
+
+
+    r.raise_for_status()
+
+    return r.json()
 
 
 
@@ -47,7 +54,8 @@ def find_channels(
         data,
         channels=None,
         name="Unknown",
-        logo=""
+        logo="",
+        group="Live TV"
 ):
 
     if channels is None:
@@ -56,21 +64,37 @@ def find_channels(
 
     if isinstance(data, dict):
 
+
         channel_name = (
             data.get("name")
             or data.get("title")
             or data.get("channelName")
-            or data.get("channel")
+            or data.get("channel_name")
             or name
         )
 
 
         channel_logo = (
             data.get("logo")
+            or data.get("logoUrl")
+            or data.get("logo_url")
             or data.get("image")
-            or data.get("icon")
+            or data.get("imageUrl")
             or data.get("thumbnail")
+            or data.get("icon")
+            or data.get("poster")
             or logo
+        )
+
+
+        channel_group = (
+            data.get("group")
+            or data.get("groupName")
+            or data.get("category")
+            or data.get("genre")
+            or data.get("type")
+            or data.get("section")
+            or group
         )
 
 
@@ -80,18 +104,19 @@ def find_channels(
             if isinstance(value, str):
 
 
-                # Find m3u8
                 if re.search(
                     r"https?://.*?\.m3u8",
                     value,
                     re.IGNORECASE
                 ):
 
+
                     channels.append(
                         {
                             "name": channel_name,
                             "url": value,
-                            "logo": channel_logo
+                            "logo": channel_logo,
+                            "group": channel_group
                         }
                     )
 
@@ -101,23 +126,29 @@ def find_channels(
                 (dict, list)
             ):
 
+
                 find_channels(
                     value,
                     channels,
                     channel_name,
-                    channel_logo
+                    channel_logo,
+                    channel_group
                 )
+
 
 
     elif isinstance(data, list):
 
+
         for item in data:
+
 
             find_channels(
                 item,
                 channels,
                 name,
-                logo
+                logo,
+                group
             )
 
 
@@ -134,15 +165,16 @@ def remove_duplicate(channels):
 
     for ch in channels:
 
-        if ch["url"] not in seen:
 
-            seen.add(
-                ch["url"]
-            )
+        url = ch["url"]
 
-            result.append(
-                ch
-            )
+
+        if url not in seen:
+
+
+            seen.add(url)
+
+            result.append(ch)
 
 
     return result
@@ -156,10 +188,10 @@ def create_playlist(channels):
         PLAYLIST_FILE,
         "w",
         encoding="utf-8"
-    ) as file:
+    ) as f:
 
 
-        file.write(
+        f.write(
             "#EXTM3U\n\n"
         )
 
@@ -167,9 +199,17 @@ def create_playlist(channels):
         for ch in channels:
 
 
-            name = ch["name"]
+            name = ch.get(
+                "name",
+                "Unknown"
+            )
 
-            url = ch["url"]
+
+            url = ch.get(
+                "url",
+                ""
+            )
+
 
             logo = ch.get(
                 "logo",
@@ -177,20 +217,26 @@ def create_playlist(channels):
             )
 
 
-            file.write(
-                f'#EXTINF:-1 tvg-name="{name}" tvg-logo="{logo}" group-title="Live TV",{name}\n'
+            group = ch.get(
+                "group",
+                "Live TV"
             )
 
 
-            file.write(
+            f.write(
+                f'#EXTINF:-1 tvg-name="{name}" tvg-logo="{logo}" group-title="{group}",{name}\n'
+            )
+
+
+            f.write(
                 url + "\n\n"
             )
 
 
-
         if not channels:
 
-            file.write(
+
+            f.write(
                 "# No m3u8 stream found\n"
             )
 
@@ -204,7 +250,9 @@ def create_playlist(channels):
 
 def main():
 
+
     try:
+
 
         data = fetch_api()
 
@@ -220,22 +268,26 @@ def main():
 
 
         print(
-            "Channels:",
+            "Found channels:",
             len(channels)
         )
 
 
     except Exception as e:
 
+
         print(
             "Error:",
             e
         )
 
+
         channels = []
 
 
+
     # Always create playlist
+
     create_playlist(
         channels
     )
