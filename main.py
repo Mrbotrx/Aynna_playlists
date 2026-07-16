@@ -1,6 +1,7 @@
 import os
 import re
 import requests
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
 API_URL = os.environ.get("AYNAOTT_API_URL")
@@ -31,9 +32,10 @@ def fetch_api():
     r = requests.get(
         API_URL,
         headers={
-            "User-Agent": "Mozilla/5.0"
+            "User-Agent": "Mozilla/5.0",
+            "Accept": "application/json"
         },
-        timeout=15
+        timeout=10
     )
 
     r.raise_for_status()
@@ -60,6 +62,7 @@ def find_channels(
             data.get("name")
             or data.get("title")
             or data.get("channelName")
+            or data.get("channel_name")
             or name
         )
 
@@ -67,6 +70,7 @@ def find_channels(
         channel_logo = (
             data.get("logo")
             or data.get("logoUrl")
+            or data.get("logo_url")
             or data.get("image")
             or data.get("imageUrl")
             or data.get("thumbnail")
@@ -77,6 +81,7 @@ def find_channels(
 
         channel_group = (
             data.get("group")
+            or data.get("groupName")
             or data.get("category")
             or data.get("genre")
             or data.get("type")
@@ -86,14 +91,12 @@ def find_channels(
 
         for value in data.values():
 
-
             if isinstance(value, str):
 
-
                 if re.search(
-                    r"https?://.*\.m3u8",
+                    r"https?://.*?\.m3u8",
                     value,
-                    re.I
+                    re.IGNORECASE
                 ):
 
                     channels.append(
@@ -108,7 +111,7 @@ def find_channels(
 
             elif isinstance(
                 value,
-                (dict,list)
+                (dict, list)
             ):
 
                 find_channels(
@@ -120,8 +123,7 @@ def find_channels(
                 )
 
 
-
-    elif isinstance(data,list):
+    elif isinstance(data, list):
 
         for item in data:
 
@@ -162,58 +164,73 @@ def remove_duplicate(channels):
 
 
 
+def check_one_channel(ch):
+
+    try:
+
+        r = requests.get(
+            ch["url"],
+            headers={
+                "User-Agent": "Mozilla/5.0"
+            },
+            timeout=3,
+            stream=True
+        )
+
+
+        if r.status_code == 200:
+
+            return ch
+
+
+    except Exception:
+
+        pass
+
+
+    return None
+
+
+
 def check_working_channels(channels):
 
     working = []
 
-    headers = {
-        "User-Agent": "Mozilla/5.0"
-    }
+
+    with ThreadPoolExecutor(
+        max_workers=20
+    ) as executor:
 
 
-    for ch in channels:
+        jobs = []
 
 
-        try:
+        for ch in channels:
 
-
-            r = requests.get(
-                ch["url"],
-                headers=headers,
-                timeout=5,
-                stream=True
+            jobs.append(
+                executor.submit(
+                    check_one_channel,
+                    ch
+                )
             )
 
 
-            if r.status_code == 200:
+        for job in as_completed(jobs):
 
+            result = job.result()
+
+
+            if result:
 
                 print(
                     "OK:",
-                    ch["name"]
+                    result["name"]
                 )
 
 
                 working.append(
-                    ch
+                    result
                 )
-
-
-            else:
-
-                print(
-                    "BAD:",
-                    ch["name"]
-                )
-
-
-        except Exception:
-
-
-            print(
-                "TIMEOUT:",
-                ch["name"]
-            )
 
 
     return working
@@ -221,7 +238,6 @@ def check_working_channels(channels):
 
 
 def create_playlist(channels):
-
 
     with open(
         PLAYLIST_FILE,
@@ -243,20 +259,15 @@ def create_playlist(channels):
                 "Unknown"
             )
 
-
             logo = ch.get(
                 "logo",
                 ""
             )
 
-
             group = ch.get(
                 "group",
                 "Live TV"
             )
-
-
-            url = ch["url"]
 
 
             f.write(
@@ -265,14 +276,14 @@ def create_playlist(channels):
 
 
             f.write(
-                url + "\n\n"
+                ch["url"] + "\n\n"
             )
 
 
         if not channels:
 
             f.write(
-                "# No working channel found\n"
+                "# No working channels found\n"
             )
 
 
@@ -285,8 +296,11 @@ def create_playlist(channels):
 
 def main():
 
-
     try:
+
+        print(
+            "Fetching API..."
+        )
 
 
         data = fetch_api()
@@ -298,7 +312,7 @@ def main():
 
 
         print(
-            "Total:",
+            "Found:",
             len(channels)
         )
 
@@ -309,7 +323,7 @@ def main():
 
 
         print(
-            "Checking working streams..."
+            "Checking streams..."
         )
 
 
@@ -326,15 +340,12 @@ def main():
 
     except Exception as e:
 
-
         print(
             "ERROR:",
             e
         )
 
-
         channels = []
-
 
 
     create_playlist(
