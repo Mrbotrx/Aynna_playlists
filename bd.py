@@ -1,125 +1,259 @@
 import requests
+import os
 from datetime import datetime
 
-API = "https://www.btvlive.gov.bd/api/home"
-OUTPUT = "bdt.m3u8"
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0",
-    "Accept": "application/json",
-    "Referer": "https://www.btvlive.gov.bd/"
-}
+# ================= CONFIG =================
+
+API_URL = "https://www.btvlive.gov.bd/api/home"
+
+OUTPUT_FILE = "bdt.m3u8"
+
+REFERRER = "https://www.btvlive.gov.bd/"
+ORIGIN = "https://www.btvlive.gov.bd/"
+
+USER_AGENT = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+    "AppleWebKit/537.36 "
+    "(KHTML, like Gecko) "
+    "Chrome/128.0 Safari/537.36"
+)
 
 
-def get_channels():
+# =========================================
+
+
+def fetch_channels():
 
     try:
-        response = requests.get(
-            API,
-            headers=HEADERS,
+
+        print("Connecting API...")
+
+        r = requests.get(
+            API_URL,
+            headers={
+                "User-Agent": USER_AGENT,
+                "Accept": "application/json",
+                "Referer": REFERRER
+            },
             timeout=30
         )
 
-        response.raise_for_status()
 
-        data = response.json()
+        print(
+            "API Status:",
+            r.status_code
+        )
 
-        return data.get("channel_list", [])
+
+        r.raise_for_status()
+
+
+        data = r.json()
+
+
+        return data.get(
+            "channel_list",
+            []
+        )
+
 
     except Exception as e:
-        print("API Error:", e)
+
+        print(
+            "API Error:",
+            e
+        )
+
         return []
 
 
-def create_m3u(channels):
 
-    streams = set()
+
+def create_playlist(channels):
+
+
+    if not channels:
+
+        print(
+            "No channels found"
+        )
+
+        return
+
+
+
+    temp_file = OUTPUT_FILE + ".tmp"
+
+
+    used = set()
+
+    count = 0
+
+
 
     with open(
-        OUTPUT,
+        temp_file,
         "w",
-        encoding="utf-8-sig"
-    ) as file:
+        encoding="utf-8"
+    ) as f:
 
-        file.write("#EXTM3U\n")
-        file.write(
-            "# Generated: "
+
+        f.write(
+            "#EXTM3U\n"
+        )
+
+        f.write(
+            "# Updated: "
             + str(datetime.now())
             + "\n\n"
         )
 
 
-        total = 0
 
         for ch in channels:
 
-            channel_id = ch.get("channel_id", "")
-            name = ch.get("channel_name", "Unknown")
-            logo = ch.get("poster", "")
-            identifier = ch.get("identifier", "")
-            base_url = ch.get("base_url", "")
 
+            if ch.get("status") != "online":
 
-            if not identifier or not base_url:
                 continue
 
 
-            stream_url = (
-                base_url
+
+            cid = ch.get(
+                "channel_id"
+            )
+
+
+            name = ch.get(
+                "channel_name",
+                "Unknown"
+            )
+
+
+            logo = ch.get(
+                "poster",
+                ""
+            )
+
+
+            base = ch.get(
+                "base_url",
+                ""
+            )
+
+
+            identifier = ch.get(
+                "identifier",
+                ""
+            )
+
+
+            if not base or not identifier:
+
+                continue
+
+
+
+            stream = (
+                base
                 + identifier
                 + "/index.m3u8"
             )
 
 
-            if stream_url in streams:
+
+            if stream in used:
+
                 continue
 
-            streams.add(stream_url)
+
+            used.add(stream)
 
 
-            print(
-                f"{channel_id} | {name}"
-            )
 
+            # EXTINF
 
-            file.write(
-                f'#EXTINF:-1 '
+            f.write(
+                '#EXTINF:-1 '
+                f'tvg-id="{cid}" '
+                f'tvg-name="{name}" '
                 f'group-title="Bangladesh TV" '
-                f'tvg-id="{channel_id}" '
                 f'tvg-logo="{logo}",'
                 f'{name}\n'
             )
 
 
-            file.write(
-                stream_url
+            # VLC headers
+
+            f.write(
+                "#EXTVLCOPT:http-referrer="
+                + REFERRER
+                + "\n"
+            )
+
+
+            f.write(
+                "#EXTVLCOPT:http-origin="
+                + ORIGIN
+                + "\n"
+            )
+
+
+            f.write(
+                "#EXTVLCOPT:http-user-agent="
+                + USER_AGENT
+                + "\n"
+            )
+
+
+            # Stream URL
+
+            f.write(
+                stream
                 + "\n\n"
             )
 
 
-            total += 1
+            count += 1
 
 
-    print("-------------------------")
-    print("Total channels:", total)
-    print("Created:", OUTPUT)
+    # replace old file
+
+    os.replace(
+        temp_file,
+        OUTPUT_FILE
+    )
+
+
+    print("----------------------")
+    print(
+        "Playlist Updated"
+    )
+    print(
+        "Channels:",
+        count
+    )
+    print(
+        "File:",
+        os.path.abspath(OUTPUT_FILE)
+    )
+
 
 
 
 def main():
 
-    print("Fetching channels...")
 
-    channels = get_channels()
-
-    if not channels:
-        print("No channel found")
-        return
+    channels = fetch_channels()
 
 
-    create_m3u(channels)
+    create_playlist(
+        channels
+    )
 
 
 
 if __name__ == "__main__":
+
     main()
