@@ -1,0 +1,9 @@
+#EXTM3U
+#EXTINF:-1,বিটিভি
+http://209.58.168.113:1935/live/BTV/playlist.m3u8
+#EXTINF:-1,বিটিভি নিউজ
+http://209.58.168.113:1935/live/BTV/playlist.m3u8
+#EXTINF:-1,বিটিভি চট্টগ্রাম
+http://209.58.168.113:1935/live/BTV/playlist.m3u8
+#EXTINF:-1,সংসদ টেলিভিশন
+http://209.58.168.113:1935/live/BTV/playlist.m3u8
