@@ -10,7 +10,7 @@ HEADERS = {
 }
 
 
-def create_playlist():
+def main():
 
     r = requests.get(
         API,
@@ -24,8 +24,7 @@ def create_playlist():
 
     channels = data.get("channel_list", [])
 
-    if not channels:
-        raise Exception("Channel list not found")
+    print("Total channel:", len(channels))
 
 
     with open(
@@ -35,68 +34,49 @@ def create_playlist():
     ) as f:
 
         f.write("#EXTM3U\n")
-
-        f.write(
-            "# Updated: "
-            + str(datetime.now())
-            + "\n\n"
-        )
+        f.write("# Generated: " + str(datetime.now()) + "\n\n")
 
 
         for ch in channels:
 
-            name = ch.get(
-                "channel_name",
-                "BTV"
-            )
+            channel_id = ch.get("channel_id")
+            identifier = ch.get("identifier")
+            name = ch.get("channel_name")
+            logo = ch.get("poster")
+            base = ch.get("base_url")
 
-            logo = ch.get(
-                "poster",
-                ""
-            )
 
-            base_url = ch.get(
-                "base_url",
-                ""
-            )
-
-            identifier = ch.get(
-                "identifier",
-                ""
+            # stream url
+            stream = (
+                base
+                + identifier
+                + "/index.m3u8"
             )
 
 
-            if base_url and identifier:
-
-                stream = (
-                    base_url
-                    + identifier
-                    + "/playlist.m3u8"
-                )
+            print(
+                channel_id,
+                identifier,
+                stream
+            )
 
 
-                f.write(
-                    '#EXTINF:-1 '
-                    f'tvg-id="{identifier}" '
-                    f'tvg-logo="{logo}",'
-                    f'{name}\n'
-                )
+            f.write(
+                f'#EXTINF:-1 '
+                f'tvg-id="{channel_id}" '
+                f'tvg-logo="{logo}",'
+                f'{name}\n'
+            )
 
-
-                f.write(
-                    '#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n'
-                )
-
-
-                f.write(
-                    stream
-                    + "\n\n"
-                )
+            f.write(
+                stream
+                + "\n\n"
+            )
 
 
     print("Created:", OUTPUT)
-    print("Channels:", len(channels))
+
 
 
 if __name__ == "__main__":
-    create_playlist()
+    main()
