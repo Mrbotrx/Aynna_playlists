@@ -1,5 +1,5 @@
 import requests
-from datetime import datetime, timezone
+from datetime import datetime
 
 API = "https://www.btvlive.gov.bd/api/home"
 OUTPUT = "bdt.m3u8"
@@ -10,29 +10,22 @@ HEADERS = {
 }
 
 
-def generate_playlist():
+def main():
 
-    session = requests.Session()
-
-    response = session.get(
+    r = requests.get(
         API,
         headers=HEADERS,
         timeout=30
     )
 
-    response.raise_for_status()
+    r.raise_for_status()
 
-    data = response.json()
+    data = r.json()
 
     channels = data.get("channel_list", [])
 
     if not channels:
-        raise Exception("Channel list empty")
-
-
-    now = datetime.now(timezone.utc).strftime(
-        "%Y-%m-%d %H:%M:%S UTC"
-    )
+        raise Exception("No channels found")
 
 
     with open(
@@ -42,62 +35,39 @@ def generate_playlist():
     ) as f:
 
         f.write("#EXTM3U\n")
-        f.write(f"# Updated: {now}\n\n")
+        f.write(
+            "# Updated: "
+            + str(datetime.now())
+            + "\n\n"
+        )
 
 
         for ch in channels:
 
-            name = ch.get(
-                "channel_name",
-                "BTV"
-            )
+            name = ch.get("channel_name", "BTV")
+            logo = ch.get("poster", "")
 
-            logo = ch.get(
-                "poster",
-                ""
-            )
+            base = ch.get("base_url", "")
+            identifier = ch.get("identifier", "")
 
-            base_url = ch.get(
-                "base_url",
-                ""
-            )
+            if base and identifier:
 
-            identifier = ch.get(
-                "identifier",
-                ""
-            )
-
-
-            if base_url and identifier:
-
-                stream = (
-                    base_url
+                url = (
+                    base
                     + identifier
                     + "/playlist.m3u8"
                 )
 
-
                 f.write(
-                    f'#EXTINF:-1 '
-                    f'tvg-id="{identifier}" '
-                    f'tvg-logo="{logo}",'
-                    f'{name}\n'
+                    f'#EXTINF:-1 tvg-logo="{logo}",{name}\n'
                 )
 
-                f.write(
-                    f'#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n'
-                )
-
-                f.write(
-                    stream + "\n\n"
-                )
+                f.write(url + "\n\n")
 
 
-    print("Created:", OUTPUT)
-    print("Channel:", len(channels))
-    print("Updated:", now)
-
+    print("Created bdt.m3u8")
+    print("Channels:", len(channels))
 
 
 if __name__ == "__main__":
-    generate_playlist()
+    main()
