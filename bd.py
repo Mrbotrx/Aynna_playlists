@@ -14,40 +14,45 @@ def create_playlist():
 
     session = requests.Session()
 
-    r = session.get(
+    response = session.get(
         API,
         headers=HEADERS,
         timeout=30
     )
 
-    r.raise_for_status()
+    response.raise_for_status()
 
-    data = r.json()
+    data = response.json()
 
     channels = data.get("channel_list", [])
 
+    if not channels:
+        raise Exception("No channel found")
+
+
     with open(OUTPUT, "w", encoding="utf-8") as f:
 
-        f.write("#EXTM3U\n\n")
+        f.write("#EXTM3U\n")
 
         for ch in channels:
 
             name = ch.get("channel_name", "BTV")
             logo = ch.get("poster", "")
 
-            base = ch.get("base_url", "")
+            base_url = ch.get("base_url", "")
             identifier = ch.get("identifier", "")
 
-            if base and identifier:
+            if base_url and identifier:
 
                 stream = (
-                    base
+                    base_url
                     + identifier
                     + "/playlist.m3u8"
                 )
 
                 f.write(
-                    f'#EXTINF:-1 tvg-logo="{logo}" tvg-name="{name}",{name}\n'
+                    f'#EXTINF:-1 tvg-id="{identifier}" '
+                    f'tvg-logo="{logo}",{name}\n'
                 )
 
                 f.write(
@@ -59,7 +64,9 @@ def create_playlist():
                 )
 
 
-    print("Created", OUTPUT, datetime.now())
+    print("Updated:", OUTPUT)
+    print("Channels:", len(channels))
+    print(datetime.now())
 
 
 if __name__ == "__main__":
