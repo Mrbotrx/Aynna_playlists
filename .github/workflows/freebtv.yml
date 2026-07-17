@@ -1,8 +1,9 @@
-name: Auto Update BDTV Playlist
+name: Update BDTv Playlist
 
 on:
   schedule:
-    - cron: "0 */2 * * *"   # প্রতি ২ ঘণ্টা পর
+    - cron: "0 */2 * * *"
+
   workflow_dispatch:
 
 
@@ -11,46 +12,48 @@ permissions:
 
 
 jobs:
-  build:
+
+  update:
 
     runs-on: ubuntu-latest
 
+
     steps:
 
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v4
 
 
-      - name: Setup Python
+      - name: Python Setup
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
 
-      - name: Install Requirements
+      - name: Install
         run: |
           pip install requests
 
 
-      - name: Run BTV Generator
+      - name: Generate bdt.m3u8
         run: |
           python bd.py
 
 
-      - name: Check Output
+      - name: Verify File
         run: |
-          ls -la
-          echo "----- bdt.m3u8 -----"
-          cat bdt.m3u8
+          ls -lh bdt.m3u8
+          head -20 bdt.m3u8
 
 
-      - name: Commit Updated Playlist
+      - name: Commit Update
         run: |
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add bdt.m3u8
 
-          git commit -m "Auto update bdt.m3u8" || echo "No changes"
+          git commit -m "Update bdt.m3u8" || echo "No changes"
 
           git push
