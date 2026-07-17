@@ -1,99 +1,47 @@
 import requests
-import os
 from datetime import datetime
 
 
-# ================= CONFIG =================
-
 API_URL = "https://www.btvlive.gov.bd/api/home"
 
-OUTPUT_FILE = "bdt.m3u8"
-
-REFERRER = "https://www.btvlive.gov.bd/"
-ORIGIN = "https://www.btvlive.gov.bd/"
-
-USER_AGENT = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-    "AppleWebKit/537.36 "
-    "(KHTML, like Gecko) "
-    "Chrome/128.0 Safari/537.36"
-)
+OUTPUT = "bdt.m3u8"
 
 
-# =========================================
+HEADERS = {
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "application/json",
+    "Referer": "https://www.btvlive.gov.bd/"
+}
 
 
-def fetch_channels():
+def main():
 
-    try:
+    print("Fetching BTV API...")
 
-        print("Connecting API...")
+    r = requests.get(
+        API_URL,
+        headers=HEADERS,
+        timeout=30
+    )
 
-        r = requests.get(
-            API_URL,
-            headers={
-                "User-Agent": USER_AGENT,
-                "Accept": "application/json",
-                "Referer": REFERRER
-            },
-            timeout=30
-        )
+    r.raise_for_status()
 
+    data = r.json()
 
-        print(
-            "API Status:",
-            r.status_code
-        )
+    channels = data.get(
+        "channel_list",
+        []
+    )
 
 
-        r.raise_for_status()
-
-
-        data = r.json()
-
-
-        return data.get(
-            "channel_list",
-            []
-        )
-
-
-    except Exception as e:
-
-        print(
-            "API Error:",
-            e
-        )
-
-        return []
-
-
-
-
-def create_playlist(channels):
-
-
-    if not channels:
-
-        print(
-            "No channels found"
-        )
-
-        return
-
-
-
-    temp_file = OUTPUT_FILE + ".tmp"
-
-
-    used = set()
-
-    count = 0
-
+    print(
+        "Channels:",
+        len(channels)
+    )
 
 
     with open(
-        temp_file,
+        OUTPUT,
         "w",
         encoding="utf-8"
     ) as f:
@@ -110,72 +58,27 @@ def create_playlist(channels):
         )
 
 
-
         for ch in channels:
 
 
             if ch.get("status") != "online":
-
                 continue
 
 
-
-            cid = ch.get(
-                "channel_id"
-            )
-
-
-            name = ch.get(
-                "channel_name",
-                "Unknown"
-            )
-
-
-            logo = ch.get(
-                "poster",
-                ""
-            )
-
-
-            base = ch.get(
-                "base_url",
-                ""
-            )
-
-
-            identifier = ch.get(
-                "identifier",
-                ""
-            )
-
-
-            if not base or not identifier:
-
-                continue
-
+            cid = ch.get("channel_id")
+            name = ch.get("channel_name")
+            logo = ch.get("poster")
 
 
             stream = (
-                base
-                + identifier
+                ch.get("base_url")
+                + ch.get("identifier")
                 + "/index.m3u8"
             )
 
 
-
-            if stream in used:
-
-                continue
-
-
-            used.add(stream)
-
-
-
-            # EXTINF
-
             f.write(
-                '#EXTINF:-1 '
+                f'#EXTINF:-1 '
                 f'tvg-id="{cid}" '
                 f'tvg-name="{name}" '
                 f'group-title="Bangladesh TV" '
@@ -184,30 +87,18 @@ def create_playlist(channels):
             )
 
 
-            # VLC headers
-
             f.write(
-                "#EXTVLCOPT:http-referrer="
-                + REFERRER
-                + "\n"
+                "#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n"
             )
 
-
             f.write(
-                "#EXTVLCOPT:http-origin="
-                + ORIGIN
-                + "\n"
+                "#EXTVLCOPT:http-origin=https://www.btvlive.gov.bd\n"
             )
 
-
             f.write(
-                "#EXTVLCOPT:http-user-agent="
-                + USER_AGENT
-                + "\n"
+                "#EXTVLCOPT:http-user-agent=Mozilla/5.0\n"
             )
 
-
-            # Stream URL
 
             f.write(
                 stream
@@ -215,45 +106,11 @@ def create_playlist(channels):
             )
 
 
-            count += 1
-
-
-    # replace old file
-
-    os.replace(
-        temp_file,
-        OUTPUT_FILE
-    )
-
-
-    print("----------------------")
     print(
-        "Playlist Updated"
+        "Updated:",
+        OUTPUT
     )
-    print(
-        "Channels:",
-        count
-    )
-    print(
-        "File:",
-        os.path.abspath(OUTPUT_FILE)
-    )
-
-
-
-
-def main():
-
-
-    channels = fetch_channels()
-
-
-    create_playlist(
-        channels
-    )
-
 
 
 if __name__ == "__main__":
-
     main()
