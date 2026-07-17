@@ -1,8 +1,10 @@
 import requests
 from datetime import datetime
+from urllib.parse import urlencode
 
 
-API_URL = "https://www.btvlive.gov.bd/api/home"
+HOME_API = "https://www.btvlive.gov.bd/api/home"
+TOKEN_API = "https://www.btvlive.gov.bd/api/cfToken"
 
 OUTPUT = "bdt.m3u8"
 
@@ -14,31 +16,74 @@ HEADERS = {
 }
 
 
-def update_playlist():
+def get_token():
 
-    response = requests.get(
-        API_URL,
+    print("Getting CloudFront token...")
+
+    r = requests.get(
+        TOKEN_API,
         headers=HEADERS,
         timeout=30
     )
 
-    response.raise_for_status()
+    r.raise_for_status()
 
-    data = response.json()
+    data = r.json()
 
-    channels = data.get("channel_list", [])
+    if data.get("status") != "success":
+        raise Exception("Token failed")
 
-    print("Total channels:", len(channels))
+    return data["output"]
+
+
+
+def get_channels():
+
+    r = requests.get(
+        HOME_API,
+        headers=HEADERS,
+        timeout=30
+    )
+
+    r.raise_for_status()
+
+    data = r.json()
+
+    return data.get(
+        "channel_list",
+        []
+    )
+
+
+
+def add_token(url, token):
+
+    return url + "?" + token
+
+
+
+def create_m3u():
+
+    token = get_token()
+
+    channels = get_channels()
+
+    print(
+        "Channels:",
+        len(channels)
+    )
 
 
     with open(
         OUTPUT,
         "w",
         encoding="utf-8"
-    ) as file:
+    ) as f:
 
-        file.write("#EXTM3U\n")
-        file.write(
+
+        f.write("#EXTM3U\n")
+
+        f.write(
             "# Updated: "
             + str(datetime.now())
             + "\n\n"
@@ -47,23 +92,39 @@ def update_playlist():
 
         for ch in channels:
 
+
             if ch.get("status") != "online":
                 continue
 
 
-            cid = ch.get("channel_id")
-            name = ch.get("channel_name")
-            logo = ch.get("poster")
+            cid = ch.get(
+                "channel_id"
+            )
+
+            name = ch.get(
+                "channel_name"
+            )
+
+            logo = ch.get(
+                "poster"
+            )
 
 
             stream = (
-                ch.get("base_url")
-                + ch.get("identifier")
+                ch["base_url"]
+                + ch["identifier"]
                 + "/index.m3u8"
             )
 
 
-            file.write(
+            # Add CloudFront token
+            stream = add_token(
+                stream,
+                token
+            )
+
+
+            f.write(
                 f'#EXTINF:-1 '
                 f'tvg-id="{cid}" '
                 f'tvg-name="{name}" '
@@ -73,27 +134,34 @@ def update_playlist():
             )
 
 
-            file.write(
+            f.write(
                 "#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n"
             )
 
-            file.write(
-                "#EXTVLCOPT:http-origin=https://www.btvlive.gov.bd\n"
-            )
 
-            file.write(
+            f.write(
                 "#EXTVLCOPT:http-user-agent=Mozilla/5.0\n"
             )
 
 
-            file.write(
-                stream + "\n\n"
+            f.write(
+                stream
+                + "\n\n"
             )
 
 
-    print("Updated:", OUTPUT)
+            print(
+                "Added:",
+                name
+            )
+
+
+    print(
+        "Created:",
+        OUTPUT
+    )
 
 
 
 if __name__ == "__main__":
-    update_playlist()
+    create_m3u()
