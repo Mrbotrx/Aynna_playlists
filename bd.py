@@ -1,104 +1,54 @@
 import requests
-from datetime import datetime
+import json
 
 API = "https://www.btvlive.gov.bd/api/home"
 OUTPUT = "bdt.m3u8"
 
-HEADERS = {
+headers = {
     "User-Agent": "Mozilla/5.0",
     "Referer": "https://www.btvlive.gov.bd/"
 }
 
 
-def create_playlist():
+def main():
 
-    session = requests.Session()
+    r = requests.get(API, headers=headers, timeout=30)
+    print("Status:", r.status_code)
 
-    response = session.get(
-        API,
-        headers=HEADERS,
-        timeout=30
-    )
+    data = r.json()
 
-    response.raise_for_status()
+    print("Keys:", data.keys())
 
-    data = response.json()
+    channels = data.get("channel_list", [])
 
-    # API cookie
-    cookies = session.cookies.get_dict()
-
-    cookie_string = "; ".join(
-        [f"{k}={v}" for k, v in cookies.items()]
-    )
+    print("Channels:", len(channels))
 
 
-    channels = data.get(
-        "channel_list",
-        []
-    )
+    with open(OUTPUT, "w", encoding="utf-8") as f:
 
-
-    with open(
-        OUTPUT,
-        "w",
-        encoding="utf-8"
-    ) as f:
-
-        f.write("#EXTM3U\n")
-
+        f.write("#EXTM3U\n\n")
 
         for ch in channels:
 
-            name = ch.get(
-                "channel_name",
-                "BTV"
-            )
+            name = ch.get("channel_name")
+            logo = ch.get("poster")
+            url = ch.get("count_url")
 
-            logo = ch.get(
-                "poster",
-                ""
-            )
+            print(name, url)
 
-            stream = ch.get(
-                "count_url",
-                ""
-            )
-
-
-            if ".m3u8" in stream:
-
+            if url:
 
                 f.write(
-                    '#EXTINF:-1 '
-                    f'tvg-logo="{logo}" '
-                    f'tvg-name="{name}",'
-                    f'{name}\n'
+                    f'#EXTINF:-1 tvg-logo="{logo}",{name}\n'
+                )
+
+                f.write(
+                    url + "\n\n"
                 )
 
 
-                # Cookie + Referer
-                if cookie_string:
-
-                    f.write(
-                        f'#EXTVLCOPT:http-referrer={HEADERS["Referer"]}\n'
-                    )
-
-                    f.write(
-                        f'#EXTVLCOPT:http-cookie={cookie_string}\n'
-                    )
-
-
-                f.write(
-                    stream + "\n\n"
-                )
-
-
-    print(
-        "Created:",
-        OUTPUT,
-        datetime.now()
-    )
+    print("DONE:", OUTPUT)
 
 
 if __name__ == "__main__":
-    create_playlist()
+    main()
