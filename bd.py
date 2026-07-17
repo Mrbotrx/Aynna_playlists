@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime
-from urllib.parse import urlencode
 
 
 HOME_API = "https://www.btvlive.gov.bd/api/home"
@@ -10,13 +9,18 @@ OUTPUT = "bdt.m3u8"
 
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0",
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 "
+        "Chrome/128.0 Safari/537.36"
+    ),
     "Accept": "application/json",
     "Referer": "https://www.btvlive.gov.bd/"
 }
 
 
-def get_token():
+
+def get_cf_token():
 
     print("Getting CloudFront token...")
 
@@ -30,14 +34,36 @@ def get_token():
 
     data = r.json()
 
-    if data.get("status") != "success":
-        raise Exception("Token failed")
 
-    return data["output"]
+    if data.get("status") != "success":
+
+        raise Exception(
+            "Token API failed"
+        )
+
+
+    token = data.get(
+        "output"
+    )
+
+
+    if not token:
+
+        raise Exception(
+            "Token not found"
+        )
+
+
+    print("Token OK")
+
+    return token
+
 
 
 
 def get_channels():
+
+    print("Getting channels...")
 
     r = requests.get(
         HOME_API,
@@ -45,9 +71,12 @@ def get_channels():
         timeout=30
     )
 
+
     r.raise_for_status()
 
+
     data = r.json()
+
 
     return data.get(
         "channel_list",
@@ -56,22 +85,21 @@ def get_channels():
 
 
 
-def add_token(url, token):
 
-    return url + "?" + token
-
+def create_playlist():
 
 
-def create_m3u():
+    token = get_cf_token()
 
-    token = get_token()
 
     channels = get_channels()
 
+
     print(
-        "Channels:",
+        "Total channels:",
         len(channels)
     )
+
 
 
     with open(
@@ -81,7 +109,10 @@ def create_m3u():
     ) as f:
 
 
-        f.write("#EXTM3U\n")
+        f.write(
+            "#EXTM3U\n"
+        )
+
 
         f.write(
             "# Updated: "
@@ -90,64 +121,50 @@ def create_m3u():
         )
 
 
+
         for ch in channels:
 
 
             if ch.get("status") != "online":
+
                 continue
 
 
-            cid = ch.get(
+
+            channel_id = ch.get(
                 "channel_id"
             )
 
+
             name = ch.get(
-                "channel_name"
+                "channel_name",
+                "Unknown"
             )
 
+
             logo = ch.get(
-                "poster"
+                "poster",
+                ""
             )
+
 
 
             stream = (
-                ch["base_url"]
-                + ch["identifier"]
+                ch.get("base_url")
+                + ch.get("identifier")
                 + "/index.m3u8"
             )
 
 
-            # Add CloudFront token
-            stream = add_token(
-                stream,
-                token
-            )
 
+            # CloudFront signed token add
 
-            f.write(
-                f'#EXTINF:-1 '
-                f'tvg-id="{cid}" '
-                f'tvg-name="{name}" '
-                f'group-title="Bangladesh TV" '
-                f'tvg-logo="{logo}",'
-                f'{name}\n'
-            )
-
-
-            f.write(
-                "#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n"
-            )
-
-
-            f.write(
-                "#EXTVLCOPT:http-user-agent=Mozilla/5.0\n"
-            )
-
-
-            f.write(
+            stream = (
                 stream
-                + "\n\n"
+                + "?"
+                + token
             )
+
 
 
             print(
@@ -156,12 +173,55 @@ def create_m3u():
             )
 
 
+
+            f.write(
+                f'#EXTINF:-1 '
+                f'tvg-id="{channel_id}" '
+                f'tvg-name="{name}" '
+                f'group-title="Bangladesh TV" '
+                f'tvg-logo="{logo}",'
+                f'{name}\n'
+            )
+
+
+
+            # Player headers
+
+            f.write(
+                "#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n"
+            )
+
+
+            f.write(
+                "#EXTVLCOPT:http-origin=https://www.btvlive.gov.bd\n"
+            )
+
+
+            f.write(
+                "#EXTVLCOPT:http-user-agent="
+                "Mozilla/5.0\n"
+            )
+
+
+
+            f.write(
+                stream
+                + "\n\n"
+            )
+
+
+
+    print("----------------------")
+
     print(
-        "Created:",
+        "Playlist Updated:",
         OUTPUT
     )
 
 
 
+
+
 if __name__ == "__main__":
-    create_m3u()
+
+    create_playlist()
