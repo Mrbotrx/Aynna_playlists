@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime
+from urllib.parse import urlencode
 
 
 HOME_API = "https://www.btvlive.gov.bd/api/home"
@@ -19,7 +20,6 @@ HEADERS = {
 }
 
 
-
 def get_cf_token():
 
     print("Getting CloudFront token...")
@@ -34,36 +34,78 @@ def get_cf_token():
 
     data = r.json()
 
+    print("Token API response:")
+    print(data)
+
 
     if data.get("status") != "success":
-
-        raise Exception(
-            "Token API failed"
-        )
+        raise Exception("Token API failed")
 
 
-    token = data.get(
-        "output"
+    output = data.get("output")
+
+
+    if not output:
+        raise Exception("Token output missing")
+
+
+    # Already formatted token string
+    if isinstance(output, str):
+
+        token = output.strip()
+
+        # remove starting ?
+        token = token.lstrip("?")
+
+        if "Key-Pair-Id" not in token:
+            raise Exception(
+                "CloudFront token missing Key-Pair-Id"
+            )
+
+        print("Token OK")
+
+        return token
+
+
+    # JSON token object
+    if isinstance(output, dict):
+
+        required = [
+            "Expires",
+            "Signature",
+            "Key-Pair-Id"
+        ]
+
+        for key in required:
+            if key not in output:
+                raise Exception(
+                    f"Missing CloudFront field: {key}"
+                )
+
+
+        token = urlencode({
+            "Expires": output["Expires"],
+            "Signature": output["Signature"],
+            "Key-Pair-Id": output["Key-Pair-Id"]
+        })
+
+
+        print("Token OK")
+
+        return token
+
+
+
+    raise Exception(
+        "Unknown token format"
     )
-
-
-    if not token:
-
-        raise Exception(
-            "Token not found"
-        )
-
-
-    print("Token OK")
-
-    return token
-
 
 
 
 def get_channels():
 
     print("Getting channels...")
+
 
     r = requests.get(
         HOME_API,
@@ -78,19 +120,36 @@ def get_channels():
     data = r.json()
 
 
-    return data.get(
+    channels = data.get(
         "channel_list",
         []
     )
+
+
+    if not channels:
+        raise Exception(
+            "No channels found"
+        )
+
+
+    return channels
+
+
+
+
+def add_token(url, token):
+
+    if "?" in url:
+        return url + "&" + token
+
+    return url + "?" + token
 
 
 
 
 def create_playlist():
 
-
     token = get_cf_token()
-
 
     channels = get_channels()
 
@@ -101,7 +160,6 @@ def create_playlist():
     )
 
 
-
     with open(
         OUTPUT,
         "w",
@@ -109,10 +167,7 @@ def create_playlist():
     ) as f:
 
 
-        f.write(
-            "#EXTM3U\n"
-        )
-
+        f.write("#EXTM3U\n")
 
         f.write(
             "# Updated: "
@@ -121,18 +176,19 @@ def create_playlist():
         )
 
 
+        count = 0
+
 
         for ch in channels:
 
 
             if ch.get("status") != "online":
-
                 continue
 
 
-
             channel_id = ch.get(
-                "channel_id"
+                "channel_id",
+                ""
             )
 
 
@@ -148,30 +204,37 @@ def create_playlist():
             )
 
 
+            base = ch.get(
+                "base_url"
+            )
+
+
+            identifier = ch.get(
+                "identifier"
+            )
+
+
+            if not base or not identifier:
+                continue
+
 
             stream = (
-                ch.get("base_url")
-                + ch.get("identifier")
+                base
+                + identifier
                 + "/index.m3u8"
             )
 
 
-
-            # CloudFront signed token add
-
-            stream = (
-                stream
-                + "?"
-                + token
+            stream = add_token(
+                stream,
+                token
             )
-
 
 
             print(
                 "Added:",
                 name
             )
-
 
 
             f.write(
@@ -183,9 +246,6 @@ def create_playlist():
                 f'{name}\n'
             )
 
-
-
-            # Player headers
 
             f.write(
                 "#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n"
@@ -203,22 +263,26 @@ def create_playlist():
             )
 
 
-
             f.write(
                 stream
                 + "\n\n"
             )
 
 
+            count += 1
+
+
 
     print("----------------------")
-
     print(
         "Playlist Updated:",
         OUTPUT
     )
 
-
+    print(
+        "Working streams:",
+        count
+    )
 
 
 
