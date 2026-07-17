@@ -10,7 +10,7 @@ HEADERS = {
 }
 
 
-def main():
+def create_playlist():
 
     r = requests.get(
         API,
@@ -25,7 +25,7 @@ def main():
     channels = data.get("channel_list", [])
 
     if not channels:
-        raise Exception("No channels found")
+        raise Exception("Channel list not found")
 
 
     with open(
@@ -35,6 +35,7 @@ def main():
     ) as f:
 
         f.write("#EXTM3U\n")
+
         f.write(
             "# Updated: "
             + str(datetime.now())
@@ -44,30 +45,58 @@ def main():
 
         for ch in channels:
 
-            name = ch.get("channel_name", "BTV")
-            logo = ch.get("poster", "")
+            name = ch.get(
+                "channel_name",
+                "BTV"
+            )
 
-            base = ch.get("base_url", "")
-            identifier = ch.get("identifier", "")
+            logo = ch.get(
+                "poster",
+                ""
+            )
 
-            if base and identifier:
+            base_url = ch.get(
+                "base_url",
+                ""
+            )
 
-                url = (
-                    base
+            identifier = ch.get(
+                "identifier",
+                ""
+            )
+
+
+            if base_url and identifier:
+
+                stream = (
+                    base_url
                     + identifier
                     + "/playlist.m3u8"
                 )
 
+
                 f.write(
-                    f'#EXTINF:-1 tvg-logo="{logo}",{name}\n'
+                    '#EXTINF:-1 '
+                    f'tvg-id="{identifier}" '
+                    f'tvg-logo="{logo}",'
+                    f'{name}\n'
                 )
 
-                f.write(url + "\n\n")
+
+                f.write(
+                    '#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n'
+                )
 
 
-    print("Created bdt.m3u8")
+                f.write(
+                    stream
+                    + "\n\n"
+                )
+
+
+    print("Created:", OUTPUT)
     print("Channels:", len(channels))
 
 
 if __name__ == "__main__":
-    main()
+    create_playlist()
