@@ -1,55 +1,28 @@
-# bd.py
-
 import requests
 
 API = "https://www.btvlive.gov.bd/api/home"
-OUTPUT = "bdtv.m3u8"
+OUTPUT = "bdt.m3u8"
 
-HEADERS = {
+headers = {
     "User-Agent": "Mozilla/5.0"
 }
 
+r = requests.get(API, headers=headers, timeout=30)
+r.raise_for_status()
 
-def find_streams(obj, output):
-    if isinstance(obj, dict):
-        name = (
-            obj.get("name")
-            or obj.get("title")
-            or obj.get("channel_name")
-            or obj.get("channel")
-        )
+data = r.json()
 
-        url = (
-            obj.get("m3u8")
-            or obj.get("stream_url")
-            or obj.get("play_url")
-            or obj.get("url")
-        )
+with open(OUTPUT, "w", encoding="utf-8") as f:
+    f.write("#EXTM3U\n\n")
 
-        if name and url and ".m3u8" in url:
-            output.write(f"#EXTINF:-1,{name}\n")
-            output.write(url + "\n")
+    channels = data.get("channel_list", [])
 
-        for value in obj.values():
-            find_streams(value, output)
+    for ch in channels:
+        name = ch.get("channel_name", "BTV")
+        url = ch.get("count_url", "").strip()
 
-    elif isinstance(obj, list):
-        for item in obj:
-            find_streams(item, output)
+        if ".m3u8" in url:
+            f.write(f'#EXTINF:-1 tvg-name="{name}",{name}\n')
+            f.write(url + "\n\n")
 
-
-def main():
-    r = requests.get(API, headers=HEADERS, timeout=30)
-    r.raise_for_status()
-
-    data = r.json()
-
-    with open(OUTPUT, "w", encoding="utf-8") as output:
-        output.write("#EXTM3U\n")
-        find_streams(data, output)
-
-    print(f"Done! Created {OUTPUT}")
-
-
-if __name__ == "__main__":
-    main()
+print(f"Created {OUTPUT}")
