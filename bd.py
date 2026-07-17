@@ -1,28 +1,30 @@
 import requests
-import json
+from datetime import datetime
 
 API = "https://www.btvlive.gov.bd/api/home"
 OUTPUT = "bdt.m3u8"
 
-headers = {
+HEADERS = {
     "User-Agent": "Mozilla/5.0",
     "Referer": "https://www.btvlive.gov.bd/"
 }
 
 
-def main():
+def create_playlist():
 
-    r = requests.get(API, headers=headers, timeout=30)
-    print("Status:", r.status_code)
+    session = requests.Session()
+
+    r = session.get(
+        API,
+        headers=HEADERS,
+        timeout=30
+    )
+
+    r.raise_for_status()
 
     data = r.json()
 
-    print("Keys:", data.keys())
-
     channels = data.get("channel_list", [])
-
-    print("Channels:", len(channels))
-
 
     with open(OUTPUT, "w", encoding="utf-8") as f:
 
@@ -30,25 +32,35 @@ def main():
 
         for ch in channels:
 
-            name = ch.get("channel_name")
-            logo = ch.get("poster")
-            url = ch.get("count_url")
+            name = ch.get("channel_name", "BTV")
+            logo = ch.get("poster", "")
 
-            print(name, url)
+            base = ch.get("base_url", "")
+            identifier = ch.get("identifier", "")
 
-            if url:
+            if base and identifier:
 
-                f.write(
-                    f'#EXTINF:-1 tvg-logo="{logo}",{name}\n'
+                stream = (
+                    base
+                    + identifier
+                    + "/playlist.m3u8"
                 )
 
                 f.write(
-                    url + "\n\n"
+                    f'#EXTINF:-1 tvg-logo="{logo}" tvg-name="{name}",{name}\n'
+                )
+
+                f.write(
+                    f'#EXTVLCOPT:http-referrer={HEADERS["Referer"]}\n'
+                )
+
+                f.write(
+                    stream + "\n\n"
                 )
 
 
-    print("DONE:", OUTPUT)
+    print("Created", OUTPUT, datetime.now())
 
 
 if __name__ == "__main__":
-    main()
+    create_playlist()
