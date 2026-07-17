@@ -1,5 +1,5 @@
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 
 API = "https://www.btvlive.gov.bd/api/home"
 OUTPUT = "bdt.m3u8"
@@ -10,7 +10,7 @@ HEADERS = {
 }
 
 
-def create_playlist():
+def generate_playlist():
 
     session = requests.Session()
 
@@ -27,20 +27,46 @@ def create_playlist():
     channels = data.get("channel_list", [])
 
     if not channels:
-        raise Exception("No channel found")
+        raise Exception("Channel list empty")
 
 
-    with open(OUTPUT, "w", encoding="utf-8") as f:
+    now = datetime.now(timezone.utc).strftime(
+        "%Y-%m-%d %H:%M:%S UTC"
+    )
+
+
+    with open(
+        OUTPUT,
+        "w",
+        encoding="utf-8"
+    ) as f:
 
         f.write("#EXTM3U\n")
+        f.write(f"# Updated: {now}\n\n")
+
 
         for ch in channels:
 
-            name = ch.get("channel_name", "BTV")
-            logo = ch.get("poster", "")
+            name = ch.get(
+                "channel_name",
+                "BTV"
+            )
 
-            base_url = ch.get("base_url", "")
-            identifier = ch.get("identifier", "")
+            logo = ch.get(
+                "poster",
+                ""
+            )
+
+            base_url = ch.get(
+                "base_url",
+                ""
+            )
+
+            identifier = ch.get(
+                "identifier",
+                ""
+            )
+
 
             if base_url and identifier:
 
@@ -50,13 +76,16 @@ def create_playlist():
                     + "/playlist.m3u8"
                 )
 
+
                 f.write(
-                    f'#EXTINF:-1 tvg-id="{identifier}" '
-                    f'tvg-logo="{logo}",{name}\n'
+                    f'#EXTINF:-1 '
+                    f'tvg-id="{identifier}" '
+                    f'tvg-logo="{logo}",'
+                    f'{name}\n'
                 )
 
                 f.write(
-                    f'#EXTVLCOPT:http-referrer={HEADERS["Referer"]}\n'
+                    f'#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n'
                 )
 
                 f.write(
@@ -64,10 +93,11 @@ def create_playlist():
                 )
 
 
-    print("Updated:", OUTPUT)
-    print("Channels:", len(channels))
-    print(datetime.now())
+    print("Created:", OUTPUT)
+    print("Channel:", len(channels))
+    print("Updated:", now)
+
 
 
 if __name__ == "__main__":
-    create_playlist()
+    generate_playlist()
