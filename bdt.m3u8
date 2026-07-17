@@ -1,9 +1,14 @@
 #EXTM3U
-#EXTINF:-1,বিটিভি
+
+#EXTINF:-1 tvg-logo="https://d38ll44lbmt52p.cloudfront.net/cms/channel_poster/1677040358634_BTVogo.png",বিটিভি
 http://209.58.168.113:1935/live/BTV/playlist.m3u8
-#EXTINF:-1,বিটিভি নিউজ
+
+#EXTINF:-1 tvg-logo="https://d38ll44lbmt52p.cloudfront.net/cms/channel_poster/1735648543857_Poster.jpg",বিটিভি নিউজ
 http://209.58.168.113:1935/live/BTV/playlist.m3u8
-#EXTINF:-1,বিটিভি চট্টগ্রাম
+
+#EXTINF:-1 tvg-logo="https://d38ll44lbmt52p.cloudfront.net/cms/channel_poster/1676193167149_3.png",বিটিভি চট্টগ্রাম
 http://209.58.168.113:1935/live/BTV/playlist.m3u8
-#EXTINF:-1,সংসদ টেলিভিশন
+
+#EXTINF:-1 tvg-logo="https://d38ll44lbmt52p.cloudfront.net/cms/channel_poster/1676193184888_2.png",সংসদ টেলিভিশন
 http://209.58.168.113:1935/live/BTV/playlist.m3u8
+
