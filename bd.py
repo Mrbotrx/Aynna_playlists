@@ -14,44 +14,31 @@ HEADERS = {
 }
 
 
-def main():
+def update_playlist():
 
-    print("Fetching BTV API...")
-
-    r = requests.get(
+    response = requests.get(
         API_URL,
         headers=HEADERS,
         timeout=30
     )
 
-    r.raise_for_status()
+    response.raise_for_status()
 
-    data = r.json()
+    data = response.json()
 
-    channels = data.get(
-        "channel_list",
-        []
-    )
+    channels = data.get("channel_list", [])
 
-
-    print(
-        "Channels:",
-        len(channels)
-    )
+    print("Total channels:", len(channels))
 
 
     with open(
         OUTPUT,
         "w",
         encoding="utf-8"
-    ) as f:
+    ) as file:
 
-
-        f.write(
-            "#EXTM3U\n"
-        )
-
-        f.write(
+        file.write("#EXTM3U\n")
+        file.write(
             "# Updated: "
             + str(datetime.now())
             + "\n\n"
@@ -59,7 +46,6 @@ def main():
 
 
         for ch in channels:
-
 
             if ch.get("status") != "online":
                 continue
@@ -77,7 +63,7 @@ def main():
             )
 
 
-            f.write(
+            file.write(
                 f'#EXTINF:-1 '
                 f'tvg-id="{cid}" '
                 f'tvg-name="{name}" '
@@ -87,30 +73,27 @@ def main():
             )
 
 
-            f.write(
+            file.write(
                 "#EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/\n"
             )
 
-            f.write(
+            file.write(
                 "#EXTVLCOPT:http-origin=https://www.btvlive.gov.bd\n"
             )
 
-            f.write(
+            file.write(
                 "#EXTVLCOPT:http-user-agent=Mozilla/5.0\n"
             )
 
 
-            f.write(
-                stream
-                + "\n\n"
+            file.write(
+                stream + "\n\n"
             )
 
 
-    print(
-        "Updated:",
-        OUTPUT
-    )
+    print("Updated:", OUTPUT)
+
 
 
 if __name__ == "__main__":
-    main()
+    update_playlist()
