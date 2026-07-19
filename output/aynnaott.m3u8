@@ -15,30 +15,27 @@ https://tvsen7.aynascope.net/zY3hJ7pQ2vM5gD8s/index.m3u8
 #EXTINF:-1 tvg-name="Bleav Football" tvg-logo="" group-title="live-tvs",Bleav Football
 https://linear-493.frequency.stream/dist/glewedtv/493/hls/master/playlist.m3u8
 
-#EXTINF:-1 tvg-name="T Sports HD" tvg-logo="" group-title="live-tvs",T Sports HD
-https://tencdn.aynaott.com/eulink_out/TsportsHD_pc/playlist.m3u8
+#EXTINF:-1 tvg-name="Fox Weather " tvg-logo="" group-title="live-tvs",Fox Weather 
+https://247wlive.foxweather.com/stream/index.m3u8
 
 #EXTINF:-1 tvg-name="ABN " tvg-logo="" group-title="live-tvs",ABN 
 https://mediaserver.abnvideos.com/streams/abnurdu.m3u8
 
+#EXTINF:-1 tvg-name="Sky News Weather" tvg-logo="" group-title="live-tvs",Sky News Weather
+https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8
+
 #EXTINF:-1 tvg-name="Weather SPY" tvg-logo="" group-title="live-tvs",Weather SPY
 https://jukin-weatherspy-2-in.samsung.wurl.tv/playlist.m3u8
 
-#EXTINF:-1 tvg-name="Fox Weather " tvg-logo="" group-title="live-tvs",Fox Weather 
-https://247wlive.foxweather.com/stream/index.m3u8
+#EXTINF:-1 tvg-name="BBC News" tvg-logo="" group-title="live-tvs",BBC News
+https://tvsen1.aynaott.com/shn6jGTk/index.m3u8
 
 #EXTINF:-1 tvg-name="Accu Weather" tvg-logo="" group-title="live-tvs",Accu Weather
 https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00684-accuweather-accuweather-plex/playlist.m3u8
-
-#EXTINF:-1 tvg-name="BBC News" tvg-logo="" group-title="live-tvs",BBC News
-https://tvsen1.aynaott.com/shn6jGTk/index.m3u8
 
 #EXTINF:-1 tvg-name="Iran Press" tvg-logo="" group-title="live-tvs",Iran Press
 https://live.presstv.ir/hls/presstv_5_482/index.m3u8
 
 #EXTINF:-1 tvg-name="India Today" tvg-logo="" group-title="live-tvs",India Today
 https://feeds.intoday.in/hltapps/api/master.m3u8
-
-#EXTINF:-1 tvg-name="Sky News Weather" tvg-logo="" group-title="live-tvs",Sky News Weather
-https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8
 
