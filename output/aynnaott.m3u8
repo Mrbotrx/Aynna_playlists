@@ -6,17 +6,17 @@ https://4397879b.wurl.com/master/f36d25e7e52f1ba8d7e56eb859c636563214f541/UmFrdX
 #EXTINF:-1 tvg-name="Bein Sports 1" tvg-logo="" group-title="live-tvs",Bein Sports 1
 https://1nyaler.streamhostingcdn.top/stream/23/index.m3u8
 
-#EXTINF:-1 tvg-name="DD Sports" tvg-logo="" group-title="live-tvs",DD Sports
-https://cdn-6.pishow.tv/live/13/master.m3u8
+#EXTINF:-1 tvg-name="PTV Sports" tvg-logo="" group-title="live-tvs",PTV Sports
+https://tvsen7.aynascope.net/zY3hJ7pQ2vM5gD8s/index.m3u8
 
 #EXTINF:-1 tvg-name="TSN 1" tvg-logo="" group-title="live-tvs",TSN 1
 https://tvsen7.aynascope.net/tsn1/index.m3u8
 
-#EXTINF:-1 tvg-name="PTV Sports" tvg-logo="" group-title="live-tvs",PTV Sports
-https://tvsen7.aynascope.net/zY3hJ7pQ2vM5gD8s/index.m3u8
-
 #EXTINF:-1 tvg-name="Unite8 Sports 2" tvg-logo="" group-title="live-tvs",Unite8 Sports 2
 https://tvsen7.aynascope.net/Sports1/index.m3u8
+
+#EXTINF:-1 tvg-name="DD Sports" tvg-logo="" group-title="live-tvs",DD Sports
+https://cdn-6.pishow.tv/live/13/master.m3u8
 
 #EXTINF:-1 tvg-name="TSN 2" tvg-logo="" group-title="live-tvs",TSN 2
 https://tvsen7.aynascope.net/tsn2/index.m3u8
@@ -39,15 +39,15 @@ https://tvsen1.aynaott.com/shn6jGTk/index.m3u8
 #EXTINF:-1 tvg-name="Fox Weather " tvg-logo="" group-title="live-tvs",Fox Weather 
 https://247wlive.foxweather.com/stream/index.m3u8
 
-#EXTINF:-1 tvg-name="Sky News Weather" tvg-logo="" group-title="live-tvs",Sky News Weather
-https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8
-
 #EXTINF:-1 tvg-name="Accu Weather" tvg-logo="" group-title="live-tvs",Accu Weather
 https://cdn-ue1-prod.tsv2.amagi.tv/linear/amg00684-accuweather-accuweather-plex/playlist.m3u8
 
-#EXTINF:-1 tvg-name="Iran Press" tvg-logo="" group-title="live-tvs",Iran Press
-https://live.presstv.ir/hls/presstv_5_482/index.m3u8
+#EXTINF:-1 tvg-name="Sky News Weather" tvg-logo="" group-title="live-tvs",Sky News Weather
+https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8
 
 #EXTINF:-1 tvg-name="India Today" tvg-logo="" group-title="live-tvs",India Today
 https://feeds.intoday.in/hltapps/api/master.m3u8
+
+#EXTINF:-1 tvg-name="Iran Press" tvg-logo="" group-title="live-tvs",Iran Press
+https://live.presstv.ir/hls/presstv_5_482/index.m3u8
 
