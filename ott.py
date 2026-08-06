@@ -18,12 +18,15 @@ if API_KEY:
     HEADERS["Authorization"] = f"Bearer {API_KEY}"
 
 
-def fetch_api():
+
+def fetch_json():
 
     if not API_URL:
-        raise Exception("API_URL_ottplus missing")
+        raise Exception(
+            "API_URL_ottplus missing"
+        )
 
-    print("Downloading API data...")
+    print("Downloading JSON API...")
 
     r = requests.get(
         API_URL,
@@ -31,41 +34,54 @@ def fetch_api():
         timeout=30
     )
 
-    print("API Status:", r.status_code)
+    print(
+        "API Status:",
+        r.status_code
+    )
+
+    print(
+        "Content-Type:",
+        r.headers.get("content-type")
+    )
+
 
     r.raise_for_status()
 
+
     data = r.json()
 
+
+    # Support common JSON formats
+
     if isinstance(data, dict):
-        for key in ["data", "channels", "results", "live"]:
+
+        for key in [
+            "data",
+            "channels",
+            "results",
+            "live",
+            "items"
+        ]:
+
             if key in data:
                 data = data[key]
                 break
 
-    return data
 
+    if not isinstance(data, list):
 
-
-def check_stream(url):
-
-    if not url:
-        return False
-
-    try:
-        r = requests.get(
-            url,
-            timeout=10,
-            stream=True,
-            headers={
-                "User-Agent": "Mozilla/5.0"
-            }
+        raise Exception(
+            "JSON channel list not found"
         )
 
-        return r.status_code == 200
 
-    except:
-        return False
+    print(
+        "Channels found:",
+        len(data)
+    )
+
+
+    return data
 
 
 
@@ -76,71 +92,128 @@ def get_stream(ch):
         or ch.get("stream")
         or ch.get("stream_url")
         or ch.get("m3u8")
+        or ch.get("play_url")
         or ""
     )
 
 
 
-def validate(ch):
+def check_url(url):
+
+    if not url:
+        return False
+
+    try:
+
+        r = requests.get(
+            url,
+            timeout=10,
+            stream=True,
+            headers={
+                "User-Agent":
+                "Mozilla/5.0"
+            }
+        )
+
+        return r.status_code == 200
+
+
+    except:
+
+        return False
+
+
+
+def check_channel(ch):
 
     stream = get_stream(ch)
 
-    if not check_stream(stream):
+    if not check_url(stream):
         return None
 
+
     return {
-        "name": ch.get("name", "Unknown"),
-        "logo": ch.get("logo", ""),
-        "group": ch.get("group", "OTTPLUS"),
-        "stream": stream
+
+        "name":
+            ch.get(
+                "name",
+                "Unknown"
+            ),
+
+        "logo":
+            ch.get(
+                "logo",
+                ""
+            ),
+
+        "group":
+            ch.get(
+                "group",
+                "OTTPLUS"
+            ),
+
+        "stream":
+            stream
     }
 
 
 
-def create_playlist(channels):
+def create_m3u(channels):
 
-    print("Checking channels...")
+    print(
+        "Checking streams..."
+    )
 
-    working = []
+    valid = []
 
-    with ThreadPoolExecutor(max_workers=20) as exe:
 
-        tasks = [
-            exe.submit(validate, ch)
+    with ThreadPoolExecutor(
+        max_workers=20
+    ) as executor:
+
+
+        jobs = [
+            executor.submit(
+                check_channel,
+                ch
+            )
             for ch in channels
         ]
 
-        for t in as_completed(tasks):
 
-            result = t.result()
+        for job in as_completed(jobs):
+
+            result = job.result()
 
             if result:
-                working.append(result)
+                valid.append(result)
 
 
-    # duplicate remove
+
+    # remove duplicates
 
     unique = {}
 
-    for ch in working:
+    for ch in valid:
         unique[ch["stream"]] = ch
 
 
-    working = list(unique.values())
+    valid = list(
+        unique.values()
+    )
 
 
-    working.sort(
-        key=lambda x:x["name"].lower()
+    valid.sort(
+        key=lambda x:
+        x["name"].lower()
     )
 
 
     print(
         "Working channels:",
-        len(working)
+        len(valid)
     )
 
-
-    # Always create file
 
     with open(
         OUTPUT_FILE,
@@ -148,9 +221,13 @@ def create_playlist(channels):
         encoding="utf-8"
     ) as f:
 
-        f.write("#EXTM3U\n")
 
-        for ch in working:
+        f.write(
+            "#EXTM3U\n"
+        )
+
+
+        for ch in valid:
 
             f.write(
                 f'#EXTINF:-1 '
@@ -161,7 +238,8 @@ def create_playlist(channels):
             )
 
             f.write(
-                ch["stream"] + "\n"
+                ch["stream"]
+                + "\n"
             )
 
 
@@ -174,12 +252,13 @@ def create_playlist(channels):
 
 def main():
 
-    channels = fetch_api()
+    channels = fetch_json()
 
-    create_playlist(
+    create_m3u(
         channels
     )
 
 
 if __name__ == "__main__":
+
     main()
