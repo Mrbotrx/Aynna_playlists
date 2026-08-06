@@ -1,9 +1,9 @@
 import os
+import time
 import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-# GitHub Secrets থেকে নেওয়া হবে
 API_URL = os.getenv("API_URL_ottplus")
 API_KEY = os.getenv("API_KEY")
 
@@ -12,60 +12,123 @@ OUTPUT_FILE = "OTTPLUS.m3u8"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0",
-    "Accept": "application/json"
+    "Accept": "application/json",
+    "Connection": "keep-alive"
 }
+
 
 if API_KEY:
     HEADERS["Authorization"] = f"Bearer {API_KEY}"
 
 
-def check_url(url, timeout=10):
+
+def request_api(url, retry=3):
+
+    for attempt in range(retry):
+
+        try:
+
+            response = requests.get(
+                url,
+                headers=HEADERS,
+                timeout=30
+            )
+
+
+            print(
+                "API Status:",
+                response.status_code
+            )
+
+
+            if response.status_code == 403:
+
+                print(
+                    "403 Forbidden: API rejected request"
+                )
+
+                print(
+                    response.text[:300]
+                )
+
+                return None
+
+
+            response.raise_for_status()
+
+            return response.json()
+
+
+        except Exception as e:
+
+            print(
+                f"Attempt {attempt+1} failed:",
+                e
+            )
+
+            time.sleep(3)
+
+
+    return None
+
+
+
+
+def check_url(url):
+
     if not url:
         return False
 
+
     try:
-        response = requests.get(
+
+        r = requests.get(
             url,
             headers={
-                "User-Agent": "Mozilla/5.0"
+                "User-Agent":
+                "Mozilla/5.0"
             },
-            timeout=timeout,
-            stream=True,
-            allow_redirects=True
+            timeout=10,
+            stream=True
         )
 
-        return response.status_code == 200
 
-    except requests.RequestException:
+        return r.status_code == 200
+
+
+    except:
+
         return False
 
 
 
-def get_stream(channel):
+
+def get_stream(item):
 
     return (
-        channel.get("url")
-        or channel.get("stream_url")
-        or channel.get("stream")
-        or channel.get("m3u8")
+        item.get("url")
+        or item.get("stream")
+        or item.get("stream_url")
+        or item.get("m3u8")
         or ""
     )
 
 
 
-def check_channel(channel):
 
-    name = channel.get(
+def validate(item):
+
+    name = item.get(
         "name",
         "Unknown"
     )
 
-    logo = channel.get(
+    logo = item.get(
         "logo",
         ""
     )
 
-    stream = get_stream(channel)
+    stream = get_stream(item)
 
 
     if not stream:
@@ -76,48 +139,53 @@ def check_channel(channel):
         return None
 
 
-    # Logo check
-    if logo and not check_url(logo):
-        logo = ""
-
 
     return {
+
         "name": name,
+
         "logo": logo,
-        "stream": stream,
-        "group": channel.get(
-            "group",
-            "OTTPLUS"
-        )
+
+        "group":
+            item.get(
+                "group",
+                "OTTPLUS"
+            ),
+
+        "stream": stream
+
     }
 
 
 
-def fetch_api():
+
+def fetch_channels():
+
 
     if not API_URL:
+
         raise Exception(
-            "Missing API_URL_ottplus"
+            "API_URL_ottplus missing"
         )
 
 
-    print("Downloading API data...")
-
-
-    response = requests.get(
-        API_URL,
-        headers=HEADERS,
-        timeout=30
+    print(
+        "Downloading API data..."
     )
 
 
-    response.raise_for_status()
+    data = request_api(
+        API_URL
+    )
 
 
-    data = response.json()
+    if data is None:
+
+        raise Exception(
+            "API request failed"
+        )
 
 
-    # যদি API response এ list এর ভিতরে data থাকে
     if isinstance(data, dict):
 
         for key in [
@@ -126,12 +194,23 @@ def fetch_api():
             "results",
             "live"
         ]:
+
             if key in data:
+
                 data = data[key]
+
                 break
 
 
+
+    print(
+        "Total channels:",
+        len(data)
+    )
+
+
     return data
+
 
 
 
@@ -139,7 +218,7 @@ def create_m3u(channels):
 
 
     print(
-        "Checking channels..."
+        "Checking streams..."
     )
 
 
@@ -152,11 +231,14 @@ def create_m3u(channels):
 
 
         jobs = [
+
             executor.submit(
-                check_channel,
+                validate,
                 ch
             )
+
             for ch in channels
+
         ]
 
 
@@ -165,18 +247,21 @@ def create_m3u(channels):
             result = job.result()
 
             if result:
+
                 working.append(result)
 
 
 
-    # Duplicate remove
+    # remove duplicate
 
     unique = {}
 
-    for channel in working:
+    for ch in working:
+
         unique[
-            channel["stream"]
-        ] = channel
+            ch["stream"]
+        ] = ch
+
 
 
     working = list(
@@ -184,7 +269,6 @@ def create_m3u(channels):
     )
 
 
-    # Alphabetical sorting
 
     working.sort(
         key=lambda x:
@@ -197,10 +281,10 @@ def create_m3u(channels):
         OUTPUT_FILE,
         "w",
         encoding="utf-8"
-    ) as file:
+    ) as f:
 
 
-        file.write(
+        f.write(
             "#EXTM3U\n"
         )
 
@@ -208,41 +292,41 @@ def create_m3u(channels):
         for ch in working:
 
 
-            file.write(
+            f.write(
+
                 f'#EXTINF:-1 '
                 f'tvg-name="{ch["name"]}" '
                 f'tvg-logo="{ch["logo"]}" '
                 f'group-title="{ch["group"]}",'
                 f'{ch["name"]}\n'
+
             )
 
 
-            file.write(
-                ch["stream"] +
-                "\n"
+            f.write(
+                ch["stream"]
+                + "\n"
             )
 
 
 
     print(
-        "Finished"
+        "Created:",
+        OUTPUT_FILE
     )
 
     print(
-        "Working channels:",
+        "Working:",
         len(working)
     )
 
-    print(
-        "Output:",
-        OUTPUT_FILE
-    )
 
 
 
 def main():
 
-    channels = fetch_api()
+
+    channels = fetch_channels()
 
     create_m3u(
         channels
@@ -251,4 +335,5 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
