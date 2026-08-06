@@ -1,4 +1,4 @@
-name: OTTPLUS Update
+name: OTTPLUS Auto Update
 
 on:
   workflow_dispatch:
@@ -13,9 +13,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+
     steps:
 
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v4
 
 
@@ -25,12 +26,12 @@ jobs:
         python-version: "3.12"
 
 
-    - name: Install
+    - name: Install dependencies
       run: |
-        pip install requests
+        pip install -r requirements.txt
 
 
-    - name: Generate playlist
+    - name: Run OTT generator
       env:
         API_URL_ottplus: ${{ secrets.API_URL_ottplus }}
         API_KEY: ${{ secrets.API_KEY }}
@@ -38,25 +39,27 @@ jobs:
         python ott.py
 
 
-    - name: Check output
+    - name: Verify playlist
       run: |
+        echo "Checking files..."
         ls -la
-        if [ -f OTTPLUS.m3u8 ]; then
-          echo "OTTPLUS.m3u8 created"
-          wc -l OTTPLUS.m3u8
-        else
-          echo "OTTPLUS.m3u8 missing"
+
+        if [ ! -f OTTPLUS.m3u8 ]; then
+          echo "ERROR: OTTPLUS.m3u8 not found"
           exit 1
         fi
 
+        echo "OTTPLUS.m3u8 created successfully"
+        wc -l OTTPLUS.m3u8
 
-    - name: Commit
+
+    - name: Commit playlist
       run: |
         git config user.name "github-actions"
         git config user.email "actions@github.com"
 
         git add OTTPLUS.m3u8
 
-        git commit -m "Update OTTPLUS playlist" || true
+        git commit -m "Auto update OTTPLUS playlist" || echo "No changes"
 
         git push
