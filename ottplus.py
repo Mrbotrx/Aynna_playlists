@@ -1,20 +1,17 @@
 import os
+import sys
 import json
 import requests
 from pathlib import Path
-from html import escape
 
 
 # ============================================================
 # CONFIG
 # ============================================================
 
-# API URL এখানে লিখবেন না।
-# Environment variable থেকে নেওয়া হবে।
 API_URL = os.getenv("OTTPLUS_API_URL")
 
-OUTPUT_FILE = "ottplus.m3u8"
-JSON_BACKUP = "ottplus.json"
+OUTPUT_FILE = Path("ottplus.m3u8")
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0",
@@ -27,10 +24,13 @@ HEADERS = {
 # ============================================================
 
 def fetch_api():
+
     if not API_URL:
         raise RuntimeError(
-            "OTTPLUS_API_URL environment variable is not set."
+            "OTTPLUS_API_URL GitHub Secret/Environment Variable is missing."
         )
+
+    print("Fetching API...")
 
     response = requests.get(
         API_URL,
@@ -38,27 +38,27 @@ def fetch_api():
         timeout=30
     )
 
+    print("HTTP Status:", response.status_code)
+
     response.raise_for_status()
 
     return response.json()
 
 
 # ============================================================
-# FIND LOGO
+# LOGO
 # ============================================================
 
 def get_logo(content):
-    logo_fields = [
+
+    for field in [
         "tv_cover",
         "thumbnail",
         "thumbnail_background",
         "poster",
         "poster_background",
-        "lg_image",
-        "sm_image",
-    ]
+    ]:
 
-    for field in logo_fields:
         value = content.get(field)
 
         if value:
@@ -81,14 +81,25 @@ def extract_channels(data):
     sections = result.get("sections", [])
 
     if not isinstance(sections, list):
-        return channels
+        raise RuntimeError(
+            "API response does not contain result.sections"
+        )
+
+    print("Sections:", len(sections))
 
     for section in sections:
+
+        section_title = section.get("title", "")
 
         items = section.get("items", [])
 
         if not isinstance(items, list):
             continue
+
+        print(
+            f"Section: {section_title} | "
+            f"Items: {len(items)}"
+        )
 
         for item in items:
 
@@ -104,7 +115,7 @@ def extract_channels(data):
 
             stream_url = str(stream_url).strip()
 
-            # Remove duplicate streams
+            # Duplicate check
             if stream_url in seen_urls:
                 continue
 
@@ -126,34 +137,28 @@ def extract_channels(data):
                 or ""
             )
 
-            channel_type = (
-                content.get("type")
-                or "live-tvs"
-            )
-
             channels.append({
                 "id": str(channel_id),
                 "name": name,
                 "logo": logo,
                 "url": stream_url,
-                "type": str(channel_type),
             })
 
     return channels
 
 
 # ============================================================
-# ESCAPE M3U ATTRIBUTE
+# CLEAN M3U TEXT
 # ============================================================
 
-def clean_attribute(value):
-    value = str(value or "")
+def clean_text(value):
 
     return (
-        value
+        str(value or "")
         .replace('"', "'")
         .replace("\r", "")
         .replace("\n", " ")
+        .strip()
     )
 
 
@@ -169,12 +174,12 @@ def create_m3u(channels):
 
     for channel in channels:
 
-        channel_id = clean_attribute(channel["id"])
-        name = clean_attribute(channel["name"])
-        logo = clean_attribute(channel["logo"])
+        channel_id = clean_text(channel["id"])
+        name = clean_text(channel["name"])
+        logo = clean_text(channel["logo"])
         url = channel["url"]
 
-        extinf = (
+        lines.append(
             '#EXTINF:-1 '
             f'tvg-id="{channel_id}" '
             f'tvg-name="{name}" '
@@ -183,22 +188,9 @@ def create_m3u(channels):
             f'{name}'
         )
 
-        lines.append(extinf)
         lines.append(url)
 
     return "\n".join(lines) + "\n"
-
-
-# ============================================================
-# SAVE M3U8
-# ============================================================
-
-def save_playlist(content):
-
-    Path(OUTPUT_FILE).write_text(
-        content,
-        encoding="utf-8"
-    )
 
 
 # ============================================================
@@ -207,72 +199,134 @@ def save_playlist(content):
 
 def main():
 
-    print("================================")
-    print(" OTTPlus Live TV M3U Generator")
-    print("================================")
+    print("==========================================")
+    print("       OTTPlus M3U8 Generator")
+    print("==========================================")
 
     try:
 
-        print("[1] Fetching API...")
+        # ------------------------------------
+        # API
+        # ------------------------------------
 
         data = fetch_api()
 
-        # Save JSON locally.
-        # চাইলে এই অংশটি remove করতে পারেন।
-        Path(JSON_BACKUP).write_text(
-            json.dumps(
-                data,
-                indent=2,
-                ensure_ascii=False
-            ),
-            encoding="utf-8"
-        )
+        # ------------------------------------
+        # Basic API validation
+        # ------------------------------------
 
-        print("[2] Extracting channels...")
+        if data.get("success") is False:
+            raise RuntimeError(
+                f"API returned success=false: "
+                f"{data.get('message', 'Unknown error')}"
+            )
+
+        # ------------------------------------
+        # Extract
+        # ------------------------------------
 
         channels = extract_channels(data)
 
+        print()
+        print("Channels found:", len(channels))
+
         if not channels:
-            print("[!] No channels found.")
-            return
+            raise RuntimeError(
+                "No live TV channels found in API response."
+            )
 
-        print(f"[+] Channels found: {len(channels)}")
-
-        print("[3] Creating M3U8...")
+        # ------------------------------------
+        # Create playlist
+        # ------------------------------------
 
         playlist = create_m3u(channels)
 
-        save_playlist(playlist)
+        OUTPUT_FILE.write_text(
+            playlist,
+            encoding="utf-8"
+        )
 
-        print()
-        print("================================")
-        print(f"Done: {OUTPUT_FILE}")
-        print(f"Channels: {len(channels)}")
-        print("================================")
-        print()
+        # ------------------------------------
+        # Verify file
+        # ------------------------------------
 
-        for number, channel in enumerate(channels, 1):
-            print(
-                f"{number:03d}. "
-                f"{channel['name']} -> "
-                f"{channel['url']}"
+        if not OUTPUT_FILE.exists():
+            raise RuntimeError(
+                "Playlist file was not created."
             )
 
+        file_size = OUTPUT_FILE.stat().st_size
+
+        if file_size == 0:
+            raise RuntimeError(
+                "Playlist file is empty."
+            )
+
+        print()
+        print("==========================================")
+        print("SUCCESS")
+        print("==========================================")
+        print("Output:", OUTPUT_FILE)
+        print("Channels:", len(channels))
+        print("Size:", file_size, "bytes")
+        print("==========================================")
+
+        print()
+        print("Channels:")
+
+        for i, channel in enumerate(channels, 1):
+
+            print(
+                f"{i}. {channel['name']}"
+            )
+
+        return 0
+
     except requests.exceptions.Timeout:
-        print("[ERROR] API request timed out.")
+
+        print(
+            "ERROR: API request timed out.",
+            file=sys.stderr
+        )
+
+        return 1
 
     except requests.exceptions.HTTPError as e:
-        print(f"[ERROR] HTTP error: {e}")
+
+        print(
+            f"ERROR: HTTP request failed: {e}",
+            file=sys.stderr
+        )
+
+        return 1
 
     except requests.exceptions.RequestException as e:
-        print(f"[ERROR] API request failed: {e}")
+
+        print(
+            f"ERROR: Network/API error: {e}",
+            file=sys.stderr
+        )
+
+        return 1
 
     except json.JSONDecodeError:
-        print("[ERROR] API did not return valid JSON.")
+
+        print(
+            "ERROR: API did not return valid JSON.",
+            file=sys.stderr
+        )
+
+        return 1
 
     except Exception as e:
-        print(f"[ERROR] {e}")
+
+        print(
+            f"ERROR: {e}",
+            file=sys.stderr
+        )
+
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
