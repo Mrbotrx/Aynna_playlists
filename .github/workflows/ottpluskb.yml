@@ -1,0 +1,35 @@
+name: OTTPlus Playlist Update
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Generate OTTPlus M3U8
+        env:
+          OTTPLUS_API_URL: ${{ secrets.OTTPLUS_API_URL }}
+        run: python ottplus.py
+
+      - name: Save updated playlist
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add ottplus.m3u8
+          git commit -m "Update OTTPlus playlist" || exit 0
+          git push
