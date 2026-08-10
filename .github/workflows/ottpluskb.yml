@@ -2,38 +2,24 @@
   env:
     OTTPLUS_API_URL: ${{ secrets.OTTPLUS_API_URL }}
   run: |
+    echo "Starting ottplus.py..."
     python ottplus.py
+    echo "Python finished with exit code: $?"
 
-- name: Check generated playlist
+- name: Debug output
+  if: always()
   run: |
-    echo "Current directory:"
+    echo "========== DIRECTORY =========="
     pwd
-
-    echo "Generated files:"
     ls -lah
 
-    if [ ! -f "ottplus.m3u8" ]; then
-      echo "ERROR: ottplus.m3u8 was not generated."
-      exit 1
-    fi
+    echo "========== M3U8 CHECK =========="
 
-    echo "Playlist successfully generated:"
-    ls -lh ottplus.m3u8
-
-    echo "Playlist preview:"
-    head -20 ottplus.m3u8
-
-- name: Commit and push playlist
-  run: |
-    git config user.name "github-actions[bot]"
-    git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-    git add ottplus.m3u8
-
-    if git diff --cached --quiet; then
-      echo "No changes to playlist."
-      exit 0
-    fi
-
-    git commit -m "Update OTTPlus playlist"
-    git push
+    if [ -f "ottplus.m3u8" ]; then
+      echo "FOUND: ottplus.m3u8"
+      ls -lh ottplus.m3u8
+      echo "----- PLAYLIST -----"
+      head -30 ottplus.m3u8
+    else
+      echo "NOT FOUND: ottplus.m3u8"
+    fifi
