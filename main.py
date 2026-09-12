@@ -12,30 +12,22 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 API_URL = os.environ.get("AYNAOTT_API_URL")
 
 OUTPUT_DIR = "output"
-
 PLAYLIST_FILE = os.path.join(
     OUTPUT_DIR,
     "aynnaott.m3u8"
 )
 
 MAX_WORKERS = 20
-
 CONNECT_TIMEOUT = 5
 READ_TIMEOUT = 5
-
 MAX_PLAYLIST_BYTES = 200000
 
-os.makedirs(
-    OUTPUT_DIR,
-    exist_ok=True
-)
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 
 # =========================================================
-# ALWAYS KEEP CHANNEL
+# ⭐ ALWAYS KEEP CHANNEL
 # =========================================================
-# This channel will ALWAYS be included.
-# It is NOT checked by the working-stream filter.
 
 ALWAYS_CHANNEL = {
     "name": "IPTV LINKS",
@@ -66,89 +58,52 @@ HEADERS = {
 
 
 # =========================================================
-# AUTO CATEGORY RULES
+# CATEGORY RULES
 # =========================================================
 
 CATEGORY_RULES = {
 
     "Sports": [
-        "sport",
-        "sports",
-        "espn",
-        "star sports",
-        "ten sports",
-        "sony sports",
-        "bein",
-        "bt sport",
-        "sky sport",
-        "supersport",
-        "cricket",
-        "cric",
-        "football",
-        "soccer",
-        "fifa",
-        "tennis",
-        "wwe",
-        "ufc",
-        "nba",
-        "nfl",
-        "olympic",
-        "olympics"
+        "sport", "sports", "espn",
+        "star sports", "ten sports",
+        "sony sports", "bein sports",
+        "bt sport", "sky sport",
+        "supersport", "cricket",
+        "football", "soccer", "fifa",
+        "tennis", "wwe", "ufc",
+        "nba", "nfl", "olympic"
     ],
 
     "News": [
-        "news",
-        "cnn",
-        "bbc news",
-        "al jazeera",
-        "reuters",
-        "ndtv",
-        "abp news",
-        "india today",
-        "times now",
-        "republic",
-        "zee news",
-        "news18",
-        "news 18",
-        "somoy",
-        "jamuna",
-        "ekattor",
-        "channel 24",
-        "ntv",
-        "independent",
-        "dbc",
-        "atn news"
+        "news", "cnn", "bbc news",
+        "al jazeera", "reuters",
+        "ndtv", "abp news",
+        "india today", "times now",
+        "republic", "zee news",
+        "news18", "news 18",
+        "somoy", "jamuna",
+        "ekattor", "channel 24",
+        "ntv", "dbc", "atn news",
+        "independent"
     ],
 
     "Movies": [
-        "movie",
-        "movies",
-        "cinema",
-        "film",
-        "films",
-        "hbo",
-        "star movies",
-        "sony max",
-        "sony pix",
+        "movie", "movies",
+        "cinema", "film", "films",
+        "hbo", "star movies",
+        "sony max", "sony pix",
         "zee cinema",
         "and pictures",
-        "bollywood",
-        "hollywood"
+        "bollywood", "hollywood"
     ],
 
     "Kids": [
-        "kids",
-        "cartoon",
-        "cartoons",
-        "nick",
-        "nickelodeon",
-        "disney",
-        "disney junior",
-        "pogo",
-        "hungama",
-        "sonic",
-        "baby",
-        "toons"
+        "kids", "cartoon",
+        "cartoons", "nick",
+        "nickelodeon", "disney",
+        "disney junior", "pogo",
+        "hungama", "sonic",
+        "baby", "toons"
     ],
 
     "Documentary": [
@@ -156,41 +111,29 @@ CATEGORY_RULES = {
         "discovery",
         "nat geo",
         "national geographic",
-        "history",
-        "animal planet",
-        "science",
-        "bbc earth"
+        "history", "animal planet",
+        "science", "bbc earth"
     ],
 
     "Music": [
-        "music",
-        "songs",
-        "mtv",
-        "vh1",
-        "9xm",
-        "9x music",
-        "mastiii",
-        "b4u music",
+        "music", "songs",
+        "mtv", "vh1",
+        "9xm", "9x music",
+        "mastiii", "b4u music",
         "zoom"
     ],
 
     "Lifestyle": [
-        "lifestyle",
-        "food",
-        "cooking",
-        "travel",
-        "fashion",
-        "fashion tv",
-        "home",
-        "living",
-        "tlc"
+        "lifestyle", "food",
+        "cooking", "travel",
+        "fashion", "fashion tv",
+        "home", "living", "tlc"
     ],
 
     "Bangla": [
         "bangla",
         "বাংলা",
         "bangladesh",
-        "bd",
         "somoy",
         "jamuna",
         "ekattor",
@@ -216,7 +159,7 @@ CATEGORY_RULES = {
         "sony entertainment",
         "zee tv",
         "zee cinema",
-        "&tv",
+        "and tv",
         "sab tv"
     ],
 
@@ -241,13 +184,6 @@ CATEGORY_RULES = {
         "star plus",
         "sony",
         "sab"
-    ],
-
-    "IPTV": [
-        "iptv",
-        "live tv",
-        "stream",
-        "channel"
     ]
 }
 
@@ -273,29 +209,308 @@ CATEGORY_ORDER = [
 
 
 # =========================================================
-# CLEAN TEXT
+# TEXT CLEAN
 # =========================================================
 
-def clean_text(text):
+def clean_text(value):
 
-    if not text:
+    if value is None:
         return ""
 
-    text = str(text).lower()
+    value = str(value).lower()
 
-    text = re.sub(
-        r"[_\-]+",
-        " ",
-        text
-    )
+    value = value.replace("_", " ")
+    value = value.replace("-", " ")
 
-    text = re.sub(
+    value = re.sub(
         r"\s+",
         " ",
-        text
+        value
     )
 
-    return text.strip()
+    return value.strip()
+
+
+# =========================================================
+# FIND URL
+# =========================================================
+
+def is_url(value):
+
+    if not isinstance(value, str):
+        return False
+
+    value = value.strip().lower()
+
+    return (
+        value.startswith("http://")
+        or value.startswith("https://")
+    )
+
+
+# =========================================================
+# FIND LOGO FROM OBJECT
+# =========================================================
+
+def find_logo(data):
+
+    if not isinstance(data, dict):
+        return ""
+
+
+    # Most common logo fields
+    logo_fields = [
+
+        "logo",
+        "logoUrl",
+        "logoURL",
+        "logo_url",
+
+        "channelLogo",
+        "channelLogoUrl",
+        "channel_logo",
+        "channel_logo_url",
+
+        "image",
+        "imageUrl",
+        "imageURL",
+        "image_url",
+
+        "thumbnail",
+        "thumbnailUrl",
+        "thumbnailURL",
+
+        "icon",
+        "iconUrl",
+        "iconURL",
+
+        "poster",
+        "posterUrl",
+
+        "picture",
+        "pictureUrl",
+
+        "avatar",
+        "avatarUrl",
+
+        "cover",
+        "coverUrl",
+
+        "artwork",
+        "artworkUrl"
+    ]
+
+
+    # Direct fields
+    for field in logo_fields:
+
+        value = data.get(field)
+
+        if is_url(value):
+            return value.strip()
+
+
+    # -----------------------------------------------------
+    # Nested logo object
+    # -----------------------------------------------------
+
+    for field in [
+        "logos",
+        "logo",
+        "image",
+        "images",
+        "artwork"
+    ]:
+
+        value = data.get(field)
+
+
+        if isinstance(value, dict):
+
+            for sub_key in [
+                "url",
+                "src",
+                "href",
+                "original",
+                "large",
+                "medium",
+                "small"
+            ]:
+
+                sub_value = value.get(sub_key)
+
+                if is_url(sub_value):
+                    return sub_value.strip()
+
+
+        elif isinstance(value, list):
+
+            for item in value:
+
+                if is_url(item):
+                    return item.strip()
+
+
+                if isinstance(item, dict):
+
+                    for sub_key in [
+                        "url",
+                        "src",
+                        "href",
+                        "original",
+                        "large",
+                        "medium",
+                        "small"
+                    ]:
+
+                        sub_value = item.get(
+                            sub_key
+                        )
+
+                        if is_url(sub_value):
+                            return sub_value.strip()
+
+
+    return ""
+
+
+# =========================================================
+# FIND CHANNEL NAME
+# =========================================================
+
+def find_channel_name(
+    data,
+    fallback="Unknown"
+):
+
+    if not isinstance(data, dict):
+        return fallback
+
+
+    fields = [
+
+        "name",
+        "channelName",
+        "channel_name",
+        "title",
+        "displayName",
+        "display_name",
+        "channel",
+        "stationName",
+        "station_name"
+    ]
+
+
+    for field in fields:
+
+        value = data.get(field)
+
+
+        if isinstance(value, str):
+
+            value = value.strip()
+
+            if value:
+                return value
+
+
+    return fallback
+
+
+# =========================================================
+# FIND CATEGORY FROM API
+# =========================================================
+
+def find_api_category(data):
+
+    if not isinstance(data, dict):
+        return ""
+
+
+    fields = [
+
+        "category",
+        "categoryName",
+        "category_name",
+
+        "group",
+        "groupName",
+        "group_name",
+
+        "genre",
+        "genreName",
+        "genre_name",
+
+        "type",
+        "channelType",
+        "channel_type",
+
+        "section",
+        "sectionName"
+    ]
+
+
+    values = []
+
+
+    for field in fields:
+
+        value = data.get(field)
+
+
+        if isinstance(value, str):
+
+            if value.strip():
+                values.append(
+                    value.strip()
+                )
+
+
+        elif isinstance(value, list):
+
+            for item in value:
+
+                if isinstance(item, str):
+                    values.append(item.strip())
+
+
+                elif isinstance(item, dict):
+
+                    for sub in [
+                        "name",
+                        "title",
+                        "label"
+                    ]:
+
+                        if isinstance(
+                            item.get(sub),
+                            str
+                        ):
+
+                            values.append(
+                                item[sub].strip()
+                            )
+
+
+        elif isinstance(value, dict):
+
+            for sub in [
+                "name",
+                "title",
+                "label"
+            ]:
+
+                if isinstance(
+                    value.get(sub),
+                    str
+                ):
+
+                    values.append(
+                        value[sub].strip()
+                    )
+
+
+    return " ".join(values)
 
 
 # =========================================================
@@ -304,33 +519,24 @@ def clean_text(text):
 
 def auto_category(
     name="",
-    api_group="",
-    api_category="",
-    api_genre="",
-    api_type=""
+    api_category=""
 ):
 
-    name_text = clean_text(
-        name
-    )
+    name_text = clean_text(name)
 
-    supplied = clean_text(
+    category_text = clean_text(
         api_category
-        or api_group
-        or api_genre
-        or api_type
-        or ""
     )
 
     combined = (
         name_text
         + " "
-        + supplied
+        + category_text
     ).strip()
 
 
     # -----------------------------------------------------
-    # RELIGION FILTER
+    # REMOVE RELIGION
     # -----------------------------------------------------
 
     religion_words = [
@@ -352,11 +558,11 @@ def auto_category(
         for word in religion_words
     ):
 
-        supplied = ""
+        return "IPTV"
 
 
     # -----------------------------------------------------
-    # CATEGORY PRIORITY
+    # SEARCH CATEGORY
     # -----------------------------------------------------
 
     priority = [
@@ -376,145 +582,65 @@ def auto_category(
 
     for category in priority:
 
-        keywords = CATEGORY_RULES.get(
+        for keyword in CATEGORY_RULES.get(
             category,
             []
-        )
-
-
-        for keyword in keywords:
+        ):
 
             keyword = clean_text(
                 keyword
             )
 
 
-            if keyword and keyword in combined:
+            if not keyword:
+                continue
 
-                return category
+
+            # Word-based match for short words
+            if len(keyword) <= 3:
+
+                pattern = (
+                    r"\b"
+                    + re.escape(keyword)
+                    + r"\b"
+                )
+
+                if re.search(
+                    pattern,
+                    combined
+                ):
+                    return category
+
+            else:
+
+                if keyword in combined:
+                    return category
 
 
     # -----------------------------------------------------
     # API CATEGORY
     # -----------------------------------------------------
 
-    if supplied:
+    if category_text:
 
-        api_name = supplied.title()
+        api_category_clean = (
+            category_text.strip()
+        )
 
 
-        if api_name.lower() not in [
-            "religion",
-            "religious"
-        ]:
+        if api_category_clean:
 
-            return api_name
+            return api_category_clean.title()
 
 
     # -----------------------------------------------------
-    # DEFAULT
+    # NOTHING FOUND
     # -----------------------------------------------------
+    # IMPORTANT:
+    # If category cannot be found,
+    # it ALWAYS goes to IPTV.
 
     return "IPTV"
-
-
-# =========================================================
-# AUTO LOGO
-# =========================================================
-
-def find_logo(
-    data,
-    inherited_logo=""
-):
-
-    if not isinstance(
-        data,
-        dict
-    ):
-
-        return inherited_logo
-
-
-    logo_fields = [
-
-        "logo",
-        "logoUrl",
-        "logo_url",
-
-        "channelLogo",
-        "channel_logo",
-
-        "image",
-        "imageUrl",
-        "image_url",
-
-        "thumbnail",
-        "thumbnailUrl",
-
-        "icon",
-        "iconUrl",
-
-        "poster",
-        "picture",
-        "avatar"
-    ]
-
-
-    for field in logo_fields:
-
-        value = data.get(
-            field
-        )
-
-
-        if isinstance(
-            value,
-            str
-        ):
-
-            value = value.strip()
-
-
-            if value.startswith(
-                "http://"
-            ) or value.startswith(
-                "https://"
-            ):
-
-                return value
-
-
-    return inherited_logo
-
-
-# =========================================================
-# NORMALIZE LOGO
-# =========================================================
-
-def normalize_logo(
-    logo
-):
-
-    if not logo:
-        return ""
-
-
-    logo = str(
-        logo
-    ).strip()
-
-
-    if not logo.startswith(
-        (
-            "http://",
-            "https://"
-        )
-    ):
-
-        return ""
-
-
-    return logo
 
 
 # =========================================================
@@ -526,12 +652,12 @@ def fetch_api():
     if not API_URL:
 
         raise Exception(
-            "AYNAOTT_API_URL missing"
+            "AYNAOTT_API_URL is missing"
         )
 
 
     print(
-        "Fetching API..."
+        "Fetching AYNNA OTT API..."
     )
 
 
@@ -552,19 +678,18 @@ def fetch_api():
 
 
 # =========================================================
-# FIND CHANNELS
+# RECURSIVE CHANNEL FINDER
 # =========================================================
 
 def find_channels(
     data,
     channels=None,
-    name="Unknown",
-    logo="",
-    group="Live TV"
+    parent_name="Unknown",
+    parent_logo="",
+    parent_category=""
 ):
 
     if channels is None:
-
         channels = []
 
 
@@ -572,99 +697,74 @@ def find_channels(
     # DICT
     # =====================================================
 
-    if isinstance(
-        data,
-        dict
-    ):
+    if isinstance(data, dict):
 
-        channel_name = (
-            data.get("name")
-            or data.get("title")
-            or data.get("channelName")
-            or data.get("channel_name")
-            or data.get("displayName")
-            or name
-        )
-
-
-        channel_logo = find_logo(
+        current_name = find_channel_name(
             data,
-            logo
+            parent_name
         )
 
 
-        api_group = (
-            data.get("group")
-            or data.get("groupName")
-            or ""
+        current_logo = (
+            find_logo(data)
+            or parent_logo
         )
 
 
-        api_category = (
-            data.get("category")
-            or ""
+        current_api_category = (
+            find_api_category(data)
+            or parent_category
         )
 
 
-        api_genre = (
-            data.get("genre")
-            or ""
-        )
-
-
-        api_type = (
-            data.get("type")
-            or ""
-        )
-
-
-        channel_group = auto_category(
-            channel_name,
-            api_group,
-            api_category,
-            api_genre,
-            api_type
+        current_group = auto_category(
+            current_name,
+            current_api_category
         )
 
 
         # -------------------------------------------------
-        # FIND M3U8
+        # Search ALL string fields for M3U8
+        # -------------------------------------------------
+
+        for key, value in data.items():
+
+            if not isinstance(
+                value,
+                str
+            ):
+                continue
+
+
+            urls = re.findall(
+                r'https?://[^\s"\'<>]+?\.m3u8(?:\?[^\s"\'<>]*)?',
+                value,
+                re.IGNORECASE
+            )
+
+
+            for stream_url in urls:
+
+                channels.append(
+                    {
+                        "name": current_name,
+
+                        "url": stream_url.strip(),
+
+                        "logo": current_logo,
+
+                        "group": current_group
+                    }
+                )
+
+
+        # -------------------------------------------------
+        # Recursive objects
         # -------------------------------------------------
 
         for value in data.values():
 
             if isinstance(
-                value,
-                str
-            ):
-
-                urls = re.findall(
-                    r'https?://[^\s"\'<>]+?\.m3u8(?:\?[^\s"\'<>]*)?',
-                    value,
-                    re.IGNORECASE
-                )
-
-
-                for stream_url in urls:
-
-                    channels.append(
-                        {
-                            "name": str(
-                                channel_name
-                            ).strip(),
-
-                            "url": stream_url.strip(),
-
-                            "logo": normalize_logo(
-                                channel_logo
-                            ),
-
-                            "group": channel_group
-                        }
-                    )
-
-
-            elif isinstance(
                 value,
                 (dict, list)
             ):
@@ -672,9 +772,9 @@ def find_channels(
                 find_channels(
                     value,
                     channels,
-                    channel_name,
-                    channel_logo,
-                    channel_group
+                    current_name,
+                    current_logo,
+                    current_api_category
                 )
 
 
@@ -682,19 +782,16 @@ def find_channels(
     # LIST
     # =====================================================
 
-    elif isinstance(
-        data,
-        list
-    ):
+    elif isinstance(data, list):
 
         for item in data:
 
             find_channels(
                 item,
                 channels,
-                name,
-                logo,
-                group
+                parent_name,
+                parent_logo,
+                parent_category
             )
 
 
@@ -702,35 +799,7 @@ def find_channels(
 
 
 # =========================================================
-# CLEAN CHANNEL NAME
-# =========================================================
-
-def clean_channel_name(
-    name
-):
-
-    if not name:
-
-        return "Unknown"
-
-
-    name = str(
-        name
-    ).strip()
-
-
-    name = re.sub(
-        r"\s+",
-        " ",
-        name
-    )
-
-
-    return name
-
-
-# =========================================================
-# REMOVE DUPLICATES
+# REMOVE DUPLICATE
 # =========================================================
 
 def remove_duplicate(
@@ -739,7 +808,7 @@ def remove_duplicate(
 
     result = []
 
-    seen_urls = set()
+    seen = set()
 
 
     for channel in channels:
@@ -751,36 +820,34 @@ def remove_duplicate(
 
 
         if not url:
-
             continue
 
 
-        url_key = url.lower()
+        key = url.lower()
 
 
-        if url_key in seen_urls:
-
+        if key in seen:
             continue
 
 
-        seen_urls.add(
-            url_key
-        )
+        seen.add(key)
 
 
-        name = clean_channel_name(
+        name = (
             channel.get(
                 "name",
                 "Unknown"
             )
+            or "Unknown"
         )
 
 
-        logo = normalize_logo(
+        logo = (
             channel.get(
                 "logo",
                 ""
             )
+            or ""
         )
 
 
@@ -795,9 +862,12 @@ def remove_duplicate(
 
         result.append(
             {
-                "name": name,
+                "name": name.strip(),
+
                 "url": url,
-                "logo": logo,
+
+                "logo": logo.strip(),
+
                 "group": group
             }
         )
@@ -817,8 +887,7 @@ def validate_m3u8_content(
     try:
 
         content_type = (
-            response.headers
-            .get(
+            response.headers.get(
                 "Content-Type",
                 ""
             )
@@ -832,7 +901,6 @@ def validate_m3u8_content(
 
 
         if not content:
-
             return False
 
 
@@ -845,35 +913,30 @@ def validate_m3u8_content(
         text_upper = text.upper()
 
 
-        # Master playlist
+        if "#EXTM3U" in text_upper:
+            return True
+
+
         if "#EXT-X-STREAM-INF" in text_upper:
-
             return True
 
 
-        # Media playlist
         if "#EXTINF" in text_upper:
-
             return True
 
 
-        # Other HLS playlist
         if "#EXT-X-TARGETDURATION" in text_upper:
-
             return True
 
 
-        # Content-Type fallback
         if (
             "mpegurl" in content_type
             or "m3u8" in content_type
         ):
-
             return True
 
 
     except Exception:
-
         pass
 
 
@@ -881,7 +944,7 @@ def validate_m3u8_content(
 
 
 # =========================================================
-# CHECK ONE CHANNEL
+# CHECK ONE STREAM
 # =========================================================
 
 def check_one_channel(
@@ -908,27 +971,12 @@ def check_one_channel(
         )
 
 
-        # -------------------------------------------------
-        # HTTP STATUS
-        # -------------------------------------------------
-
         if response.status_code != 200:
-
-            print(
-                "FAIL:",
-                channel["name"],
-                "| HTTP",
-                response.status_code
-            )
 
             response.close()
 
             return None
 
-
-        # -------------------------------------------------
-        # M3U8 VALIDATION
-        # -------------------------------------------------
 
         valid = validate_m3u8_content(
             response
@@ -939,37 +987,13 @@ def check_one_channel(
 
 
         if not valid:
-
-            print(
-                "FAIL:",
-                channel["name"],
-                "| Invalid M3U8"
-            )
-
             return None
-
-
-        # -------------------------------------------------
-        # WORKING
-        # -------------------------------------------------
-
-        print(
-            "OK:",
-            channel["name"],
-            "|",
-            channel["group"]
-        )
 
 
         return channel
 
 
     except Exception:
-
-        print(
-            "FAIL:",
-            channel["name"]
-        )
 
         return None
 
@@ -986,7 +1010,7 @@ def check_working_channels(
 
 
     print(
-        "\nChecking streams..."
+        "\nChecking M3U8 channels..."
     )
 
 
@@ -994,18 +1018,13 @@ def check_working_channels(
         max_workers=MAX_WORKERS
     ) as executor:
 
-
-        futures = []
-
-
-        for channel in channels:
-
-            futures.append(
-                executor.submit(
-                    check_one_channel,
-                    channel
-                )
+        futures = [
+            executor.submit(
+                check_one_channel,
+                channel
             )
+            for channel in channels
+        ]
 
 
         for future in as_completed(
@@ -1025,7 +1044,6 @@ def check_working_channels(
 
 
             except Exception:
-
                 pass
 
 
@@ -1033,7 +1051,7 @@ def check_working_channels(
 
 
 # =========================================================
-# ADD ALWAYS CHANNEL
+# ⭐ ALWAYS ADD IPTV LINKS
 # =========================================================
 
 def add_always_channel(
@@ -1045,11 +1063,8 @@ def add_always_channel(
     ].lower()
 
 
-    # -----------------------------------------------------
-    # Remove same URL if API already contains it
-    # -----------------------------------------------------
-
-    filtered = [
+    # Remove duplicate fixed URL
+    channels = [
         channel
         for channel in channels
         if channel.get(
@@ -1059,68 +1074,24 @@ def add_always_channel(
     ]
 
 
-    # -----------------------------------------------------
-    # ALWAYS ADD
-    # -----------------------------------------------------
-
-    filtered.append(
+    # ALWAYS append
+    channels.append(
         ALWAYS_CHANNEL.copy()
     )
 
 
-    return filtered
+    return channels
 
 
 # =========================================================
-# M3U ESCAPE
-# =========================================================
-
-def m3u_escape(
-    value
-):
-
-    if value is None:
-
-        return ""
-
-
-    value = str(
-        value
-    )
-
-
-    value = value.replace(
-        '"',
-        "'"
-    )
-
-
-    value = value.replace(
-        "\n",
-        " "
-    )
-
-
-    value = value.replace(
-        "\r",
-        " "
-    )
-
-
-    return value.strip()
-
-
-# =========================================================
-# SORT CHANNELS
+# SORT
 # =========================================================
 
 def sort_channels(
     channels
 ):
 
-    def sort_key(
-        channel
-    ):
+    def sort_key(channel):
 
         category = channel.get(
             "group",
@@ -1157,46 +1128,35 @@ def sort_channels(
 
 
 # =========================================================
-# CATEGORY STATISTICS
+# M3U ESCAPE
 # =========================================================
 
-def print_category_stats(
-    channels
+def m3u_escape(
+    value
 ):
 
-    stats = {}
+    if value is None:
+        return ""
 
 
-    for channel in channels:
+    value = str(value)
 
-        category = channel.get(
-            "group",
-            "IPTV"
-        )
-
-
-        stats[category] = (
-            stats.get(
-                category,
-                0
-            )
-            + 1
-        )
-
-
-    print(
-        "\nCategory Statistics:"
+    value = value.replace(
+        '"',
+        "'"
     )
 
+    value = value.replace(
+        "\n",
+        " "
+    )
 
-    for category in CATEGORY_ORDER:
+    value = value.replace(
+        "\r",
+        " "
+    )
 
-        if category in stats:
-
-            print(
-                f"  {category}: "
-                f"{stats[category]}"
-            )
+    return value.strip()
 
 
 # =========================================================
@@ -1207,18 +1167,16 @@ def create_playlist(
     channels
 ):
 
-    # Sort final channels
     channels = sort_channels(
         channels
     )
 
 
-    total_channels = len(
+    total = len(
         channels
     )
 
 
-    # Current UTC time
     updated = datetime.now(
         timezone.utc
     ).strftime(
@@ -1232,7 +1190,6 @@ def create_playlist(
         encoding="utf-8"
     ) as file:
 
-
         # =================================================
         # HEADER
         # =================================================
@@ -1241,55 +1198,45 @@ def create_playlist(
             "#EXTM3U\n"
         )
 
-
         file.write(
             "# 📺 AYNNA OTT IPTV PLAYLIST\n"
         )
 
-
         file.write(
-            f"# #️⃣ Total Channels: "
-            f"{total_channels}\n"
+            f"# #️⃣ Total Channels: {total}\n"
         )
 
-
         file.write(
-            f"# 🕒 Updated: "
-            f"{updated}\n"
+            f"# 🕒 Updated: {updated}\n"
         )
-
 
         file.write(
             "# ⚡ Working Channels Only\n"
         )
 
-
         file.write(
             "# 🔥 Auto Category & Logo\n"
         )
-
 
         file.write(
             "# 📡 M3U8 Playlist\n"
         )
 
-
         file.write(
             "# ⭐ IPTV LINKS Always Included\n"
         )
-
 
         file.write(
             "#\n"
         )
 
 
-        # =================================================
-        # CHANNEL OUTPUT
-        # =================================================
-
         current_category = None
 
+
+        # =================================================
+        # CHANNELS
+        # =================================================
 
         for channel in channels:
 
@@ -1315,6 +1262,12 @@ def create_playlist(
                     "IPTV"
                 )
             )
+
+
+            url = channel.get(
+                "url",
+                ""
+            ).strip()
 
 
             # -------------------------------------------------
@@ -1349,19 +1302,8 @@ def create_playlist(
             # -------------------------------------------------
 
             file.write(
-                channel["url"]
+                url
                 + "\n\n"
-            )
-
-
-        # =================================================
-        # EMPTY
-        # =================================================
-
-        if not channels:
-
-            file.write(
-                "# No working channels found\n"
             )
 
 
@@ -1378,19 +1320,59 @@ def create_playlist(
     )
 
     print(
-        "File:",
-        PLAYLIST_FILE
+        f"Total Channels: {total}"
     )
 
     print(
-        "Total Output:",
-        total_channels
+        f"File: {PLAYLIST_FILE}"
     )
 
     print(
-        "Updated:",
-        updated
+        f"Updated: {updated}"
     )
+
+
+# =========================================================
+# CATEGORY STATS
+# =========================================================
+
+def print_stats(
+    channels
+):
+
+    stats = {}
+
+
+    for channel in channels:
+
+        category = channel.get(
+            "group",
+            "IPTV"
+        )
+
+
+        stats[category] = (
+            stats.get(
+                category,
+                0
+            )
+            + 1
+        )
+
+
+    print(
+        "\nCategory Statistics:"
+    )
+
+
+    for category in CATEGORY_ORDER:
+
+        if category in stats:
+
+            print(
+                f"{category}: "
+                f"{stats[category]}"
+            )
 
 
 # =========================================================
@@ -1404,7 +1386,7 @@ def main():
     )
 
     print(
-        "AYNNA OTT AUTO PLAYLIST GENERATOR"
+        "AYNNA OTT IPTV AUTO GENERATOR"
     )
 
     print(
@@ -1412,11 +1394,15 @@ def main():
     )
 
     print(
-        "✓ Working Channels Only"
+        "✓ Working M3U8 Only"
     )
 
     print(
-        "✓ M3U8 Validation"
+        "✓ Auto Channel Name"
+    )
+
+    print(
+        "✓ Auto Logo"
     )
 
     print(
@@ -1424,7 +1410,7 @@ def main():
     )
 
     print(
-        "✓ Auto Logo"
+        "✓ Unknown Category -> IPTV"
     )
 
     print(
@@ -1440,18 +1426,25 @@ def main():
     )
 
 
+    # =====================================================
+    # DEFAULT
+    # =====================================================
+
+    final_channels = []
+
+
     try:
 
-        # =================================================
+        # -------------------------------------------------
         # 1. FETCH API
-        # =================================================
+        # -------------------------------------------------
 
         data = fetch_api()
 
 
-        # =================================================
+        # -------------------------------------------------
         # 2. FIND CHANNELS
-        # =================================================
+        # -------------------------------------------------
 
         channels = find_channels(
             data
@@ -1459,14 +1452,14 @@ def main():
 
 
         print(
-            "\nFound:",
-            len(channels)
+            f"\nAPI Channels Found: "
+            f"{len(channels)}"
         )
 
 
-        # =================================================
+        # -------------------------------------------------
         # 3. REMOVE DUPLICATES
-        # =================================================
+        # -------------------------------------------------
 
         channels = remove_duplicate(
             channels
@@ -1474,14 +1467,14 @@ def main():
 
 
         print(
-            "Unique:",
-            len(channels)
+            f"Unique Channels: "
+            f"{len(channels)}"
         )
 
 
-        # =================================================
-        # 4. CHECK WORKING CHANNELS
-        # =================================================
+        # -------------------------------------------------
+        # 4. CHECK WORKING
+        # -------------------------------------------------
 
         working_channels = (
             check_working_channels(
@@ -1491,75 +1484,75 @@ def main():
 
 
         print(
-            "\nWorking API Channels:",
-            len(working_channels)
+            f"Working API Channels: "
+            f"{len(working_channels)}"
         )
 
 
-        # =================================================
-        # 5. ALWAYS ADD IPTV LINKS
-        # =================================================
+        # -------------------------------------------------
+        # 5. ADD FIXED CHANNEL
+        # -------------------------------------------------
 
         final_channels = add_always_channel(
             working_channels
         )
 
 
-        print(
-            "Always Channel:",
-            ALWAYS_CHANNEL["name"]
-        )
-
-
-        print(
-            "Final Output:",
-            len(final_channels)
-        )
-
-
-        # =================================================
-        # 6. CATEGORY STATS
-        # =================================================
-
-        print_category_stats(
-            final_channels
-        )
-
-
-        # =================================================
-        # 7. CREATE PLAYLIST
-        # =================================================
-
-        create_playlist(
-            final_channels
-        )
-
-
     except Exception as error:
 
         print(
-            "\nERROR:",
-            error
+            f"\nAPI ERROR: {error}"
         )
 
 
         # -------------------------------------------------
-        # Even if API fails, ALWAYS create playlist
-        # with IPTV LINKS channel.
+        # IMPORTANT:
+        # API fail হলেও fixed channel থাকবে
         # -------------------------------------------------
 
-        final_channels = [
-            ALWAYS_CHANNEL.copy()
-        ]
-
-
-        create_playlist(
-            final_channels
+        final_channels = (
+            add_always_channel([])
         )
+
+
+    # =====================================================
+    # FINAL CLEANUP
+    # =====================================================
+
+    final_channels = remove_duplicate(
+        final_channels
+    )
+
+
+    # =====================================================
+    # ENSURE IPTV LINKS AGAIN
+    # =====================================================
+
+    final_channels = add_always_channel(
+        final_channels
+    )
+
+
+    # =====================================================
+    # STATS
+    # =====================================================
+
+    print_stats(
+        final_channels
+    )
+
+
+    # =====================================================
+    # CREATE PLAYLIST
+    # =====================================================
+
+    create_playlist(
+        final_channels
+    )
 
 
 # =========================================================
-# RUN
+# START
 # =========================================================
 
 if __name__ == "__main__":
