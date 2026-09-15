@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 86
-# 🕒 Updated: 2026-09-15 00:25:42 UTC
+# #️⃣ Total Channels: 88
+# 🕒 Updated: 2026-09-15 07:32:09 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -29,6 +29,9 @@ https://tvsen6.aynaott.com/cnn/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="DBC News" tvg-logo="" group-title="News",DBC News
 https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="DW News" tvg-logo="" group-title="News",DW News
+https://tvsen6.aynaott.com/Qq3s5WR2/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="Ekattor TV" tvg-logo="" group-title="News",Ekattor TV
 https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8
 
@@ -55,6 +58,12 @@ https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="NTV Europe" tvg-logo="" group-title="News",NTV Europe
 https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/ntvuk00332211.stream/playlist.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Republic TV Bharat" tvg-logo="" group-title="News",Republic TV Bharat
+https://tvsen6.aynaott.com/faGd3tuq/index.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Sadhna Prime News" tvg-logo="" group-title="News",Sadhna Prime News
+https://tvsen3.aynaott.com/P2hjvFHV/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Sky News" tvg-logo="" group-title="News",Sky News
 https://tvsen5.aynaott.com/skynews/index.m3u8
@@ -101,9 +110,6 @@ https://tvsen3.aynaott.com/u3NjUrny/index.m3u8
 https://vods2.aynaott.com/hindimovies/index.m3u8
 
 # ===== Entertainment =====
-#EXTINF:-1 tvg-id="" tvg-name="Sony AATH" tvg-logo="" group-title="Entertainment",Sony AATH
-https://live20.bozztv.com/giatvplayout7/giatv-209611/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="Zee 24 Ghanta" tvg-logo="" group-title="Entertainment",Zee 24 Ghanta
 https://tvsen6.aynaott.com/DpPnXP9r/index.m3u8
 
@@ -146,6 +152,9 @@ https://live-bangla.akamaized.net/liveabr/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="My TV" tvg-logo="" group-title="Bangla",My TV
 https://tvsen6.aynaott.com/XMpHaEf0ANBhv8w6NWR7/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="Sangeet Bangla" tvg-logo="" group-title="Bangla",Sangeet Bangla
+https://tvsen6.aynaott.com/hT5jHczt/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="TV9 Bangla" tvg-logo="" group-title="Bangla",TV9 Bangla
 https://dyjmyiv3bp2ez.cloudfront.net/pub-iotv9banaen8yq/liveabr/playlist.m3u8
 
@@ -158,6 +167,9 @@ https://tvsen6.aynaott.com/y0q9eFAuquAtvTxRzUHq/index.m3u8
 https://github.com/Mrbotrx/Mrbotrx/raw/refs/heads/main/IPTV_LINKS_VIDEO.mp4
 
 # ===== Live Tvs =====
+#EXTINF:-1 tvg-id="" tvg-name="9x Jalwa" tvg-logo="" group-title="Live Tvs",9x Jalwa
+https://tvsen6.aynaott.com/CiPT1VTG8bVekeAZiibd/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="ABN" tvg-logo="" group-title="Live Tvs",ABN
 https://mediaserver.abnvideos.com/streams/abnurdu.m3u8
 
@@ -254,14 +266,8 @@ https://tvsen6.aynaott.com/rELXiuUXqbgzPb06Npom/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Test Live TV" tvg-logo="" group-title="Live Tvs",Test Live TV
 https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Thikana" tvg-logo="" group-title="Live Tvs",Thikana
-https://5dd3981940faa.streamlock.net:443/thikanatv/thikanatv/playlist.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="TSN 1" tvg-logo="" group-title="Live Tvs",TSN 1
 https://tvsen7.aynascope.net/tsn1/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="TSN 2" tvg-logo="" group-title="Live Tvs",TSN 2
-https://tvsen7.aynascope.net/tsn2/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="TSN 3" tvg-logo="" group-title="Live Tvs",TSN 3
 https://tvsen7.aynascope.net/tsn3/index.m3u8
