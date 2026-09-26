@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 68
-# 🕒 Updated: 2026-09-25 21:23:59 UTC
+# #️⃣ Total Channels: 70
+# 🕒 Updated: 2026-09-26 00:28:18 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -38,6 +38,9 @@ https://feeds.intoday.in/hltapps/api/master.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Jamuna TV" tvg-logo="" group-title="News",Jamuna TV
 https://tvsen6.aynaott.com/KGdZEdA7qQ43dmPkgk1j/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="News 1 India" tvg-logo="" group-title="News",News 1 India
+https://tvsen6.aynaott.com/TaVfw58T/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="News 24 BD" tvg-logo="" group-title="News",News 24 BD
 https://tvsen6.aynaott.com/cdgr3tw6WoG7JyRnLbi0/index.m3u8
 
@@ -46,6 +49,9 @@ https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="NTV Europe" tvg-logo="" group-title="News",NTV Europe
 https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/ntvuk00332211.stream/playlist.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Sadhna Prime News" tvg-logo="" group-title="News",Sadhna Prime News
+https://tvsen3.aynaott.com/P2hjvFHV/index.m3u8
 
 # ===== Sports =====
 #EXTINF:-1 tvg-id="" tvg-name="Bahrain Sports 1" tvg-logo="" group-title="Sports",Bahrain Sports 1
