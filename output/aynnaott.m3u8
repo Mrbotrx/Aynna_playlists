@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 67
-# 🕒 Updated: 2026-10-03 20:54:25 UTC
+# #️⃣ Total Channels: 68
+# 🕒 Updated: 2026-10-04 00:26:31 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -38,6 +38,9 @@ https://feeds.intoday.in/hltapps/api/master.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Jamuna TV" tvg-logo="" group-title="News",Jamuna TV
 https://tvsen6.aynaott.com/KGdZEdA7qQ43dmPkgk1j/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="News 1 India" tvg-logo="" group-title="News",News 1 India
+https://tvsen6.aynaott.com/TaVfw58T/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="News 24 BD" tvg-logo="" group-title="News",News 24 BD
 https://tvsen6.aynaott.com/cdgr3tw6WoG7JyRnLbi0/index.m3u8
 
@@ -72,9 +75,6 @@ https://tvsen5.aynaott.com/kP9vX2mZ7qL5wN3t/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Sports Fishing TV" tvg-logo="" group-title="Sports",Sports Fishing TV
 https://streams2.sofast.tv/v1/master/611d79b11b77e2f571934fd80ca1413453772ac7/eea68b79-bfe2-451e-a227-d637a5b9548a/manifest.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="T Sports HD" tvg-logo="" group-title="Sports",T Sports HD
-https://tvsen5.aynaott.com/TnMn5kZz8aLmjkl/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="Talk Sport" tvg-logo="" group-title="Sports",Talk Sport
 https://tvsen6.aynaott.com/talkSPORT/index.m3u8
 
@@ -84,6 +84,10 @@ https://tvsen3.aynaott.com/5CGfPvGp/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Hindi Movie Classic 24" tvg-logo="" group-title="Movies",Hindi Movie Classic 24
 https://vods2.aynaott.com/hindimovies/index.m3u8
+
+# ===== Entertainment =====
+#EXTINF:-1 tvg-id="" tvg-name="Sony AATH" tvg-logo="" group-title="Entertainment",Sony AATH
+https://live20.bozztv.com/giatvplayout7/giatv-209611/index.m3u8
 
 # ===== Bangla =====
 #EXTINF:-1 tvg-id="" tvg-name="ATN Bangla" tvg-logo="" group-title="Bangla",ATN Bangla
@@ -179,6 +183,9 @@ https://247wlive.foxweather.com/stream/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Goal TV" tvg-logo="" group-title="Live Tvs",Goal TV
 https://streams2.sofast.tv/sofastplayout/WiseM3U8_1/master.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="Goldmines" tvg-logo="" group-title="Live Tvs",Goldmines
+https://tvsen3.aynaott.com/VamXuQH8/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="Khushboo" tvg-logo="" group-title="Live Tvs",Khushboo
 https://tvsen6.aynaott.com/mzwbzfZ4/index.m3u8
 
@@ -205,9 +212,6 @@ https://tvsen6.aynaott.com/rELXiuUXqbgzPb06Npom/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Test Live TV" tvg-logo="" group-title="Live Tvs",Test Live TV
 https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="Thikana" tvg-logo="" group-title="Live Tvs",Thikana
-https://5dd3981940faa.streamlock.net:443/thikanatv/thikanatv/playlist.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Weather SPY" tvg-logo="" group-title="Live Tvs",Weather SPY
 https://jukin-weatherspy-2-in.samsung.wurl.tv/playlist.m3u8
