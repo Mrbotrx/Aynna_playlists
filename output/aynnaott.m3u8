@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 86
-# 🕒 Updated: 2026-10-08 23:11:08 UTC
+# #️⃣ Total Channels: 85
+# 🕒 Updated: 2026-10-09 05:41:19 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -94,8 +94,8 @@ https://tvsen6.aynaott.com/talkSPORT/index.m3u8
 https://tvsen6.aynaott.com/TntSports1HD/index.m3u8
 
 # ===== Movies =====
-#EXTINF:-1 tvg-id="" tvg-name="Goldmines Bollywood" tvg-logo="" group-title="Movies",Goldmines Bollywood
-https://tvsen6.aynaott.com/55xNrLdf/index.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="Goldmines Movies" tvg-logo="" group-title="Movies",Goldmines Movies
+https://tvsen3.aynaott.com/5CGfPvGp/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="HBO 2" tvg-logo="" group-title="Movies",HBO 2
 https://tvsen3.aynaott.com/u3NjUrny/index.m3u8
@@ -161,6 +161,9 @@ https://tvsen6.aynaott.com/y0q9eFAuquAtvTxRzUHq/index.m3u8
 https://github.com/Mrbotrx/Mrbotrx/raw/refs/heads/main/IPTV_LINKS_VIDEO.mp4
 
 # ===== Live Tvs =====
+#EXTINF:-1 tvg-id="" tvg-name="9x Jalwa" tvg-logo="" group-title="Live Tvs",9x Jalwa
+https://tvsen6.aynaott.com/CiPT1VTG8bVekeAZiibd/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="ABN" tvg-logo="" group-title="Live Tvs",ABN
 https://mediaserver.abnvideos.com/streams/abnurdu.m3u8
 
@@ -227,17 +230,11 @@ https://streams2.sofast.tv/sofastplayout/WiseM3U8_1/master.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Goldmines" tvg-logo="" group-title="Live Tvs",Goldmines
 https://tvsen3.aynaott.com/VamXuQH8/index.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Khushboo" tvg-logo="" group-title="Live Tvs",Khushboo
-https://tvsen6.aynaott.com/mzwbzfZ4/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="kolkata TV" tvg-logo="" group-title="Live Tvs",kolkata TV
 https://tvsen6.aynaott.com/kolkatatv/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Maasranga TV" tvg-logo="" group-title="Live Tvs",Maasranga TV
 https://tvsen6.aynaott.com/maasrangatv/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="MADANI TV" tvg-logo="" group-title="Live Tvs",MADANI TV
-https://tvsen3.aynaott.com/z24qLsqV/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Mohona TV" tvg-logo="" group-title="Live Tvs",Mohona TV
 https://tvsen6.aynaott.com/AkyX5dunzju4cpo26dr7/index.m3u8
