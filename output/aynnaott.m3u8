@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 80
-# 🕒 Updated: 2026-10-22 04:16:07 UTC
+# #️⃣ Total Channels: 78
+# 🕒 Updated: 2026-10-22 11:33:21 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -28,9 +28,6 @@ https://tvsen6.aynaott.com/cnn/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="DBC News" tvg-logo="" group-title="News",DBC News
 https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="DW News" tvg-logo="" group-title="News",DW News
-https://tvsen6.aynaott.com/Qq3s5WR2/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Ekattor TV" tvg-logo="" group-title="News",Ekattor TV
 https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8
@@ -94,9 +91,6 @@ https://tvsen6.aynaott.com/talkSPORT/index.m3u8
 https://tvsen6.aynaott.com/TntSports1HD/index.m3u8
 
 # ===== Movies =====
-#EXTINF:-1 tvg-id="" tvg-name="Goldmines Bollywood" tvg-logo="" group-title="Movies",Goldmines Bollywood
-https://tvsen6.aynaott.com/55xNrLdf/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="Goldmines Movies" tvg-logo="" group-title="Movies",Goldmines Movies
 https://tvsen3.aynaott.com/5CGfPvGp/index.m3u8
 
