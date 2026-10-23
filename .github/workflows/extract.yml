@@ -1,0 +1,41 @@
+
+name: Special KBC Media Extractor
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run extractor
+        run: python Special_KBC.py
+
+      - name: Commit updated M3U
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Special_KBC.m3u
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Special_KBC.m3u"
+            git push
+          else
+            echo "No changes to commit."
+          fi
