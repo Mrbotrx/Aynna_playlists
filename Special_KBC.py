@@ -1,8 +1,8 @@
 
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 import html
+import json
 import re
 import sys
 from pathlib import Path
@@ -12,155 +12,181 @@ from html.parser import HTMLParser
 import requests
 
 SOURCE_URL = "https://www.bhoomtv.org/channel/bengali/"
-OUTPUT_FILE = Path(__file__).resolve().parent / "Special_KBC.m3u"
+BASE_DIR = Path(__file__).resolve().parent
+OUTPUT_FILE = BASE_DIR / "Special_KBC.m3u"
+DEBUG_FILE = BASE_DIR / "extract_debug.txt"
 TIMEOUT = 30
 
-MEDIA_EXTENSIONS = {
-    ".m3u", ".m3u8", ".mp4", ".mp3", ".m4v",
-    ".webm", ".ts", ".mpd", ".m4a", ".aac",
-    ".ogg", ".oga", ".wav", ".flac", ".mpg",
-    ".mpeg", ".mov", ".avi", ".wmv", ".jpg",
-    ".jpeg", ".png", ".gif", ".webp", ".avif",
-    ".bmp", ".svg", ".ico", ".tif", ".tiff",
-    ".heic", ".jfif", ".jpe", ".mp2", ".opus"
+EXTENSIONS = {
+    ".m3u", ".m3u8", ".mp4", ".mp3", ".mpd",
+    ".ts", ".webm", ".m4v", ".m4a", ".aac",
+    ".ogg", ".oga", ".wav", ".jpg", ".jpeg",
+    ".png", ".gif", ".webp", ".avif", ".svg"
 }
 
 URL_PATTERN = re.compile(
-    r"""(?i)(?:https?:)?//[^\s"'<>\\]+|"""
-    r"""(?:/|\./|\.\./)[^\s"'<>\\]+"""
+    r"""(?i)(?:https?:)?//[^\s"'<>\\]+"""
+    r"""|(?:/|\./|\.\./)[^\s"'<>\\]+"""
 )
 
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (compatible; SpecialKBC/1.0)",
+    "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
+}
 
-class MediaParser(HTMLParser):
+
+def normalize_url(raw, base_url):
+    raw = html.unescape(str(raw)).strip().strip("'\"")
+    raw = raw.replace("\\/", "/")
+
+    if not raw or raw.startswith(
+        ("data:", "javascript:", "blob:", "#")
+    ):
+        return None
+
+    url = urljoin(base_url, raw)
+    parts = urlsplit(url)
+
+    if parts.scheme not in ("http", "https") or not parts.hostname:
+        return None
+
+    return url
+
+
+def is_media_url(url):
+    parts = urlsplit(url)
+    path = parts.path.lower()
+
+    if Path(path).suffix in EXTENSIONS:
+        return True
+
+    # Some public endpoints expose a playlist without a file extension.
+    query = parts.query.lower()
+    return any(
+        marker in query
+        for marker in ("format=m3u8", "type=m3u8", "format=mp4")
+    )
+
+
+class PageParser(HTMLParser):
     def __init__(self, base_url):
         super().__init__(convert_charrefs=True)
         self.base_url = base_url
         self.urls = set()
+        self.debug_urls = set()
+        self.channel_names = []
 
-    def add_url(self, value):
+    def inspect(self, value):
         if not value:
             return
 
-        value = html.unescape(value.strip()).strip("'\"")
+        value = html.unescape(str(value))
         value = value.replace("\\/", "/")
 
-        if not value or value.startswith(
-            ("data:", "javascript:", "blob:", "#")
-        ):
-            return
+        for match in URL_PATTERN.findall(value):
+            url = normalize_url(match.rstrip("),;]}"), self.base_url)
 
-        if value.startswith("//"):
-            value = "https:" + value
-
-        url = urljoin(self.base_url, value)
-        parts = urlsplit(url)
-
-        if parts.scheme not in ("http", "https"):
-            return
-
-        if not parts.hostname:
-            return
-
-        extension = Path(parts.path.lower()).suffix
-
-        if extension in MEDIA_EXTENSIONS:
-            self.urls.add(url)
-
-    def scan_text(self, text):
-        if not text:
-            return
-
-        text = html.unescape(text)
-        text = text.replace("\\/", "/")
-
-        for match in URL_PATTERN.findall(text):
-            self.add_url(match.rstrip("),;]}"))
-
-    def handle_starttag(self, tag, attrs):
-        for key, value in attrs:
-            if not value:
+            if not url:
                 continue
 
-            key = key.lower()
+            self.debug_urls.add(url)
 
-            if key in {
-                "src", "href", "poster", "data-src",
-                "data-url", "data-video", "content"
-            }:
-                self.add_url(value)
+            if is_media_url(url):
+                self.urls.add(url)
 
-            # srcset may contain multiple image URLs.
-            if key == "srcset":
-                for item in value.split(","):
-                    candidate = item.strip().split()
-                    if candidate:
-                        self.add_url(candidate[0])
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
 
-            self.scan_text(value)
+        for key in (
+            "src", "href", "poster", "data-src",
+            "data-url", "data-video", "data-stream"
+        ):
+            self.inspect(attrs.get(key))
+
+        self.inspect(json.dumps(attrs, ensure_ascii=False))
 
     def handle_data(self, data):
-        # Includes ordinary text and inline script contents.
-        self.scan_text(data)
+        self.inspect(data)
 
 
 def write_playlist(urls):
-    """Always write a valid M3U header, even if no URLs were found."""
     with OUTPUT_FILE.open("w", encoding="utf-8", newline="\n") as file:
         file.write("#EXTM3U\n")
 
-        for url in sorted(set(urls)):
+        for url in sorted(urls):
             file.write(url + "\n")
 
 
 def main():
-    # Create output immediately so it exists even if the request fails.
+    # Ensure the output exists before network operations.
     try:
         write_playlist([])
-    except OSError as error:
-        print(f"[ERROR] Cannot create output file: {error}")
+    except OSError as exc:
+        print(f"[ERROR] Cannot create playlist: {exc}")
         return 1
 
-    print(f"[INFO] Source: {SOURCE_URL}")
-    print(f"[INFO] Output: {OUTPUT_FILE}")
+    debug = []
+    media_urls = set()
 
     try:
+        print(f"[INFO] Fetching {SOURCE_URL}")
+
         response = requests.get(
             SOURCE_URL,
-            headers={
-                "User-Agent": "Mozilla/5.0 (compatible; MediaURLCollector/1.0)",
-                "Accept": "text/html,application/xhtml+xml,*/*;q=0.8",
-            },
+            headers=HEADERS,
             timeout=TIMEOUT,
         )
         response.raise_for_status()
 
-        parser = MediaParser(response.url)
+        print(f"[INFO] HTTP status: {response.status_code}")
+        print(f"[INFO] Content-Type: {response.headers.get('Content-Type')}")
+        print(f"[INFO] HTML size: {len(response.text)} bytes")
+
+        parser = PageParser(response.url)
         parser.feed(response.text)
         parser.close()
 
-        urls = sorted(parser.urls)
-        write_playlist(urls)
+        media_urls.update(parser.urls)
 
-        print(f"[OK] HTTP status: {response.status_code}")
-        print(f"[OK] URLs found: {len(urls)}")
-        print(f"[OK] Playlist created: {OUTPUT_FILE.name}")
+        debug.append(f"Final URL: {response.url}")
+        debug.append(f"HTTP status: {response.status_code}")
+        debug.append(f"HTML size: {len(response.text)}")
+        debug.append(f"Media URLs found: {len(media_urls)}")
+        debug.append("")
+        debug.append("Discovered URLs:")
+        debug.extend(sorted(parser.debug_urls))
 
-        if not urls:
+        write_playlist(media_urls)
+
+        print(f"[OK] Media URLs: {len(media_urls)}")
+        print(f"[OK] Playlist: {OUTPUT_FILE}")
+
+        if not media_urls:
             print(
-                "[WARN] No matching media URLs found in the returned HTML. "
-                "The player may load URLs dynamically."
+                "[WARN] No media URLs found in static HTML. "
+                "The player may load sources from another endpoint."
             )
 
-        return 0
+    except requests.RequestException as exc:
+        debug.append(f"Request error: {exc}")
+        print(f"[ERROR] Request failed: {exc}")
+        # Keep the existing valid, empty playlist.
 
-    except requests.RequestException as error:
-        print(f"[ERROR] Page request failed: {error}")
-        # The output file already exists with a valid M3U header.
-        return 0
-
-    except (OSError, ValueError) as error:
-        print(f"[ERROR] Extraction or file-writing error: {error}")
+    except Exception as exc:
+        debug.append(f"Extraction error: {exc}")
+        print(f"[ERROR] Extraction failed: {exc}")
         return 1
+
+    try:
+        DEBUG_FILE.write_text(
+            "\n".join(debug) + "\n",
+            encoding="utf-8",
+        )
+        print(f"[INFO] Debug log: {DEBUG_FILE}")
+    except OSError as exc:
+        print(f"[WARN] Could not write debug log: {exc}")
+
+    return 0
 
 
 if __name__ == "__main__":
