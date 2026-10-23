@@ -1,5 +1,5 @@
 
-name: Special KBC Playlist Update
+name: Special KBC Playlist
 
 on:
   schedule:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: special-kbc-playlist
+  group: special-kbc
   cancel-in-progress: false
 
 jobs:
@@ -21,49 +21,44 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
-        run: python -m pip install --upgrade requests
+      - name: Install dependency
+        run: python -m pip install requests
 
       - name: Run extractor
-        run: python -u ./Special_KBC.py
+        run: python -u Special_KBC.py
 
-      - name: Verify playlist
+      - name: Verify output
         run: |
-          echo "Repository: $GITHUB_WORKSPACE"
-          echo "Generated playlist:"
-
-          if [ ! -f "$GITHUB_WORKSPACE/Special_KBC.m3u" ]; then
-            echo "::error::Special_KBC.m3u does not exist."
-            exit 1
-          fi
-
-          if ! head -n 1 Special_KBC.m3u | grep -qx '#EXTM3U'; then
-            echo "::error::Invalid M3U header."
-            exit 1
-          fi
-
-          echo "Playlist file exists."
-          echo "URL count:"
+          test -f Special_KBC.m3u
+          head -n 1 Special_KBC.m3u | grep -qx '#EXTM3U'
+          echo "Playlist verified."
+          echo "Media URL count:"
           tail -n +2 Special_KBC.m3u | grep -c . || true
 
-      - name: Commit and push playlist
+      - name: Upload debug log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: special-kbc-debug
+          path: extract_debug.txt
+          if-no-files-found: ignore
+
+      - name: Commit playlist
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add -- Special_KBC.m3u
 
-          if git diff --cached --quiet; then
-            echo "No changes to commit."
-          else
+          if ! git diff --cached --quiet; then
             git commit -m "Update Special_KBC.m3u"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            git push
+          else
+            echo "No playlist changes."
           fi
