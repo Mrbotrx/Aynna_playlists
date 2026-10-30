@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 81
-# 🕒 Updated: 2026-10-29 23:53:01 UTC
+# #️⃣ Total Channels: 80
+# 🕒 Updated: 2026-10-30 05:20:58 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -53,9 +53,6 @@ https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="NTV Europe" tvg-logo="" group-title="News",NTV Europe
 https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/ntvuk00332211.stream/playlist.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Republic TV Bharat" tvg-logo="" group-title="News",Republic TV Bharat
-https://tvsen6.aynaott.com/faGd3tuq/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="Sadhna Prime News" tvg-logo="" group-title="News",Sadhna Prime News
 https://tvsen3.aynaott.com/P2hjvFHV/index.m3u8
 
@@ -96,9 +93,6 @@ https://tvsen5.aynaott.com/asdfadsf/index.m3u8
 # ===== Movies =====
 #EXTINF:-1 tvg-id="" tvg-name="Goldmines Bollywood" tvg-logo="" group-title="Movies",Goldmines Bollywood
 https://tvsen6.aynaott.com/55xNrLdf/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="Goldmines Movies" tvg-logo="" group-title="Movies",Goldmines Movies
-https://tvsen3.aynaott.com/5CGfPvGp/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="HBO 2" tvg-logo="" group-title="Movies",HBO 2
 https://tvsen3.aynaott.com/u3NjUrny/index.m3u8
@@ -149,9 +143,6 @@ https://live-bangla.akamaized.net/liveabr/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="My TV" tvg-logo="" group-title="Bangla",My TV
 https://tvsen6.aynaott.com/XMpHaEf0ANBhv8w6NWR7/index.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Sangeet Bangla" tvg-logo="" group-title="Bangla",Sangeet Bangla
-https://tvsen6.aynaott.com/hT5jHczt/index.m3u8
-
 # ===== International =====
 #EXTINF:-1 tvg-id="" tvg-name="Global TV" tvg-logo="" group-title="International",Global TV
 https://tvsen6.aynaott.com/y0q9eFAuquAtvTxRzUHq/index.m3u8
@@ -188,6 +179,9 @@ https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="CBS TV" tvg-logo="" group-title="Live Tvs",CBS TV
 https://tvsen3.aynaott.com/34fJSjZP/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="Channel 9" tvg-logo="" group-title="Live Tvs",Channel 9
+https://tvsen6.aynaott.com/kajlsd57jnzxyo/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="CNBC TV" tvg-logo="" group-title="Live Tvs",CNBC TV
 https://tvsen6.aynaott.com/cnbc/index.m3u8
 
@@ -218,11 +212,14 @@ https://tvsen6.aynaott.com/foxbusiness/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Fox Weather" tvg-logo="" group-title="Live Tvs",Fox Weather
 https://247wlive.foxweather.com/stream/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="FX TV" tvg-logo="" group-title="Live Tvs",FX TV
+https://tvsen3.aynaott.com/jTqkTE8W/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="Goal TV" tvg-logo="" group-title="Live Tvs",Goal TV
 https://streams2.sofast.tv/sofastplayout/WiseM3U8_1/master.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Goldmines" tvg-logo="" group-title="Live Tvs",Goldmines
-https://tvsen3.aynaott.com/VamXuQH8/index.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="Khushboo" tvg-logo="" group-title="Live Tvs",Khushboo
+https://tvsen6.aynaott.com/mzwbzfZ4/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="kolkata TV" tvg-logo="" group-title="Live Tvs",kolkata TV
 https://tvsen6.aynaott.com/kolkatatv/index.m3u8
