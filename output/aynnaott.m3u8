@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 82
-# 🕒 Updated: 2026-11-07 00:01:39 UTC
+# #️⃣ Total Channels: 79
+# 🕒 Updated: 2026-11-07 08:36:39 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -19,9 +19,6 @@ https://tvsen6.aynaott.com/da6WMXAk/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="BBC News" tvg-logo="" group-title="News",BBC News
 https://tvsen1.aynaott.com/shn6jGTk/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="Channel 24" tvg-logo="" group-title="News",Channel 24
-https://tvsen6.aynaott.com/YrVDF8gujkdh/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="CNN" tvg-logo="" group-title="News",CNN
 https://tvsen6.aynaott.com/cnn/index.m3u8
@@ -53,9 +50,6 @@ https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="NTV Europe" tvg-logo="" group-title="News",NTV Europe
 https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/ntvuk00332211.stream/playlist.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Republic TV Bharat" tvg-logo="" group-title="News",Republic TV Bharat
-https://tvsen6.aynaott.com/faGd3tuq/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="Sadhna Prime News" tvg-logo="" group-title="News",Sadhna Prime News
 https://tvsen3.aynaott.com/P2hjvFHV/index.m3u8
 
@@ -66,6 +60,9 @@ https://tvsen5.aynaott.com/skynews/index.m3u8
 https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8
 
 # ===== Sports =====
+#EXTINF:-1 tvg-id="" tvg-name="Bahrain Sports 1" tvg-logo="" group-title="Sports",Bahrain Sports 1
+https://5c7b683162943.streamlock.net/live/ngrp:sportsone_all/playlist.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="Cricket Gold" tvg-logo="" group-title="Sports",Cricket Gold
 https://tvsen6.aynaott.com/M2W2UR49dmeKbZnmdRzN/index.m3u8
 
@@ -91,12 +88,6 @@ https://tvsen6.aynaott.com/talkSPORT/index.m3u8
 https://tvsen5.aynaott.com/asdfadsf/index.m3u8
 
 # ===== Movies =====
-#EXTINF:-1 tvg-id="" tvg-name="Goldmines Bollywood" tvg-logo="" group-title="Movies",Goldmines Bollywood
-https://tvsen6.aynaott.com/55xNrLdf/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="Goldmines Movies" tvg-logo="" group-title="Movies",Goldmines Movies
-https://tvsen3.aynaott.com/5CGfPvGp/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="HBO 2" tvg-logo="" group-title="Movies",HBO 2
 https://tvsen3.aynaott.com/u3NjUrny/index.m3u8
 
@@ -182,8 +173,8 @@ https://tvsen6.aynaott.com/bloombergtv/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="BTV CTG" tvg-logo="" group-title="Live Tvs",BTV CTG
 https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Channel 9" tvg-logo="" group-title="Live Tvs",Channel 9
-https://tvsen6.aynaott.com/kajlsd57jnzxyo/index.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="CBS TV" tvg-logo="" group-title="Live Tvs",CBS TV
+https://tvsen3.aynaott.com/34fJSjZP/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="CNBC TV" tvg-logo="" group-title="Live Tvs",CNBC TV
 https://tvsen6.aynaott.com/cnbc/index.m3u8
