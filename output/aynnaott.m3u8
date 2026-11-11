@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 70
-# 🕒 Updated: 2026-11-10 21:44:02 UTC
+# #️⃣ Total Channels: 68
+# 🕒 Updated: 2026-11-11 01:47:39 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -44,9 +44,6 @@ https://feeds.intoday.in/hltapps/api/master.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Jamuna TV" tvg-logo="" group-title="News",Jamuna TV
 https://tvsen6.aynaott.com/KGdZEdA7qQ43dmPkgk1j/index.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="News 1 India" tvg-logo="" group-title="News",News 1 India
-https://tvsen6.aynaott.com/TaVfw58T/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="News 24 BD" tvg-logo="" group-title="News",News 24 BD
 https://tvsen6.aynaott.com/cdgr3tw6WoG7JyRnLbi0/index.m3u8
 
@@ -58,9 +55,6 @@ https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxI
 
 #EXTINF:-1 tvg-id="" tvg-name="Republic TV Bharat" tvg-logo="" group-title="News",Republic TV Bharat
 https://tvsen6.aynaott.com/faGd3tuq/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="Sky News" tvg-logo="" group-title="News",Sky News
-https://tvsen5.aynaott.com/skynews/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Sky News Weather" tvg-logo="" group-title="News",Sky News Weather
 https://distro001-gb-hls1-prd.delivery.skycdp.com/easel_cdn/ngrp:weather_loop.stream_all/playlist.m3u8
@@ -94,9 +88,6 @@ https://tvsen6.aynaott.com/talkSPORT/index.m3u8
 https://tvsen5.aynaott.com/asdfadsf/index.m3u8
 
 # ===== Movies =====
-#EXTINF:-1 tvg-id="" tvg-name="Goldmines Bollywood" tvg-logo="" group-title="Movies",Goldmines Bollywood
-https://tvsen6.aynaott.com/55xNrLdf/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="Hindi Movie Classic 24" tvg-logo="" group-title="Movies",Hindi Movie Classic 24
 https://vods2.aynaott.com/hindimovies/index.m3u8
 
@@ -158,6 +149,9 @@ https://tvsen6.aynaott.com/bloombergtv/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="BTV CTG" tvg-logo="" group-title="Live Tvs",BTV CTG
 https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Channel 9" tvg-logo="" group-title="Live Tvs",Channel 9
+https://tvsen6.aynaott.com/kajlsd57jnzxyo/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="CNBC TV" tvg-logo="" group-title="Live Tvs",CNBC TV
 https://tvsen6.aynaott.com/cnbc/index.m3u8
