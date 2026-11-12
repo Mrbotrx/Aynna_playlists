@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 71
-# 🕒 Updated: 2026-11-11 17:49:20 UTC
+# #️⃣ Total Channels: 70
+# 🕒 Updated: 2026-11-12 00:24:31 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -28,9 +28,6 @@ https://tvsen6.aynaott.com/cnn/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="DBC News" tvg-logo="" group-title="News",DBC News
 https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="DW News" tvg-logo="" group-title="News",DW News
-https://tvsen6.aynaott.com/Qq3s5WR2/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Ekattor TV" tvg-logo="" group-title="News",Ekattor TV
 https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8
@@ -94,6 +91,9 @@ https://tvsen6.aynaott.com/talkSPORT/index.m3u8
 https://tvsen5.aynaott.com/asdfadsf/index.m3u8
 
 # ===== Movies =====
+#EXTINF:-1 tvg-id="" tvg-name="Goldmines Bollywood" tvg-logo="" group-title="Movies",Goldmines Bollywood
+https://tvsen6.aynaott.com/55xNrLdf/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="Hindi Movie Classic 24" tvg-logo="" group-title="Movies",Hindi Movie Classic 24
 https://vods2.aynaott.com/hindimovies/index.m3u8
 
@@ -194,9 +194,6 @@ https://247wlive.foxweather.com/stream/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Goal TV" tvg-logo="" group-title="Live Tvs",Goal TV
 https://streams2.sofast.tv/sofastplayout/WiseM3U8_1/master.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="Khushboo" tvg-logo="" group-title="Live Tvs",Khushboo
-https://tvsen6.aynaott.com/mzwbzfZ4/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="kolkata TV" tvg-logo="" group-title="Live Tvs",kolkata TV
 https://tvsen6.aynaott.com/kolkatatv/index.m3u8
