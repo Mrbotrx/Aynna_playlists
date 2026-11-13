@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 64
-# 🕒 Updated: 2026-11-13 09:20:57 UTC
+# #️⃣ Total Channels: 67
+# 🕒 Updated: 2026-11-13 17:36:23 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -29,6 +29,9 @@ https://tvsen6.aynaott.com/cnn/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="DBC News" tvg-logo="" group-title="News",DBC News
 https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="DW News" tvg-logo="" group-title="News",DW News
+https://tvsen6.aynaott.com/Qq3s5WR2/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="Ekattor TV" tvg-logo="" group-title="News",Ekattor TV
 https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8
 
@@ -44,6 +47,9 @@ https://feeds.intoday.in/hltapps/api/master.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Jamuna TV" tvg-logo="" group-title="News",Jamuna TV
 https://tvsen6.aynaott.com/KGdZEdA7qQ43dmPkgk1j/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="News 1 India" tvg-logo="" group-title="News",News 1 India
+https://tvsen6.aynaott.com/TaVfw58T/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="News 24 BD" tvg-logo="" group-title="News",News 24 BD
 https://tvsen6.aynaott.com/cdgr3tw6WoG7JyRnLbi0/index.m3u8
 
@@ -52,6 +58,9 @@ https://tvsen5.aynaott.com/xV4jEKf3D9zc/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="NTV Europe" tvg-logo="" group-title="News",NTV Europe
 https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxIZTO0U0ezN1IzMyfvcGVMZEJCTEFWeVN3PTOmdFsaWRtaW51aiPhnPTI2/ntvuk00332211.stream/playlist.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Republic TV Bharat" tvg-logo="" group-title="News",Republic TV Bharat
+https://tvsen6.aynaott.com/faGd3tuq/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Sky News" tvg-logo="" group-title="News",Sky News
 https://tvsen5.aynaott.com/skynews/index.m3u8
@@ -81,16 +90,12 @@ https://tvsen5.aynaott.com/TnMn5kZz8aLmjklkk/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Talk Sport" tvg-logo="" group-title="Sports",Talk Sport
 https://tvsen6.aynaott.com/talkSPORT/index.m3u8
 
-# ===== Movies =====
-#EXTINF:-1 tvg-id="" tvg-name="Goldmines Bollywood" tvg-logo="" group-title="Movies",Goldmines Bollywood
-https://tvsen6.aynaott.com/55xNrLdf/index.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="TNT Sport 1" tvg-logo="" group-title="Sports",TNT Sport 1
+https://tvsen5.aynaott.com/asdfadsf/index.m3u8
 
+# ===== Movies =====
 #EXTINF:-1 tvg-id="" tvg-name="Hindi Movie Classic 24" tvg-logo="" group-title="Movies",Hindi Movie Classic 24
 https://vods2.aynaott.com/hindimovies/index.m3u8
-
-# ===== Music =====
-#EXTINF:-1 tvg-id="" tvg-name="MTV" tvg-logo="" group-title="Music",MTV
-https://tvsen6.aynaott.com/mtv/index.m3u8
 
 # ===== Bangla =====
 #EXTINF:-1 tvg-id="" tvg-name="ATN Bangla" tvg-logo="" group-title="Bangla",ATN Bangla
@@ -140,6 +145,9 @@ https://tvsen6.aynaott.com/pKb5k6NnzxsKpWUs6E8M/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Bijoy TV" tvg-logo="" group-title="Live Tvs",Bijoy TV
 https://tvsen6.aynaott.com/N8Xbo5vdwVU6sF43RsW0/index.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Bloomberg TV" tvg-logo="" group-title="Live Tvs",Bloomberg TV
+https://tvsen6.aynaott.com/bloombergtv/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="BTV CTG" tvg-logo="" group-title="Live Tvs",BTV CTG
 https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
