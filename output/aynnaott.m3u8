@@ -1,16 +1,13 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 69
-# 🕒 Updated: 2026-11-15 05:55:08 UTC
+# #️⃣ Total Channels: 70
+# 🕒 Updated: 2026-11-15 13:47:30 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
 # ⭐ IPTV LINKS Always Included
 #
 # ===== News =====
-#EXTINF:-1 tvg-id="" tvg-name="ABC News" tvg-logo="" group-title="News",ABC News
-https://tvsen6.aynaott.com/ABCxzdsdNews/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="Aljazeera News" tvg-logo="" group-title="News",Aljazeera News
 https://live-hls-apps-aje-fa.getaj.net/AJE/index.m3u8
 
@@ -19,6 +16,9 @@ https://tvsen6.aynaott.com/da6WMXAk/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="BBC News" tvg-logo="" group-title="News",BBC News
 https://tvsen1.aynaott.com/shn6jGTk/index.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Channel 24" tvg-logo="" group-title="News",Channel 24
+https://tvsen6.aynaott.com/YrVDF8gujkdh/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="CNN" tvg-logo="" group-title="News",CNN
 https://tvsen6.aynaott.com/cnn/index.m3u8
@@ -59,8 +59,8 @@ https://app.ncare.live/c3VydmVyX8RpbEU9Mi8xNy8yMDE0GIDU6RgzQ6NTAgdEoaeFzbF92YWxI
 #EXTINF:-1 tvg-id="" tvg-name="Republic TV Bharat" tvg-logo="" group-title="News",Republic TV Bharat
 https://tvsen6.aynaott.com/faGd3tuq/index.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Sky News" tvg-logo="" group-title="News",Sky News
-https://tvsen5.aynaott.com/skynews/index.m3u8
+#EXTINF:-1 tvg-id="" tvg-name="Sadhna Prime News" tvg-logo="" group-title="News",Sadhna Prime News
+https://tvsen3.aynaott.com/P2hjvFHV/index.m3u8
 
 # ===== Sports =====
 #EXTINF:-1 tvg-id="" tvg-name="Bahrain Sports 1" tvg-logo="" group-title="Sports",Bahrain Sports 1
@@ -94,12 +94,11 @@ https://tvsen5.aynaott.com/asdfadsf/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Goldmines Bollywood" tvg-logo="" group-title="Movies",Goldmines Bollywood
 https://tvsen6.aynaott.com/55xNrLdf/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="Goldmines Movies" tvg-logo="" group-title="Movies",Goldmines Movies
+https://tvsen3.aynaott.com/5CGfPvGp/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="Hindi Movie Classic 24" tvg-logo="" group-title="Movies",Hindi Movie Classic 24
 https://vods2.aynaott.com/hindimovies/index.m3u8
-
-# ===== Music =====
-#EXTINF:-1 tvg-id="" tvg-name="MTV" tvg-logo="" group-title="Music",MTV
-https://tvsen6.aynaott.com/mtv/index.m3u8
 
 # ===== Bangla =====
 #EXTINF:-1 tvg-id="" tvg-name="ATN Bangla" tvg-logo="" group-title="Bangla",ATN Bangla
@@ -147,6 +146,9 @@ https://tvsen6.aynaott.com/LeUAm4F1iixYns3s3Non/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Asian TV" tvg-logo="" group-title="Live Tvs",Asian TV
 https://tvsen6.aynaott.com/pKb5k6NnzxsKpWUs6E8M/index.m3u8
 
+#EXTINF:-1 tvg-id="" tvg-name="Bharat Samachar" tvg-logo="" group-title="Live Tvs",Bharat Samachar
+https://tvsen3.aynaott.com/m94BZDYb/index.m3u8
+
 #EXTINF:-1 tvg-id="" tvg-name="Bijoy TV" tvg-logo="" group-title="Live Tvs",Bijoy TV
 https://tvsen6.aynaott.com/N8Xbo5vdwVU6sF43RsW0/index.m3u8
 
@@ -155,9 +157,6 @@ https://tvsen6.aynaott.com/bloombergtv/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="BTV CTG" tvg-logo="" group-title="Live Tvs",BTV CTG
 https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="Channel 9" tvg-logo="" group-title="Live Tvs",Channel 9
-https://tvsen6.aynaott.com/kajlsd57jnzxyo/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="CNBC TV" tvg-logo="" group-title="Live Tvs",CNBC TV
 https://tvsen6.aynaott.com/cnbc/index.m3u8
@@ -183,9 +182,6 @@ https://tvsen5.aynaott.com/SyQuXz8sC3TB/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="Fox 5" tvg-logo="" group-title="Live Tvs",Fox 5
 https://tvsen6.aynaott.com/fox5/index.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Fox business" tvg-logo="" group-title="Live Tvs",Fox business
-https://tvsen6.aynaott.com/foxbusiness/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="Fox Weather" tvg-logo="" group-title="Live Tvs",Fox Weather
 https://247wlive.foxweather.com/stream/index.m3u8
 
@@ -197,6 +193,9 @@ https://tvsen6.aynaott.com/kolkatatv/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Maasranga TV" tvg-logo="" group-title="Live Tvs",Maasranga TV
 https://tvsen6.aynaott.com/maasrangatv/index.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="MADANI TV" tvg-logo="" group-title="Live Tvs",MADANI TV
+https://tvsen3.aynaott.com/z24qLsqV/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Mohona TV" tvg-logo="" group-title="Live Tvs",Mohona TV
 https://tvsen6.aynaott.com/AkyX5dunzju4cpo26dr7/index.m3u8
@@ -215,6 +214,9 @@ https://byphdgllyk.gpcdn.net/hls/deeptotv/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Thikana" tvg-logo="" group-title="Live Tvs",Thikana
 https://5dd3981940faa.streamlock.net:443/thikanatv/thikanatv/playlist.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="USA TV" tvg-logo="" group-title="Live Tvs",USA TV
+https://tvsen3.aynaott.com/dbbcY6NG/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Weather SPY" tvg-logo="" group-title="Live Tvs",Weather SPY
 https://jukin-weatherspy-2-in.samsung.wurl.tv/playlist.m3u8
