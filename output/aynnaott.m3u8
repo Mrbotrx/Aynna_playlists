@@ -1,7 +1,7 @@
 #EXTM3U
 # 📺 AYNNA OTT IPTV PLAYLIST
-# #️⃣ Total Channels: 70
-# 🕒 Updated: 2026-11-14 23:47:35 UTC
+# #️⃣ Total Channels: 69
+# 🕒 Updated: 2026-11-15 05:55:08 UTC
 # ⚡ Working Channels Only
 # 🔥 Auto Category & Logo
 # 📡 M3U8 Playlist
@@ -20,14 +20,14 @@ https://tvsen6.aynaott.com/da6WMXAk/index.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="BBC News" tvg-logo="" group-title="News",BBC News
 https://tvsen1.aynaott.com/shn6jGTk/index.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Channel 24" tvg-logo="" group-title="News",Channel 24
-https://tvsen6.aynaott.com/YrVDF8gujkdh/index.m3u8
-
 #EXTINF:-1 tvg-id="" tvg-name="CNN" tvg-logo="" group-title="News",CNN
 https://tvsen6.aynaott.com/cnn/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="DBC News" tvg-logo="" group-title="News",DBC News
 https://tvsen6.aynaott.com/pF66Tkz0qFwP2aMMqHyt/index.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="DW News" tvg-logo="" group-title="News",DW News
+https://tvsen6.aynaott.com/Qq3s5WR2/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Ekattor TV" tvg-logo="" group-title="News",Ekattor TV
 https://tvsen6.aynaott.com/EWDrV5QskgarZEUBb3pU/index.m3u8
@@ -126,9 +126,6 @@ https://live-bangla.akamaized.net/liveabr/playlist.m3u8
 #EXTINF:-1 tvg-id="" tvg-name="My TV" tvg-logo="" group-title="Bangla",My TV
 https://tvsen6.aynaott.com/XMpHaEf0ANBhv8w6NWR7/index.m3u8
 
-#EXTINF:-1 tvg-id="" tvg-name="Sangeet Bangla" tvg-logo="" group-title="Bangla",Sangeet Bangla
-https://tvsen6.aynaott.com/hT5jHczt/index.m3u8
-
 # ===== International =====
 #EXTINF:-1 tvg-id="" tvg-name="Global TV" tvg-logo="" group-title="International",Global TV
 https://tvsen6.aynaott.com/y0q9eFAuquAtvTxRzUHq/index.m3u8
@@ -158,6 +155,9 @@ https://tvsen6.aynaott.com/bloombergtv/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="BTV CTG" tvg-logo="" group-title="Live Tvs",BTV CTG
 https://tvsen6.aynaott.com/TjGR1GcxKetHNVcMVxbq/index.m3u8
+
+#EXTINF:-1 tvg-id="" tvg-name="Channel 9" tvg-logo="" group-title="Live Tvs",Channel 9
+https://tvsen6.aynaott.com/kajlsd57jnzxyo/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="CNBC TV" tvg-logo="" group-title="Live Tvs",CNBC TV
 https://tvsen6.aynaott.com/cnbc/index.m3u8
@@ -191,9 +191,6 @@ https://247wlive.foxweather.com/stream/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="Goal TV" tvg-logo="" group-title="Live Tvs",Goal TV
 https://streams2.sofast.tv/sofastplayout/WiseM3U8_1/master.m3u8
-
-#EXTINF:-1 tvg-id="" tvg-name="Khushboo" tvg-logo="" group-title="Live Tvs",Khushboo
-https://tvsen6.aynaott.com/mzwbzfZ4/index.m3u8
 
 #EXTINF:-1 tvg-id="" tvg-name="kolkata TV" tvg-logo="" group-title="Live Tvs",kolkata TV
 https://tvsen6.aynaott.com/kolkatatv/index.m3u8
