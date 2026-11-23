@@ -1,27 +1,27 @@
 #EXTM3U
-# Updated: 2026-11-23 02:18:17.490795
+# Updated: 2026-11-23 14:04:49.472462
 
 #EXTINF:-1 tvg-id="1" tvg-name="বিটিভি" group-title="Bangladesh TV" tvg-logo="https://d38ll44lbmt52p.cloudfront.net/cms/channel_poster/1677040358634_BTVogo.png",বিটিভি
 #EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/
 #EXTVLCOPT:http-origin=https://www.btvlive.gov.bd
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://streams.btvlive.gov.bd/live/355ba051-9a60-48aa-adcf-5a6c64da8c5c/index.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9zdHJlYW1zLmJ0dmxpdmUuZ292LmJkL2xpdmUvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5NTQwMjM5N319fV19&Signature=K1PEHvidax3QmUkeemT91BWm88oDwYXeERWhZenViR1yOOReEKH11YkX4cLhGlw~HCOqzU6k2mzWMl-u-5-Z9kVjBtoD7TIrdzKqSyJcE~oa0F1nPeJ9LwjJrw8AVlLCqkonrd7DyUKIxjXgaXt45DFtBcncKyaPjh3beU7tfh3-4nD5tcFCzn2i2qgmkpFRepNy1EpkvtVEnpfO27zspOpK6uK0QwF~ftdr3U-8zWWQdn2zKpbFJuGp4Fh-WVdhze~QOuSgyVamGha4tUe-6l-NYll9c-V-nBIuH8h3P4U5AW016Da6pXg8S8inSfJ~YEHDC68Jq0MoN3YFP9Nkfg__&Key-Pair-Id=APKA4TI7VGWTHITWWD4S
+https://streams.btvlive.gov.bd/live/355ba051-9a60-48aa-adcf-5a6c64da8c5c/index.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9zdHJlYW1zLmJ0dmxpdmUuZ292LmJkL2xpdmUvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5NTQ0NDc4OX19fV19&Signature=hSiKreTBQnjNng-nrAk9svlELjle0CejvKBk-SxjRnBajhZoloQbJN~dicd99I0gR6Vn~vwZZ5YaPctMcHXBKyKcEpBZPUGyvB3IzW7wQIJd3DGLkr8l-giqC5aMFdh3s-3WNleTS2DtQNMmrf3FZ4b~zS-XXaaWcwdi8GK0dQnHcCmtdQ3EutNMPSdhVy5B9uPYUToS1Mnpsrb6XEhxWxLinzMCMlyoHUJESFtSojKP2TB-x3zLaXSKLdJj9nif1ZDHhWRXqS-1TS3ypmwPaKwS0MclRvOx3w4ENzE-yaBDSoBuGEciG~C7olAyisMSxgQG3UTICgPtg44iuB-lxA__&Key-Pair-Id=APKA4TI7VGWTHITWWD4S
 
 #EXTINF:-1 tvg-id="2" tvg-name="বিটিভি নিউজ" group-title="Bangladesh TV" tvg-logo="https://d38ll44lbmt52p.cloudfront.net/cms/channel_poster/1735648543857_Poster.jpg",বিটিভি নিউজ
 #EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/
 #EXTVLCOPT:http-origin=https://www.btvlive.gov.bd
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://streams.btvlive.gov.bd/live/d96eb7f4-83c2-4472-9597-3568390a8ebf/index.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9zdHJlYW1zLmJ0dmxpdmUuZ292LmJkL2xpdmUvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5NTQwMjM5N319fV19&Signature=K1PEHvidax3QmUkeemT91BWm88oDwYXeERWhZenViR1yOOReEKH11YkX4cLhGlw~HCOqzU6k2mzWMl-u-5-Z9kVjBtoD7TIrdzKqSyJcE~oa0F1nPeJ9LwjJrw8AVlLCqkonrd7DyUKIxjXgaXt45DFtBcncKyaPjh3beU7tfh3-4nD5tcFCzn2i2qgmkpFRepNy1EpkvtVEnpfO27zspOpK6uK0QwF~ftdr3U-8zWWQdn2zKpbFJuGp4Fh-WVdhze~QOuSgyVamGha4tUe-6l-NYll9c-V-nBIuH8h3P4U5AW016Da6pXg8S8inSfJ~YEHDC68Jq0MoN3YFP9Nkfg__&Key-Pair-Id=APKA4TI7VGWTHITWWD4S
+https://streams.btvlive.gov.bd/live/d96eb7f4-83c2-4472-9597-3568390a8ebf/index.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9zdHJlYW1zLmJ0dmxpdmUuZ292LmJkL2xpdmUvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5NTQ0NDc4OX19fV19&Signature=hSiKreTBQnjNng-nrAk9svlELjle0CejvKBk-SxjRnBajhZoloQbJN~dicd99I0gR6Vn~vwZZ5YaPctMcHXBKyKcEpBZPUGyvB3IzW7wQIJd3DGLkr8l-giqC5aMFdh3s-3WNleTS2DtQNMmrf3FZ4b~zS-XXaaWcwdi8GK0dQnHcCmtdQ3EutNMPSdhVy5B9uPYUToS1Mnpsrb6XEhxWxLinzMCMlyoHUJESFtSojKP2TB-x3zLaXSKLdJj9nif1ZDHhWRXqS-1TS3ypmwPaKwS0MclRvOx3w4ENzE-yaBDSoBuGEciG~C7olAyisMSxgQG3UTICgPtg44iuB-lxA__&Key-Pair-Id=APKA4TI7VGWTHITWWD4S
 
 #EXTINF:-1 tvg-id="3" tvg-name="বিটিভি চট্টগ্রাম" group-title="Bangladesh TV" tvg-logo="https://d38ll44lbmt52p.cloudfront.net/cms/channel_poster/1676193167149_3.png",বিটিভি চট্টগ্রাম
 #EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/
 #EXTVLCOPT:http-origin=https://www.btvlive.gov.bd
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://streams.btvlive.gov.bd/live/a707f2dc-9704-413a-a67c-17c64a77c350/index.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9zdHJlYW1zLmJ0dmxpdmUuZ292LmJkL2xpdmUvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5NTQwMjM5N319fV19&Signature=K1PEHvidax3QmUkeemT91BWm88oDwYXeERWhZenViR1yOOReEKH11YkX4cLhGlw~HCOqzU6k2mzWMl-u-5-Z9kVjBtoD7TIrdzKqSyJcE~oa0F1nPeJ9LwjJrw8AVlLCqkonrd7DyUKIxjXgaXt45DFtBcncKyaPjh3beU7tfh3-4nD5tcFCzn2i2qgmkpFRepNy1EpkvtVEnpfO27zspOpK6uK0QwF~ftdr3U-8zWWQdn2zKpbFJuGp4Fh-WVdhze~QOuSgyVamGha4tUe-6l-NYll9c-V-nBIuH8h3P4U5AW016Da6pXg8S8inSfJ~YEHDC68Jq0MoN3YFP9Nkfg__&Key-Pair-Id=APKA4TI7VGWTHITWWD4S
+https://streams.btvlive.gov.bd/live/a707f2dc-9704-413a-a67c-17c64a77c350/index.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9zdHJlYW1zLmJ0dmxpdmUuZ292LmJkL2xpdmUvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5NTQ0NDc4OX19fV19&Signature=hSiKreTBQnjNng-nrAk9svlELjle0CejvKBk-SxjRnBajhZoloQbJN~dicd99I0gR6Vn~vwZZ5YaPctMcHXBKyKcEpBZPUGyvB3IzW7wQIJd3DGLkr8l-giqC5aMFdh3s-3WNleTS2DtQNMmrf3FZ4b~zS-XXaaWcwdi8GK0dQnHcCmtdQ3EutNMPSdhVy5B9uPYUToS1Mnpsrb6XEhxWxLinzMCMlyoHUJESFtSojKP2TB-x3zLaXSKLdJj9nif1ZDHhWRXqS-1TS3ypmwPaKwS0MclRvOx3w4ENzE-yaBDSoBuGEciG~C7olAyisMSxgQG3UTICgPtg44iuB-lxA__&Key-Pair-Id=APKA4TI7VGWTHITWWD4S
 
 #EXTINF:-1 tvg-id="4" tvg-name="সংসদ টেলিভিশন" group-title="Bangladesh TV" tvg-logo="https://d38ll44lbmt52p.cloudfront.net/cms/channel_poster/1676193184888_2.png",সংসদ টেলিভিশন
 #EXTVLCOPT:http-referrer=https://www.btvlive.gov.bd/
 #EXTVLCOPT:http-origin=https://www.btvlive.gov.bd
 #EXTVLCOPT:http-user-agent=Mozilla/5.0
-https://streams.btvlive.gov.bd/live/9ee3b4f9-fd0a-47c5-a135-2575c5691613/index.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9zdHJlYW1zLmJ0dmxpdmUuZ292LmJkL2xpdmUvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5NTQwMjM5N319fV19&Signature=K1PEHvidax3QmUkeemT91BWm88oDwYXeERWhZenViR1yOOReEKH11YkX4cLhGlw~HCOqzU6k2mzWMl-u-5-Z9kVjBtoD7TIrdzKqSyJcE~oa0F1nPeJ9LwjJrw8AVlLCqkonrd7DyUKIxjXgaXt45DFtBcncKyaPjh3beU7tfh3-4nD5tcFCzn2i2qgmkpFRepNy1EpkvtVEnpfO27zspOpK6uK0QwF~ftdr3U-8zWWQdn2zKpbFJuGp4Fh-WVdhze~QOuSgyVamGha4tUe-6l-NYll9c-V-nBIuH8h3P4U5AW016Da6pXg8S8inSfJ~YEHDC68Jq0MoN3YFP9Nkfg__&Key-Pair-Id=APKA4TI7VGWTHITWWD4S
+https://streams.btvlive.gov.bd/live/9ee3b4f9-fd0a-47c5-a135-2575c5691613/index.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9zdHJlYW1zLmJ0dmxpdmUuZ292LmJkL2xpdmUvKiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5NTQ0NDc4OX19fV19&Signature=hSiKreTBQnjNng-nrAk9svlELjle0CejvKBk-SxjRnBajhZoloQbJN~dicd99I0gR6Vn~vwZZ5YaPctMcHXBKyKcEpBZPUGyvB3IzW7wQIJd3DGLkr8l-giqC5aMFdh3s-3WNleTS2DtQNMmrf3FZ4b~zS-XXaaWcwdi8GK0dQnHcCmtdQ3EutNMPSdhVy5B9uPYUToS1Mnpsrb6XEhxWxLinzMCMlyoHUJESFtSojKP2TB-x3zLaXSKLdJj9nif1ZDHhWRXqS-1TS3ypmwPaKwS0MclRvOx3w4ENzE-yaBDSoBuGEciG~C7olAyisMSxgQG3UTICgPtg44iuB-lxA__&Key-Pair-Id=APKA4TI7VGWTHITWWD4S
 
