@@ -9,6 +9,7 @@ on:
   push:
     paths:
       - "ottplus.py"
+      - "requirements.txt"
       - ".github/workflows/ottpluskb.yml"
 
 permissions:
@@ -32,6 +33,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install requests==2.32.5
+
+          python -c "import requests; print('Requests installed:', requests.__version__)"
 
       - name: Check 130 Minutes Interval
         id: timer
@@ -46,24 +55,20 @@ jobs:
 
           now = int(time.time())
 
-          if timer_file.exists():
-              try:
-                  last = int(timer_file.read_text().strip())
-              except Exception:
-                  last = 0
-          else:
+          try:
+              last = int(timer_file.read_text().strip())
+          except Exception:
               last = 0
 
           elapsed = now - last
 
           if elapsed >= interval:
-              print("130 minutes completed. Starting update.")
+              print("130 minutes completed.")
               timer_file.write_text(str(now))
               run = "true"
           else:
               remaining = interval - elapsed
-              minutes = remaining // 60
-              print(f"Next update in approximately {minutes} minutes.")
+              print(f"Next update in {remaining // 60} minutes.")
               run = "false"
 
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
@@ -79,11 +84,12 @@ jobs:
           python ottplus.py
 
           if [ ! -f "ottplus.m3u8" ]; then
-            echo "ERROR: ottplus.m3u8 was not generated!"
+            echo "ERROR: Playlist not generated!"
             exit 1
           fi
 
-          echo "Playlist generated successfully."
+          echo "Playlist generated successfully!"
+          ls -lh ottplus.m3u8
 
       - name: Debug output
         if: always()
@@ -97,7 +103,6 @@ jobs:
           if [ -f "ottplus.m3u8" ]; then
             echo "FOUND: ottplus.m3u8"
             ls -lh ottplus.m3u8
-            echo "----- PLAYLIST PREVIEW -----"
             head -30 ottplus.m3u8
           else
             echo "NOT FOUND: ottplus.m3u8"
