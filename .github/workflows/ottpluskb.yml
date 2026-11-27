@@ -1,25 +1,119 @@
-- name: Generate OTTPlus playlist
-  env:
-    OTTPLUS_API_URL: ${{ secrets.OTTPLUS_API_URL }}
-  run: |
-    echo "Starting ottplus.py..."
-    python ottplus.py
-    echo "Python finished with exit code: $?"
+name: OTTPLUS KB AUTO UPDATE
 
-- name: Debug output
-  if: always()
-  run: |
-    echo "========== DIRECTORY =========="
-    pwd
-    ls -lah
+on:
+  workflow_dispatch:
 
-    echo "========== M3U8 CHECK =========="
+  schedule:
+    - cron: "*/10 * * * *"
 
-    if [ -f "ottplus.m3u8" ]; then
-      echo "FOUND: ottplus.m3u8"
-      ls -lh ottplus.m3u8
-      echo "----- PLAYLIST -----"
-      head -30 ottplus.m3u8
-    else
-      echo "NOT FOUND: ottplus.m3u8"
-    fifi
+  push:
+    paths:
+      - "ottplus.py"
+      - ".github/workflows/ottpluskb.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ottplus-playlist-update
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check 130 Minutes Interval
+        id: timer
+        run: |
+          python - <<'PY'
+          import os
+          import time
+          from pathlib import Path
+
+          interval = 130 * 60
+          timer_file = Path(".ottplus_last_run")
+
+          now = int(time.time())
+
+          if timer_file.exists():
+              try:
+                  last = int(timer_file.read_text().strip())
+              except Exception:
+                  last = 0
+          else:
+              last = 0
+
+          elapsed = now - last
+
+          if elapsed >= interval:
+              print("130 minutes completed. Starting update.")
+              timer_file.write_text(str(now))
+              run = "true"
+          else:
+              remaining = interval - elapsed
+              minutes = remaining // 60
+              print(f"Next update in approximately {minutes} minutes.")
+              run = "false"
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"run={run}\n")
+          PY
+
+      - name: Generate OTTPlus playlist
+        if: steps.timer.outputs.run == 'true' || github.event_name == 'workflow_dispatch'
+        env:
+          OTTPLUS_API_URL: ${{ secrets.OTTPLUS_API_URL }}
+        run: |
+          echo "Starting ottplus.py..."
+          python ottplus.py
+
+          if [ ! -f "ottplus.m3u8" ]; then
+            echo "ERROR: ottplus.m3u8 was not generated!"
+            exit 1
+          fi
+
+          echo "Playlist generated successfully."
+
+      - name: Debug output
+        if: always()
+        run: |
+          echo "========== DIRECTORY =========="
+          pwd
+          ls -lah
+
+          echo "========== M3U8 CHECK =========="
+
+          if [ -f "ottplus.m3u8" ]; then
+            echo "FOUND: ottplus.m3u8"
+            ls -lh ottplus.m3u8
+            echo "----- PLAYLIST PREVIEW -----"
+            head -30 ottplus.m3u8
+          else
+            echo "NOT FOUND: ottplus.m3u8"
+          fi
+
+      - name: Commit and push playlist
+        if: success() && (steps.timer.outputs.run == 'true' || github.event_name == 'workflow_dispatch')
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add ottplus.m3u8 .ottplus_last_run
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Update OTTPlus playlist"
+            git push
+          else
+            echo "No changes to commit."
+          fi
