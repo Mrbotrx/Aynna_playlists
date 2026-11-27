@@ -1,0 +1,15 @@
+#EXTM3U
+#EXTINF:-1 tvg-id="157438665709645824" tvg-name="Jamuna TV" tvg-logo="https://6rgfinyqha.gpcdn.net/uploads/images/2026/11/11/thumbnail_backgrounds_654c5ad435b9f6e695bb25aa6f30503c_goplay_jamuna_tv_low.webp" group-title="OTTPlus",Jamuna TV
+https://drk6xq0vhn.gpcdn.net/hls/jamuna_tv.m3u8
+#EXTINF:-1 tvg-id="154901201757192192" tvg-name="Sony Entertainmaint HD" tvg-logo="https://6rgfinyqha.gpcdn.net/uploads/images/2026/11/11/thumbnail_backgrounds_a9fb9191b4e86c06dc116eadb9363cc9_goplay_sony_entertainment_hd_low.webp" group-title="OTTPlus",Sony Entertainmaint HD
+https://drk6xq0vhn.gpcdn.net/hls/sony_ent_hd_k7nm9px2qw4vz8a.m3u8
+#EXTINF:-1 tvg-id="153749522875830272" tvg-name="Al Jazeera" tvg-logo="https://6rgfinyqha.gpcdn.net/uploads/images/2026/07/23/thumbnail_backgrounds_9b641ce2249ec1fe1db9342c346de716_goplay_al_jazeera.png" group-title="OTTPlus",Al Jazeera
+https://drk6xq0vhn.gpcdn.net/hls/al_jazeera_int.m3u8
+#EXTINF:-1 tvg-id="154091134984323072" tvg-name="Hum Sitarey" tvg-logo="https://6rgfinyqha.gpcdn.net/uploads/images/2026/11/11/thumbnail_backgrounds_b3742d982bd6d30b22c28f974d394120_goplay_hum_sitaray_low.webp" group-title="OTTPlus",Hum Sitarey
+https://drk6xq0vhn.gpcdn.net/hls/hum_sitaray.m3u8
+#EXTINF:-1 tvg-id="154900995559182336" tvg-name="Sony Sports Ten 1 HD" tvg-logo="https://6rgfinyqha.gpcdn.net/uploads/images/2026/08/31/thumbnail_backgrounds_cec27ab6dc2028602437e419b6d3e1f8_goplay_whatsapp_image_2026_08_27_at_113001_pm.jpeg" group-title="OTTPlus",Sony Sports Ten 1 HD
+https://drk6xq0vhn.gpcdn.net/hls/sony_ten_1_j5wk9mr2xp7tq3v.m3u8
+#EXTINF:-1 tvg-id="152709548371341312" tvg-name="Cartoon Network HD" tvg-logo="https://6rgfinyqha.gpcdn.net/uploads/images/2026/11/11/thumbnail_backgrounds_5ea355f3513c28c69446c3b262f5ccca_goplay_cn_hd_low.webp" group-title="OTTPlus",Cartoon Network HD
+https://drk6xq0vhn.gpcdn.net/hls/cn_hd.m3u8
+#EXTINF:-1 tvg-id="152701518728716288" tvg-name="Discovery HD" tvg-logo="https://6rgfinyqha.gpcdn.net/uploads/images/2026/11/11/thumbnail_backgrounds_3959137adc97c2ee8eb73d9aceeb64b6_goplay_discovery_hd_low.webp" group-title="OTTPlus",Discovery HD
+https://drk6xq0vhn.gpcdn.net/hls/discovery_hd.m3u8
